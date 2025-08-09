@@ -4,7 +4,7 @@ const {createImageController} = require('../controllers/createImage.controller')
 
 const generateImageRouter = express.Router();
 
-generateImageRouter.post('/', authMiddleware, createImageController);
+generateImageRouter.post('/:postId', authMiddleware, createImageController);
 
 
 module.exports = generateImageRouter;

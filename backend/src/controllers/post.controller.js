@@ -36,12 +36,13 @@ const createPostController = async (req, res) => {
         postBody: {
             content: generatedPost,
             prompt: prompt,
-            image: {
-                prompt: String,
-                url: String
-            },
         }
         })
+    await userModel.findOneAndUpdate({_id:user._id},{postId:post._id})
+    updatedUser = await userModel.findById(user._id);
+    req.user = updatedUser;
+    user = req.user;
+
     res.status(200).json({
         message: "post created successfully",
         content: generatedPost,

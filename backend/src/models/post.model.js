@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const postSchema = new mongoose.Schema({
+    _id:{
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+      },
     title: String,
     type: String,
    postBody:{
@@ -9,6 +13,7 @@ const postSchema = new mongoose.Schema({
     },
     prompt:{
         type:String
+        
     },
     image:{
         prompt:String,

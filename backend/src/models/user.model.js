@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 2
     },
+    posts:[{
+        postId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'posts'
+        }
+    }],
     role: {
         type: String,
         enum: ['user', 'admin'],
