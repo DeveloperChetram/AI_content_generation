@@ -29,7 +29,7 @@ const createImageController = async (req, res) => {
 const updatedPost = await postModel.findByIdAndUpdate(postId, {
     $set: {
         'postBody.image.prompt': prompt,
-        'postBody.image.url': imageUrl
+        'postBody.image.url': imagekitResponse.url
     }
 }, { new: true }); // {new: true} returns the updated document
     await userModel.findOneAndUpdate(

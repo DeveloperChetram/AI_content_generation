@@ -30,15 +30,20 @@ const createPostController = async (req, res) => {
     req.user = updatedUser;
     user = req.user;
 
-    const post = await postModel.create({
-        title,
-        type,
-        postBody: {
-            content: generatedPost,
-            prompt: prompt,
-        }
-        })
-    await userModel.findOneAndUpdate({_id:user._id},{postId:post._id})
+ const post = await postModel.create({
+    title,
+    type,
+    postBody: {
+        content: generatedPost,
+        prompt: prompt,
+    },
+    user: user._id // <-- Associate post with the user
+});
+
+   await userModel.findByIdAndUpdate(user._id, {
+    $push: { posts: { postId: post._id } }
+});
+
     updatedUser = await userModel.findById(user._id);
     req.user = updatedUser;
     user = req.user;
