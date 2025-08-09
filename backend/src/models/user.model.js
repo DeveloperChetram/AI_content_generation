@@ -20,15 +20,20 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    aiCredits:{
+        type: Number,
+        default: 2
+    },
+      aiImageCredits:{
+        type: Number,
+        default: 2
+    },
     role: {
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
+    timestamps: true
 
     })
 
