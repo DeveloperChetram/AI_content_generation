@@ -30,7 +30,7 @@ const createPostController = async (req, res) => {
     req.user = updatedUser;
     user = req.user;
 
-    const post = postModel.create({
+    const post = await postModel.create({
         title,
         type,
         postBody: {

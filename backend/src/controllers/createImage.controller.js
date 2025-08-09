@@ -25,15 +25,13 @@ const createImageController = async (req, res) => {
             message: "Failed to image"
         });
     }
-    const imageUrl = uploadImage(result)
-    const updatedPost = await postModel.findOneAndUpdate({ _id: postId }, {
-        postBody: {
-            image: {
-                prompt: prompt,
-                url: imageUrl
-            },
-        }
-    })
+    const imagekitResponse =await uploadImage(result)
+const updatedPost = await postModel.findByIdAndUpdate(postId, {
+    $set: {
+        'postBody.image.prompt': prompt,
+        'postBody.image.url': imageUrl
+    }
+}, { new: true }); // {new: true} returns the updated document
     await userModel.findOneAndUpdate(
         { _id: user._id }, { aiImageCredits: user.aiImageCredits - 1 })
 

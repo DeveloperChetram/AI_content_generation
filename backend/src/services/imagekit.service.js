@@ -13,7 +13,7 @@ const uploadImage = (file)=>{
         imagekit.upload({
             file:file,
             fileName:uuidv4(),
-            folder:generatedImages
+            folder:"generatedImages"
         },(err,result)=>{
             if(err){
                 reject(err)
