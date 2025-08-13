@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 let imagekit = new imageKit({
     publicKey:process.env.IMAGEKIT_PUBLIC_KEY,
     privateKey:process.env.IMAGEKIT_PRIVATE_KEY,
-    urlEndpoint:process.env.IMAGE_KIT_URL_ENDPOINT
+    urlEndpoint:process.env.IMAGEKIT_URL_ENDPOINT
 });
 
 const uploadImage = (file)=>{

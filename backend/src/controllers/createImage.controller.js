@@ -25,7 +25,9 @@ const createImageController = async (req, res) => {
             message: "Failed to image"
         });
     }
-    const imagekitResponse =await uploadImage(result)
+    console.log(result)
+    const imagekitResponse = await uploadImage(result.image_url)
+
 const updatedPost = await postModel.findByIdAndUpdate(postId, {
     $set: {
         'postBody.image.prompt': prompt,
