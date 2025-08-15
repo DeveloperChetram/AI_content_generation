@@ -76,11 +76,19 @@ const loginController = async (req,res)=>{
 
 const userController = async (req,res)=>{
     res.status(201).json({
-            message:"authorized"
+            message:"authorized you can get the users information"
         })
+}
+
+const logoutController = async (req, res)=>{
+  res.clearCookie("token")
+  res.status(200).json({
+    messege:"user logged out"
+  })
 }
 module.exports = {
   registerController,
   loginController,
-  userController
+  userController,
+  logoutController
 };

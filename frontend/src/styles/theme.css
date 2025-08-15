@@ -1,0 +1,72 @@
+/* theme.css */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:ital,wght@1,700&display=swap');
+
+/* Defines theme variables for colors, fonts, spacing, and breakpoints. */
+:root {
+  /* Default to dark theme */
+  --bg-color: #000000;
+  --text-color: #FFFFFF;
+  --text-color-secondary: #a0a0a0;
+  --primary-btn-bg: #FFFFFF;
+  --primary-btn-text: #000000;
+  --input-bg-color: #1a1a1a;
+  --input-border-color: #333333;
+  --bottom-gradient-color: rgba(233, 147, 90, 0.274); /* Orange glow */
+
+  /* Fonts */
+  --font-sans: 'Inter', sans-serif;
+  --font-serif-display: 'Playfair Display', serif;
+
+  /* Spacing */
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 32px;
+  --spacing-xl: 64px;
+
+  /* Breakpoints */
+  --breakpoint-md: 768px;
+}
+
+/* text-select */
+::-moz-selection { /* Code for Firefox */
+  color: white;
+  background: orangered;
+}
+
+::selection {
+  color: white;
+  background: rgba(223, 96, 50, 0.699);
+}
+/* Light theme overrides */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #f9f9f9;
+    --text-color: #000000;
+    --text-color-secondary: #555555;
+    --primary-btn-bg: #000000;
+    --primary-btn-text: #FFFFFF;
+    --input-bg-color: #f0f0f0;
+    --input-border-color: #cccccc;
+    
+    /* THIS IS THE CHANGE: Use the same orange color in light mode */
+  --bottom-gradient-color: rgba(241, 143, 78, 0.658); /* Orange glow */
+  }
+}
+
+/* Global Styles */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
