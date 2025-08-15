@@ -6,7 +6,7 @@ import '../styles/Home.css'; // For cta-input and cta-button styles
 const Register = () => {
   return (
     <div className="auth-page-container">
-      <Background />
+      <Background animationType="equalizer" />
       <div className="auth-form-container">
         <h1 className="auth-title">Create Account</h1>
         <form className="auth-form" onSubmit={(e) => e.preventDefault()}>
