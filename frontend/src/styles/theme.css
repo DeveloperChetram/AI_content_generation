@@ -29,6 +29,16 @@
   --breakpoint-md: 768px;
 }
 
+/* text-select */
+::-moz-selection { /* Code for Firefox */
+  color: white;
+  background: orangered;
+}
+
+::selection {
+  color: white;
+  background: rgba(223, 96, 50, 0.699);
+}
 /* Light theme overrides */
 @media (prefers-color-scheme: light) {
   :root {

@@ -1,11 +1,12 @@
 import Navbar from "./components/Navbar"
-import Home from "./pages/Home"
+
+import MainRoutes from "./routes/MainRoutes"
 
 const App = () => {
   return (
     <div>
       <Navbar />
-      <Home/>
+      <MainRoutes />
     </div>
   )
 }

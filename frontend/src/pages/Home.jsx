@@ -1,47 +1,13 @@
-// Home.jsx
 
-import React, { useState, useEffect } from 'react';
-// import './theme.css';
 import '../styles/Home.css';
+import Background from '../components/Background';
 
 const Home = () => {
-  const [animate, setAnimate] = useState(false);
-  // State to manage the mobile menu's visibility
-
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimate(true);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Toggles the mobile menu and locks/unlocks body scroll
-
   return (
-    <div className={`home-container ${animate ? 'animate-on-load' : ''}`}>
+    <div className="home-container">
       {/* Animated background bars */}
-      <div className="background-bars">
-        <div className="bar"></div>
-        <div className="bar"></div>
-        <div className="bar"></div>
-        <div className="bar"></div>
-        <div className="bar"></div>
-        <div className="bar"></div>
-        <div className="bar"></div>
-        <div className="bar"></div>
-         <div className="bar"></div>
-          <div className="bar"></div>
-           <div className="bar"></div>
-            <div className="bar"></div>
-             <div className="bar"></div>
-      </div>
 
-      {/* --- Navbar --- */}
-   
-      
-      {/* Full-screen mobile navigation overlay */}
-  
+      <Background />
 
       {/* --- Hero Section --- */}
       <main className="hero-section">

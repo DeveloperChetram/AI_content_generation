@@ -23,7 +23,7 @@
   right: 0;
   bottom: 0;
   width: 100%;
-  height: 100%;
+  /* height: calc(100% - 70px); */
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -54,13 +54,24 @@
 /* --- Navbar --- */
 /* ... most existing navbar styles remain the same ... */
 
+/* Home.css */
+
+/* ... other styles remain the same ... */
+
 .navbar {
+  height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-md) 0;
+  /* Apply consistent horizontal padding */
+  padding: var(--spacing-md) var(--spacing-lg); 
   width: 100%;
+  max-width: 1400px; /* Ensure navbar max-width matches home-container */
+  margin: 0 auto; /* Center the navbar */
+  box-sizing: border-box; /* Include padding in the element's total width */
 }
+
+/* ... other styles remain the same ... */
 .nav-section {
   display: flex;
   align-items: center;
@@ -96,11 +107,16 @@
 .nav-menu a:hover {
   color: var(--text-color-secondary);
 }
+.nav-buttons{
+  display: flex;
+  gap: 10px;
+}
 .nav-buttons .btn {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 8px;
   text-decoration: none;
   font-weight: 500;
+  /* margin-left: 5px; */
   border: 1px solid transparent;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -188,6 +204,7 @@
 /* ... existing hero section styles remain the same ... */
 .hero-section {
   flex-grow: 1;
+  /* height: calc(100vh -70px); */
   display: flex;
   flex-direction: column;
   justify-content: center;
