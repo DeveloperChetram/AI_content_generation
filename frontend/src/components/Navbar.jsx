@@ -22,7 +22,7 @@ const Navbar = () => {
     <div>
       <header className={`navbar ${animate ? 'animate-on-load' : ''}`}>
         <div className="nav-section nav-left">
-          <Link to="/" className="nav-logo">StartupSprint</Link>
+          <Link to="/" className="nav-logo">wr<span className='logo-text'> AI </span>te.</Link>
         </div>
         <nav className="nav-section nav-center">
           <div className="nav-menu">

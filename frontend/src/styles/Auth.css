@@ -50,3 +50,40 @@
 .auth-link a:hover {
   text-decoration: underline;
 }
+
+/* Add this to the end of Home.css */
+/* Add this to the end of your Auth.css file */
+
+@keyframes equalizer {
+  0% { height: 10%; }
+  4% { height: 50%; }
+  8% { height: 90%; }
+  12% { height: 30%; }
+  16% { height: 75%; }
+  20% { height: 20%; }
+  24% { height: 60%; }
+  28% { height: 95%; }
+  32% { height: 40%; }
+  36% { height: 25%; }
+  40% { height: 80%; }
+  44% { height: 55%; }
+  48% { height: 35%; }
+  52% { height: 85%; }
+  56% { height: 15%; }
+  60% { height: 65%; }
+  64% { height: 90%; }
+  68% { height: 45%; }
+  72% { height: 70%; }
+  76% { height: 20%; }
+  80% { height: 85%; }
+  84% { height: 30%; }
+  88% { height: 50%; }
+  92% { height: 95%; }
+  96% { height: 25%; }
+  100% { height: 10%; }
+}
+
+.equalizer-animation .bar {
+     height: 0%; 
+  animation: equalizer 20s infinite linear;
+}
