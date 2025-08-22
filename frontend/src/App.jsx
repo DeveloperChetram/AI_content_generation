@@ -1,4 +1,5 @@
 import Navbar from "./components/Navbar"
+// import ReduxSample from "./components/ReduxSample"
 
 import Login from "./pages/Login"
 
@@ -12,6 +13,7 @@ const App = () => {
       <Navbar />
       <MainRoutes />
       {/* <Login/> */}
+      {/* <ReduxSample /> */}
        
     </div>
   )

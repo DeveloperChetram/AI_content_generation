@@ -12,6 +12,7 @@ const MainRoutes = () => {
         <Route path="/register" element={<Register/>} />
         <Route path="/" element={<Home/>} />
         <Route path="/profile" element={<Profile/>} />
+        
       </Routes>
  
   )

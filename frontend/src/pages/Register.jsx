@@ -1,16 +1,33 @@
 import { Link } from 'react-router-dom';
+import  {useForm} from 'react-hook-form' 
+import axios from '../api/axios'
 import Background from '../components/Background';
 import '../styles/Auth.css';
 import '../styles/Home.css'; // For cta-input and cta-button styles
 
 const Register = () => {
+
+  const {handleSubmit, register, reset} = useForm()
+
+  const submitHandler =async  (data)=>{
+   try {
+    const result = await axios.post('/api/auth/register', data)
+    console.log (result)
+   } catch (error) {
+    console.log(error)
+   }
+   reset()
+
+  }
+
   return (
     <div className="auth-page-container">
       <Background animationType="equalizer" />
       <div className="auth-form-container">
         <h1 className="auth-title">Create Account</h1>
-        <form className="auth-form" onSubmit={(e) => e.preventDefault()}>
+        <form className="auth-form" onSubmit={handleSubmit(submitHandler)}>
           <input
+          {...register('name')}
             type="text"
             placeholder="Enter Your Name"
             className="cta-input"
@@ -18,6 +35,7 @@ const Register = () => {
             required
           />
           <input
+           {...register('email')}
             type="email"
             placeholder="Enter Your Email"
             className="cta-input"
@@ -25,6 +43,7 @@ const Register = () => {
             required
           />
           <input
+           {...register('password')}
             type="password"
             placeholder="Enter Your Password"
             className="cta-input"
