@@ -2,9 +2,20 @@ import { useState, useEffect } from 'react';
 import '../styles/Home.css';
 import { Link, NavLink } from 'react-router-dom';
 
+const messages = [
+  "Welcome to wrAIte",
+  "Create content with our powerful AI",
+  "Generate stunning images from text prompts",
+  "wrAIte is your new AI writing assistant",
+  "Unleash your creative potential today"
+];
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [animate, setAnimate] = useState(false);
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -13,16 +24,46 @@ const Navbar = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setIsAnimating(true);
+      setTimeout(() => {
+         setCurrentMessageIndex(prevIndex => (prevIndex + 1) % messages.length);
+         setIsAnimating(false);
+      }, 500); // Duration of the animation
+    }, 3000); 
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     document.body.style.overflow = !isMenuOpen ? 'hidden' : '';
+  };
+
+  const getAnimationClass = () => {
+    if (isHovered) {
+      return isAnimating ? 'fade-out' : 'fade-in';
+    }
+    return isAnimating ? 'message-exit' : 'message-enter';
   };
 
   return (
     <div>
       <header className={`navbar ${animate ? 'animate-on-load' : ''}`}>
         <div className="nav-section nav-left">
-          <Link to="/" className="nav-logo">wr<span className='logo-text'> AI </span>te.</Link>
+          <div 
+            className="dynamic-island"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <Link to="/" className="nav-logo">wr<span className='logo-text'> AI </span>te.</Link>
+            <div className="message-container">
+               <div className={`message ${getAnimationClass()}`}>
+                {messages[currentMessageIndex]}
+              </div>
+            </div>
+          </div>
         </div>
         <nav className="nav-section nav-center">
           <div className="nav-menu">
@@ -34,11 +75,9 @@ const Navbar = () => {
         </nav>
         <div className="nav-section nav-right">
           <div className="nav-buttons">
-            {/* <Link href="#login" className="btn btn-secondary">Login</Link> */}
-            <NavLink to="/login"   className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Login</NavLink>
+            <NavLink to="/login" className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Login</NavLink>
             <NavLink to="/register"  className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Sign Up</NavLink>
           </div>
-          {/* Hamburger button for mobile */}
           <button className="hamburger-btn" onClick={toggleMenu} aria-label="Toggle menu">
             <span className="hamburger-bar"></span>
             <span className="hamburger-bar"></span>

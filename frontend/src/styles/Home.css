@@ -60,49 +60,146 @@
 
 /* ... other styles remain the same ... */
 
+/* frontend/src/styles/Home.css */
+
+/* --- Navbar --- */
 .navbar {
   height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* Apply consistent horizontal padding */
   padding: var(--spacing-md) var(--spacing-lg); 
   width: 100%;
-  max-width: 1400px; /* Ensure navbar max-width matches home-container */
-  margin: 0 auto; /* Center the navbar */
-  box-sizing: border-box; /* Include padding in the element's total width */
+  max-width: 1400px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-/* ... other styles remain the same ... */
 .nav-section {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  opacity: 0;
-  transform: translateY(-20px);
 }
-.nav-left{
-min-width: 20%;
+
+/* Create a stable three-column layout */
+.nav-left {
+  flex: 1;
+  justify-content: flex-start;
 }
-.nav-right{
-  /* align-items: flex-end; */
-  display: flex;
+.nav-center {
+  flex: 1;
+  justify-content: center;
+}
+.nav-right {
+  flex: 1;
   justify-content: flex-end;
-min-width: 20%;
 }
-.animate-on-load .nav-section {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-.animate-on-load .nav-center { animation-delay: 0.2s; }
-.animate-on-load .nav-right { animation-delay: 0.4s; }
 
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
+/* --- Dynamic Island --- */
+.dynamic-island {
+  display: flex;
+  align-items: center;
+  background-color: var(--input-bg-color);
+  border-radius: 50px;
+  padding: 8px 15px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  /* Set a fixed width to stop resizing */
+  width: 280px; 
+}
+
+.nav-logo {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--text-color);
+  text-decoration: none;
+  white-space: nowrap; /* Prevent logo from wrapping */
+}
+
+.message-container {
+  height: 20px;
+  overflow: hidden;
+  margin-left: 15px;
+  position: relative;
+  /* Allow it to fill remaining space in the island */
+  flex-grow: 1; 
+  transition: all 0.4s ease;
+}
+
+/* --- Hover styles for expansion --- */
+.dynamic-island:hover {
+  border-radius: 22px;
+  padding-bottom: 12px;
+}
+
+.dynamic-island:hover .message-container {
+  height: auto;
+}
+
+.dynamic-island:hover .message {
+  position: relative;
+  white-space: normal;
+}
+
+.message {
+  color: var(--text-color-secondary);
+  font-size: 0.9rem;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  position: absolute;
+  width: 100%;
+}
+
+/* Animations (Keep these as they are) */
+.message-enter { animation: slideInUp 0.5s ease-in-out forwards; }
+.message-exit { animation: slideOutUp 0.5s ease-in-out forwards; }
+.fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
+.fade-out { animation: fadeOut 0.5s ease-in-out forwards; }
+
+@keyframes slideInUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideOutUp {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-100%); opacity: 0; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+
+/* --- Responsive Design --- */
+@media (max-width: 767px) {
+  /* ... existing responsive styles ... */
+  
+  .nav-center {
+    display: none; /* Hide center links on mobile */
   }
-}
 
+  /* Adjust the island's width for mobile screens */
+  .dynamic-island {
+    width: 250px;
+  }
+
+  .dynamic-island:hover {
+    width: 260px; /* Optional: slightly expand on hover */
+  }
+
+  .nav-center,
+  .nav-buttons {
+    display: none;
+  }
+  /* ... rest of your responsive styles ... */
+}
 .nav-logo {
   /* letter-spacing: .4rem; */
   font-weight: 700;
