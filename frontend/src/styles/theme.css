@@ -6,14 +6,19 @@
 /* Defines theme variables for colors, fonts, spacing, and breakpoints. */
 :root {
   /* Default to dark theme */
-  --bg-color: #000000;
+  --bg-color: #1B1C1D;
   --text-color: #FFFFFF;
   --text-color-secondary: #a0a0a0;
   --primary-btn-bg: #FFFFFF;
   --primary-btn-text: #000000;
-  --input-bg-color: #1a1a1a;
-  --input-border-color: #333333;
-  --bottom-gradient-color: rgba(233, 147, 90, 0.274); /* Orange glow */
+  --input-bg-color: #2C2D2E;
+  --input-border-color: #444546;
+  /* UPDATED: Changed to a solid, more vibrant orange */
+  --bottom-gradient-color: #E9935A; 
+  --card-bg-color: #2C2D2E;
+  --accent-color: #5CC9C1;
+  --accent-card-bg-color: #4a3f3a;
+
 
   /* Fonts */
   --font-sans: 'Inter', sans-serif;
@@ -49,9 +54,11 @@
     --primary-btn-text: #FFFFFF;
     --input-bg-color: #f0f0f0;
     --input-border-color: #cccccc;
-    
-    /* THIS IS THE CHANGE: Use the same orange color in light mode */
-  --bottom-gradient-color: rgba(241, 143, 78, 0.658); /* Orange glow */
+    --card-bg-color: #ffffff;
+    --accent-color: #4BAE9E;
+    --accent-card-bg-color: #f5f2ef;
+    /* UPDATED: Changed to a solid, more vibrant orange */
+    --bottom-gradient-color: #F18F4E; 
   }
 }
 

@@ -15,7 +15,7 @@ const App = () => {
       <MainRoutes />
       {/* <Login/> */}
       {/* <ReduxSample /> */}
-      <Dashboard />
+      {/* <Dashboard /> */}
        
     </div>
   )
