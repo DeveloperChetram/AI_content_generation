@@ -1,4 +1,5 @@
 import Navbar from "./components/Navbar"
+import Dashboard from "./pages/Dashboard"
 // import ReduxSample from "./components/ReduxSample"
 
 import Login from "./pages/Login"
@@ -14,6 +15,7 @@ const App = () => {
       <MainRoutes />
       {/* <Login/> */}
       {/* <ReduxSample /> */}
+      <Dashboard />
        
     </div>
   )
