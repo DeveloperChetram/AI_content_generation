@@ -1,4 +1,4 @@
-````markdown
+
 # wrAIte - AI Content Generation Platform
 
 Welcome to **wrAIte**, your all-in-one solution for effortlessly creating high-quality written and visual content. Leveraging the power of cutting-edge AI, wrAIte helps you generate everything from blog posts and articles to stunning images, all with a few simple clicks.
