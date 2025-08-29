@@ -1,73 +1,40 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import '../styles/Home.css';
-import { Link, NavLink } from 'react-router-dom';
-
-const messages = [
-  "Welcome to wrAIte",
-  "Create content with our powerful AI",
-  "Generate stunning images from text prompts",
-  "wrAIte is your new AI writing assistant",
-  "Unleash your creative potential today"
-];
+import { NavLink } from 'react-router-dom';
+import DynamicIsland from './DynamicIsland';
+import { addAlert } from "../redux/slices/alertSlice";
+import { useDispatch } from 'react-redux';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [animate, setAnimate] = useState(false);
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimate(true);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-         setCurrentMessageIndex(prevIndex => (prevIndex + 1) % messages.length);
-         setIsAnimating(false);
-      }, 500); // Duration of the animation
-    }, 3000); 
-
-    return () => clearInterval(intervalId);
-  }, []);
-
+  const dispatch = useDispatch();
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     document.body.style.overflow = !isMenuOpen ? 'hidden' : '';
   };
 
-  const getAnimationClass = () => {
-    if (isHovered) {
-      return isAnimating ? 'fade-out' : 'fade-in';
-    }
-    return isAnimating ? 'message-exit' : 'message-enter';
-  };
+  const featuresHandler = () => {
+    toggleMenu();
+    // window.location.href = '#features';
+    setIsMenuOpen(false);
+    dispatch(addAlert({
+      type: 'info',
+      content: 'This is the demo of the dynamic island and it is showing features of this page',
+      duration: 5000
+    }));
+  }
 
   return (
     <div>
-      <header className={`navbar ${animate ? 'animate-on-load' : ''}`}>
+      <header className="navbar">
         <div className="nav-section nav-left">
-          <div 
-            className="dynamic-island"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            <Link to="/" className="nav-logo">wr<span className='logo-text'> AI </span>te.</Link>
-            <div className="message-container">
-               <div className={`message ${getAnimationClass()}`}>
-                {messages[currentMessageIndex]}
-              </div>
-            </div>
-          </div>
+          {/* You can change the variant here: 'normal', 'success', 'error', 'warning', 'info' */}
+          <DynamicIsland  />
         </div>
+        
         <nav className="nav-section nav-center">
           <div className="nav-menu">
-            <a href="#features">Features</a>
+          <a href="#features" onClick={featuresHandler}>Features</a>
             <a href="#about">About</a>
             <a href="#newsletter">Newsletter</a>
             <a href="#contact">Contact</a>
@@ -85,13 +52,14 @@ const Navbar = () => {
           </button>
         </div>
       </header>
+      
       <div className={`mobile-nav ${isMenuOpen ? 'is-open' : ''}`}>
         <button className="close-btn" onClick={toggleMenu} aria-label="Close menu">&times;</button>
         <nav className="mobile-nav-menu">
-          <a href="#features" onClick={toggleMenu}>Features</a>
-          <a href="#about" onClick={toggleMenu}>About</a>
-          <a href="#newsletter" onClick={toggleMenu}>Newsletter</a>
-          <a href="#contact" onClick={toggleMenu}>Contact</a>
+          <a href="#features" onClick={featuresHandler}>Features</a>
+          <a href="#about" >About</a>
+          <a href="#newsletter" >Newsletter</a>
+          <a href="#contact" >Contact</a>
         </nav>
       </div>
     </div>

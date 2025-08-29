@@ -1,0 +1,374 @@
+/* DynamicIsland.css */
+
+@import './theme.css';
+
+.logo-text {
+  font-family: var(--font-serif-display);
+}
+
+/* Container to manage hover state reliably */
+.island-container {
+  position: relative;
+  display: block;
+}
+
+/* Dynamic Island Base */
+.dynamic-island {
+  display: flex;
+  align-items: flex-start;
+  background-color: var(--input-bg-color);
+  border-radius: 50px;
+  padding: 10px 15px;
+  overflow: visible;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 280px;
+  max-width: 400px;
+  max-height: 40px;
+  box-sizing: border-box;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Alert Toast Variants */
+.dynamic-island.success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3);
+  color: white;
+  min-width: 280px;
+  max-width: 400px;
+  max-height: 40px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dynamic-island.error {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
+  color: white;
+  min-width: 280px;
+  max-width: 400px;
+  max-height: 40px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dynamic-island.warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.3);
+  color: white;
+  min-width: 280px;
+  max-width: 400px;
+  max-height: 40px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dynamic-island.info {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+  color: white;
+  min-width: 280px;
+  max-width: 400px;
+  max-height: 40px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Pulse Effect - Attached to div with no space */
+.dynamic-island::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: transparent;
+  border: 2px solid currentColor;
+  opacity: 0;
+  animation: pulse-attached 2s ease-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Pulse animation - no scaling, just opacity and border */
+@keyframes pulse-attached {
+  0% {
+    opacity: 0.8;
+    border-width: 2px;
+  }
+  50% {
+    opacity: 0.4;
+    border-width: 1px;
+  }
+  100% {
+    opacity: 0;
+    border-width: 0px;
+  }
+}
+
+/* Success variant specific pulse */
+.dynamic-island.success::before {
+  border-color: rgba(255, 255, 255, 0.8);
+  animation: pulse-success 2s ease-out infinite;
+}
+
+@keyframes pulse-success {
+  0% {
+    opacity: 0.8;
+    border-width: 2px;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  100% {
+    opacity: 0;
+    border-width: 0px;
+    box-shadow: 0 0 0 20px rgba(16, 185, 129, 0);
+  }
+}
+
+/* Error variant specific pulse */
+.dynamic-island.error::before {
+  border-color: rgba(255, 255, 255, 0.8);
+  animation: pulse-error 2s ease-out infinite;
+}
+
+@keyframes pulse-error {
+  0% {
+    opacity: 0.8;
+    border-width: 2px;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  100% {
+    opacity: 0;
+    border-width: 0px;
+    box-shadow: 0 0 0 20px rgba(239, 68, 68, 0);
+  }
+}
+
+/* Warning variant specific pulse */
+.dynamic-island.warning::before {
+  border-color: rgba(255, 255, 255, 0.8);
+  animation: pulse-warning 2s ease-out infinite;
+}
+
+@keyframes pulse-warning {
+  0% {
+    opacity: 0.8;
+    border-width: 2px;
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+  100% {
+    opacity: 0;
+    border-width: 0px;
+    box-shadow: 0 0 0 20px rgba(245, 158, 11, 0);
+  }
+}
+
+/* Info variant specific pulse */
+.dynamic-island.info::before {
+  border-color: rgba(255, 255, 255, 0.8);
+  animation: pulse-info 2s ease-out infinite;
+}
+
+@keyframes pulse-info {
+  0% {
+    opacity: 0.8;
+    border-width: 2px;
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  100% {
+    opacity: 0;
+    border-width: 0px;
+    box-shadow: 0 0 0 20px rgba(59, 130, 246, 0);
+  }
+}
+
+.nav-logo {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.message-container {
+  margin-left: 15px;
+  position: relative;
+  flex-grow: 1;
+  height: 20px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Alert variants should allow container to expand */
+.dynamic-island.success .message-container,
+.dynamic-island.error .message-container,
+.dynamic-island.warning .message-container,
+.dynamic-island.info .message-container {
+  height: 20px;
+  overflow: visible;
+}
+
+/* Hover effects */
+.island-container:hover .dynamic-island {
+  border-radius: 22px;
+  max-height: 120px;
+}
+
+.island-container:hover .message-container {
+  height: auto;
+}
+
+.island-container:hover .message {
+  position: relative;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.message {
+  color: inherit;
+  font-size: 0.9rem;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  position: absolute;
+  width: 100%;
+  opacity: 0.9;
+  min-width: 0;
+  /* Ensure text measurement works properly */
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Alert variants should allow text to wrap and expand */
+.dynamic-island.success .message,
+.dynamic-island.error .message,
+.dynamic-island.warning .message,
+.dynamic-island.info .message {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: absolute;
+}
+
+/* Hover states for alert variants to show full text */
+.island-container:hover .dynamic-island.success .message,
+.island-container:hover .dynamic-island.error .message,
+.island-container:hover .dynamic-island.warning .message,
+.island-container:hover .dynamic-island.info .message {
+  position: relative;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* Default state message */
+.dynamic-island:not(.success):not(.error):not(.warning):not(.info) .message {
+  color: var(--text-color-secondary);
+}
+
+/* Success variant message */
+.dynamic-island.success .message {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Error variant message */
+.dynamic-island.error .message {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Warning variant message */
+.dynamic-island.warning .message {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Info variant message */
+.dynamic-island.info .message {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Animations */
+.message-enter { animation: slideInUp 0.5s ease-in-out forwards; }
+.message-exit { animation: slideOutUp 0.5s ease-in-out forwards; }
+.fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
+.fade-out { animation: fadeOut 0.5s ease-in-out forwards; }
+
+@keyframes slideInUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideOutUp {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-100%); opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+
+  .island-container {
+    width: 100% !important;
+    cursor: pointer;
+  }
+
+  .hidden-text {
+    /* display: none; */
+    white-space: wrap !important;
+  }
+
+  .dynamic-island {
+    width: 100% !important; 
+    min-width: auto !important;
+    max-width: 100% !important;
+    max-height: 40px;
+  }
+  
+  .dynamic-island.success,
+  .dynamic-island.error,
+  .dynamic-island.warning,
+  .dynamic-island.info {
+    min-width: 280px;
+    max-width: 100%;
+    max-height: 40px;
+  }
+  
+  /* Mobile click states */
+  .island-container.mobile-expanded .dynamic-island {
+    border-radius: 22px;
+    max-height: 120px;
+  }
+  
+  .island-container.mobile-expanded .message-container {
+    height: auto;
+  }
+  
+  .island-container.mobile-expanded .message {
+    position: relative;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  
+  /* Mobile click states for alert variants to show full text */
+  .island-container.mobile-expanded .dynamic-island.success .message,
+  .island-container.mobile-expanded .dynamic-island.error .message,
+  .island-container.mobile-expanded .dynamic-island.warning .message,
+  .island-container.mobile-expanded .dynamic-island.info .message {
+    position: relative;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}

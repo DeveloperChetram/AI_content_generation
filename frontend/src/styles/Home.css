@@ -1,9 +1,7 @@
 /* Home.css */
 
 @import './theme.css';
-.logo-text{
-  font-family: var(--font-serif-display);
-}
+/* .logo-text styles moved to DynamicIsland.css */
 .home-container {
   height: 100vh;
   display: flex;
@@ -67,8 +65,10 @@
   height: 70px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-md) var(--spacing-lg); 
+  align-items: flex-start; /* Align sections to the top */
+  padding-top: var(--spacing-md);
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
@@ -79,134 +79,46 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-}
-
-/* Create a stable three-column layout */
-.nav-left {
   flex: 1;
-  justify-content: flex-start;
 }
-.nav-center {
-  flex: 1;
-  justify-content: center;
-}
-.nav-right {
-  flex: 1;
-  justify-content: flex-end;
-}
+.nav-left { justify-content: flex-start; }
+.nav-center { justify-content: center; height: 40px; }
+.nav-right { justify-content: flex-end; height: 40px; }
 
-/* --- Dynamic Island --- */
-.dynamic-island {
-  display: flex;
-  align-items: center;
-  background-color: var(--input-bg-color);
-  border-radius: 50px;
-  padding: 8px 15px;
-  overflow: hidden;
-  transition: all 0.4s ease;
-  /* Set a fixed width to stop resizing */
-  width: 280px; 
-}
-
-.nav-logo {
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--text-color);
-  text-decoration: none;
-  white-space: nowrap; /* Prevent logo from wrapping */
-}
-
-.message-container {
-  height: 20px;
-  overflow: hidden;
-  margin-left: 15px;
-  position: relative;
-  /* Allow it to fill remaining space in the island */
-  flex-grow: 1; 
-  transition: all 0.4s ease;
-}
-
-/* --- Hover styles for expansion --- */
-.dynamic-island:hover {
-  border-radius: 22px;
-  padding-bottom: 12px;
-}
-
-.dynamic-island:hover .message-container {
-  height: auto;
-}
-
-.dynamic-island:hover .message {
-  position: relative;
-  white-space: normal;
-}
-
-.message {
-  color: var(--text-color-secondary);
-  font-size: 0.9rem;
-  line-height: 20px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: left;
-  position: absolute;
-  width: 100%;
-}
-
-/* Animations (Keep these as they are) */
-.message-enter { animation: slideInUp 0.5s ease-in-out forwards; }
-.message-exit { animation: slideOutUp 0.5s ease-in-out forwards; }
-.fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
-.fade-out { animation: fadeOut 0.5s ease-in-out forwards; }
-
-@keyframes slideInUp {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-@keyframes slideOutUp {
-  from { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(-100%); opacity: 0; }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
+/* Dynamic Island styles moved to DynamicIsland.css */
 
 
 /* --- Responsive Design --- */
 @media (max-width: 767px) {
-  /* ... existing responsive styles ... */
-  
-  .nav-center {
-    display: none; /* Hide center links on mobile */
+  .navbar {
+    gap: 1.5rem;
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
   }
-
-  /* Adjust the island's width for mobile screens */
-  .dynamic-island {
-    width: 250px;
-  }
-
-  .dynamic-island:hover {
-    width: 260px; /* Optional: slightly expand on hover */
-  }
-
   .nav-center,
   .nav-buttons {
     display: none;
   }
-  /* ... rest of your responsive styles ... */
+    .nav-left {
+    flex-grow: 1; /* Allow the left side to fill available space */
+  }
+
+  /* Add this new rule */
+  .nav-right {
+    flex: 0 1 auto; /* This stops the right side from growing */
+  }
+  /* .nav-right{
+    width: fit-content;
+  } */
+  .hamburger-btn {
+    display: flex;
+  }
+  
+  .nav-left { flex-grow: 1; }
+
+  /* Dynamic Island mobile styles moved to DynamicIsland.css */
 }
-.nav-logo {
-  /* letter-spacing: .4rem; */
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--text-color);
-  text-decoration: none;
-}
+/* .nav-logo styles moved to DynamicIsland.css */
 .nav-menu a {
   color: var(--text-color);
   text-decoration: none;
@@ -253,7 +165,7 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  z-index: 1001;
+  /* z-index: 1001; */
   flex-direction: column;
   gap: 5px;
 }

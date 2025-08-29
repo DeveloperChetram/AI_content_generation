@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerUserAction } from "../actions/userActions";
+// import { registerUserAction } from "../actions/userActions";
 
 const initialState = 
     {
@@ -10,8 +10,8 @@ export const userSlice = createSlice({
     name:"user",
     initialState:initialState,
     reducers:{
-        registerUser:registerUserAction,
-        // addDataByAction:userAction,
+        // registerUser:registerUserAction,
+      // addDataByAction:userAction,
        
     }
 

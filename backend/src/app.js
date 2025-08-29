@@ -9,7 +9,12 @@ const postRouter = require('./routes/post.routes');
 const generateImageRouter = require('./routes/createImage.routes');
 
 const app = express();
-app.use(cors())
+app.use(cors(
+    {
+        origin:'*',
+        credentials:true
+    }
+))
 app.use(express.json())
 app.use(cookieParser())
 
