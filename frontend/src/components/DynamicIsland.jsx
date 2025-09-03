@@ -114,9 +114,6 @@ const DynamicIsland = () => {
   }, [alert]);
 
   const getAnimationClass = () => {
-    if (isHovered) {
-      return isAnimating ? 'fade-out' : 'fade-in';
-    }
     return isAnimating ? 'message-exit' : 'message-enter';
   };
 

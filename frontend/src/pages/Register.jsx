@@ -19,8 +19,7 @@ const Register = () => {
     setloading(true)
   
     const result = await dispatch(registerUserAction(data));
-    console.log("result from action", result)
-    console.log("result.status", result.status)
+    
     
     // console.log("result.payload.success", result.payload.success)
     if(result.status === 200){
