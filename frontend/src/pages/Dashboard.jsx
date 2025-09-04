@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/theme.css'; // Import theme variables
 import '../styles/Dashboard.css'; // Import component-specific styles
-import { Icon } from '@iconify/react';
+import { FiSearch, FiBell } from 'react-icons/fi';
 import { useSelector, useDispatch } from 'react-redux';
 import { addAlert } from '../redux/slices/alertSlice';
 import { useNavigate } from 'react-router-dom';
@@ -56,10 +56,10 @@ const Dashboard = () => {
                     </div>
                     <div className="header-actions">
                         <button className="icon-button">
-                            <Icon icon="mdi:magnify" className="icon" />
+                            <FiSearch className="icon" />
                         </button>
                         <button className="icon-button">
-                            <Icon icon="mdi:bell-outline" className="icon" />
+                            <FiBell className="icon" />
                         </button>
                         <img src={userData.avatarUrl} alt="User profile" className="user-avatar" />
                     </div>

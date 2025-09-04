@@ -19,7 +19,10 @@
   --accent-color: #5CC9C1;
   --accent-card-bg-color: #4a3f3a;
 
-
+  --bg-gradient-color_1: #1B1C1D;
+  --bg-gradient-color_2: #2C2D2E;
+  --bg-gradient-color_3: #444546;
+  --bg-gradient-color_4: #555657;
   /* Fonts */
   --font-sans: 'Inter', sans-serif;
   --font-serif-display: 'Playfair Display', serif;
@@ -33,6 +36,8 @@
   /* Breakpoints */
   --breakpoint-md: 768px;
 }
+
+
 
 /* text-select */
 ::-moz-selection { /* Code for Firefox */
