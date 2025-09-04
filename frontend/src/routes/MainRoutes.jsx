@@ -4,6 +4,8 @@ import Home from "../pages/Home"
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
+import AuthRoutes from "./AuthRoutes";
+import Playground from "../components/Playground";
 
 const MainRoutes = () => {
   return (
@@ -12,8 +14,10 @@ const MainRoutes = () => {
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
         <Route path="/" element={<Home/>} />
-        <Route path="/profile" element={<Profile/>} />
-        <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/profile" element={<AuthRoutes><Profile/></AuthRoutes>} />
+        <Route path="/dashboard" element={<AuthRoutes><Dashboard/></AuthRoutes>} />
+        <Route path="/playground" element={<AuthRoutes><Playground/></AuthRoutes>} />
+        {/* <Route path="/dashboard" element={<Dashboard/>} /> */}
         
       </Routes>
  

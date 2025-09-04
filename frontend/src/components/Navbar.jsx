@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import '../styles/Home.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import DynamicIsland from './DynamicIsland';
 import { addAlert } from "../redux/slices/alertSlice";
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUserAction } from '../redux/actions/userActions';
+import { setIsPlaygroundOpen } from '../redux/slices/indexSlice';
 
 const Navbar = () => {
   const user = useSelector((state) => state.user);
+  const isPlaygroundOpen = useSelector((state) => state.index.isPlaygroundOpen);
   // console.log("user in navbar", user)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     document.body.style.overflow = !isMenuOpen ? 'hidden' : '';
@@ -25,6 +28,53 @@ const Navbar = () => {
       content: 'This is the demo of the dynamic island and it is showing features of this page',
       duration: 5000
     }));
+  }
+
+  const logoutHandler = async () => {
+    const result = await dispatch(logoutUserAction());
+    // console.log("result from logout handler", result)
+    // console.log("result.status", result?.status)
+    if(result.status === 200){
+      navigate('/login');
+    }
+  }
+
+  const dashboardHandler = () => {
+    dispatch(addAlert(
+      {
+        type:"info",
+        content:"Redirecting to dashboard...",
+        duration:5000
+      }
+    ))
+    dispatch(setIsPlaygroundOpen(false));
+    navigate('/dashboard');
+    dispatch(addAlert(
+      {
+        type:"success",
+        content:"Redirected to dashboard...",
+        duration:5000
+      }
+    ))
+  }
+
+  const playgroundHandler = () => {
+    dispatch(addAlert(
+      {
+        type:"info",
+        content:"Redirecting to playground...",
+        duration:5000
+      }
+    ))
+    dispatch(setIsPlaygroundOpen(true));
+    navigate('/playground');
+    dispatch(addAlert(
+      {
+        type:"success",
+        content:"Redirected to playground...",
+        duration:5000
+      }
+    ))
   }
 
   return (
@@ -46,7 +96,10 @@ const Navbar = () => {
         <div className="nav-section nav-right">
           <div className="nav-buttons">
             {user.isAuthenticated ? (
-              <NavLink to="/logout" onClick={()=>dispatch(logoutUserAction())} className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Logout</NavLink>
+             <>
+              {isPlaygroundOpen? <NavLink to="/dashboard" onClick={()=>dashboardHandler()} className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Dashboard</NavLink> : <NavLink to="/playground" onClick={()=>playgroundHandler()} className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Playground</NavLink>}
+              <NavLink onClick={()=>logoutHandler()} className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Logout</NavLink>
+             </>
             ) : (
               <>
                   <NavLink to="/login" className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Login</NavLink>

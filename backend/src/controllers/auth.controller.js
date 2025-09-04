@@ -32,6 +32,10 @@ const registerController = async (req, res) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          aiCredits: user.aiCredits,
+          aiImageCredits: user.aiImageCredits,
+          posts: user.posts,
+
         },
      })
  }  catch (error) {
@@ -70,6 +74,10 @@ const loginController = async (req,res)=>{
             name: user.name,
             email: user.email,
             role: user.role,
+            aiCredits: user.aiCredits,
+            aiImageCredits: user.aiImageCredits,
+            posts: user.posts,
+
         },
     });
 }

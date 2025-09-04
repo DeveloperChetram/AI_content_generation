@@ -8,6 +8,7 @@ import MainRoutes from "./routes/MainRoutes"
 import { useDispatch } from "react-redux";
 import { getCurrentUserAction } from "./redux/actions/userActions";
 import { useEffect } from "react";
+import ButtonEffects from "./components/ButtonEffects";
 
 
 
@@ -21,11 +22,12 @@ const App = () => {
 
   return (
     <div>
+      <ButtonEffects />
       <Navbar />
       {/* <DurationExample /> */}
       {/* <AlertUsageExample /> */}
       <MainRoutes />
-    
+      
       {/* <DynamicIsland /> */}
       {/* <Login/> */}
       {/* <ReduxSample /> */}

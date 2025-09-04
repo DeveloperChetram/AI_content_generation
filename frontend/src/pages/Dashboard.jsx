@@ -1,24 +1,17 @@
 import React from 'react';
 import '../styles/theme.css'; // Import theme variables
 import '../styles/Dashboard.css'; // Import component-specific styles
-
-// --- Icon Components ---
-// Using inline SVGs is a common and efficient practice in React
-const SearchIcon = () => (
-    <svg className="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-    </svg>
-);
-
-const BellIcon = () => (
-    <svg className="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-    </svg>
-);
-
+import { Icon } from '@iconify/react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addAlert } from '../redux/slices/alertSlice';
+import { useNavigate } from 'react-router-dom';
 
 // --- Main Dashboard Component ---
 const Dashboard = () => {
+    const user = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    console.log("user in dashboard", user)
     // Dummy data - in a real app, this would come from props, state, or a Redux store
     const userData = {
         name: 'Chetram',
@@ -35,17 +28,39 @@ const Dashboard = () => {
         ],
     };
 
+    const createNewPostHandler = () => {
+        dispatch(addAlert(
+            {
+                type:"info",
+                content:"Redirecting to playground...",
+                duration:5000
+            }
+        ))
+        navigate('/playground');
+        dispatch(addAlert(
+            {
+                type:"success",
+                content:"Redirected to playground...",
+                duration:5000
+            }
+        ))
+    }
+
     return (
         <div className="dashboard-container">
             <div className="dashboard-content">
                 <header className="dashboard-header">
                     <div className="header-greeting">
                         <h1 className="header-title">Dashboard</h1>
-                        <p className="header-subtitle">Welcome back, {userData.name}!</p>
+                        <p className="header-subtitle">Welcome back, {user.user.name}!</p>
                     </div>
                     <div className="header-actions">
-                        <button className="icon-button"><SearchIcon /></button>
-                        <button className="icon-button"><BellIcon /></button>
+                        <button className="icon-button">
+                            <Icon icon="mdi:magnify" className="icon" />
+                        </button>
+                        <button className="icon-button">
+                            <Icon icon="mdi:bell-outline" className="icon" />
+                        </button>
                         <img src={userData.avatarUrl} alt="User profile" className="user-avatar" />
                     </div>
                 </header>
@@ -54,26 +69,26 @@ const Dashboard = () => {
                     {/* --- Stat Cards --- */}
                     <div className="card">
                         <span className="card-label">AI Text Generation Credits</span>
-                        <p className="card-value">{userData.stats.textCredits}</p>
+                        <p className="card-value">{user?.user?.aiCredits}</p>
                         <span className="card-sublabel">credits remaining</span>
                     </div>
 
                     <div className="card">
                         <span className="card-label">AI Photo Generation Credits</span>
-                        <p className="card-value">{userData.stats.imageCredits}</p>
+                        <p className="card-value">{user?.user?.aiImageCredits}</p>
                         <span className="card-sublabel">credits remaining</span>
                     </div>
 
                     <div className="card">
                         <span className="card-label">Total Posts</span>
-                        <p className="card-value">{userData.stats.totalPosts}</p>
+                        <p className="card-value">{user?.user?.posts?.length}</p>
                     </div>
 
                     {/* --- CTA Card --- */}
                     <div className="card cta-card">
                         <h2 className="cta-title">Ready to create something new?</h2>
                         <p className="cta-subtitle">Use your AI credits to generate a new post.</p>
-                        <button className="cta-button">Generate New Post</button>
+                        <button className="cta-button" onClick={()=>{createNewPostHandler()}}>Generate New Post</button>
                     </div>
 
                     {/* --- Recent Posts Card --- */}
@@ -83,7 +98,7 @@ const Dashboard = () => {
                             <a href="#" className="card-link">View all posts</a>
                         </div>
                         <div className="recent-posts-list">
-                            {userData.recentPosts.map((post) => (
+                            {user?.user?.posts?.map((post) => (
                                 <div key={post.id} className="post-item">
                                     <p className="post-title">{post.title}</p>
                                     <span className="post-time">{post.time}</span>

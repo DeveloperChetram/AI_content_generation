@@ -77,3 +77,65 @@ body {
 *, *::before, *::after {
   box-sizing: inherit;
 }
+
+/* Global Button Styles - Hover and Click Effects */
+button, 
+.btn, 
+.cta-button,
+.icon-button,
+.close-btn,
+.hamburger-btn {
+  transition: opacity 0.2s ease, transform 0.1s ease !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+button:hover, 
+.btn:hover, 
+.cta-button:hover,
+.icon-button:hover,
+.close-btn:hover,
+.hamburger-btn:hover {
+  opacity: 0.7 !important;
+  transform: none !important;
+}
+
+button:active, 
+.btn:active, 
+.cta-button:active,
+.icon-button:active,
+.close-btn:active,
+.hamburger-btn:active {
+  transform: scale(0.95) !important;
+  opacity: 0.8 !important;
+}
+
+/* Alternative click effect using focus for better compatibility */
+button:focus, 
+.btn:focus, 
+.cta-button:focus,
+.icon-button:focus,
+.close-btn:focus,
+.hamburger-btn:focus {
+  outline: none;
+}
+
+/* Force click effect with more specific selectors */
+button:active:not(:disabled), 
+.btn:active:not(:disabled), 
+.cta-button:active:not(:disabled),
+.icon-button:active:not(:disabled),
+.close-btn:active:not(:disabled),
+.hamburger-btn:active:not(:disabled) {
+  transform: scale(0.95) !important;
+  opacity: 0.8 !important;
+}
+
+/* Override existing hover effects to use opacity instead of scale */
+.btn-primary:hover,
+.cta-button:hover {
+  opacity: 0.7 !important;
+  transform: none !important;
+}

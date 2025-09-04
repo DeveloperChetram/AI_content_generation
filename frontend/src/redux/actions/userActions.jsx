@@ -88,7 +88,15 @@ try {
 export const logoutUserAction = ()=> async (dispatch)=>{
 
 try {
+    dispatch(addAlert(
+        {
+            type:"warning",
+            content:"Logging out...",
+            duration:false
+        }
+    ))
     const result = await axios.get('/api/auth/logout');
+    console.log("result from logout action", result)
     dispatch(addAlert(
         {
             type:"success",
@@ -103,15 +111,16 @@ try {
     
 } catch (error) {
     console.log("error",error)
+  
     localStorage.removeItem('user');
     dispatch(removeUser());
-    // dispatch(addAlert(
-    //     {
-    //         type:"error",
-    //         content:error?.response?.data?.message || "Something went wrong",
-    //         duration:5000
-    //     }
-    // ))
+    dispatch(addAlert(
+        {
+            type:"error",
+            content:error?.response?.data?.message || "Something went wrong",
+            duration:5000
+        }
+    ))
     return error;
 }
 }
