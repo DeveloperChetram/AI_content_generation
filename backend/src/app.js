@@ -7,6 +7,7 @@ const userRouter = require('./routes/user.routes')
 const adminRouter = require('./routes/admin.routes')
 const postRouter = require('./routes/post.routes');
 const generateImageRouter = require('./routes/createImage.routes');
+const verifyRouter = require('./routes/verify.route');
 
 const app = express();
 app.use(cors(
@@ -30,5 +31,6 @@ app.use('/api/admin/', adminRouter)
 
 app.use('/api/posts/', postRouter)
 app.use('/api/generate-image', generateImageRouter)
+app.use('/api/verify', verifyRouter)
 
 module.exports = app;

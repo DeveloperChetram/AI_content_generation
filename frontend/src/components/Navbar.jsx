@@ -3,9 +3,12 @@ import '../styles/Home.css';
 import { NavLink } from 'react-router-dom';
 import DynamicIsland from './DynamicIsland';
 import { addAlert } from "../redux/slices/alertSlice";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUserAction } from '../redux/actions/userActions';
 
 const Navbar = () => {
+  const user = useSelector((state) => state.user);
+  // console.log("user in navbar", user)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dispatch = useDispatch();
   const toggleMenu = () => {
@@ -42,8 +45,14 @@ const Navbar = () => {
         </nav>
         <div className="nav-section nav-right">
           <div className="nav-buttons">
-            <NavLink to="/login" className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Login</NavLink>
-            <NavLink to="/register"  className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Sign Up</NavLink>
+            {user.isAuthenticated ? (
+              <NavLink to="/logout" onClick={()=>dispatch(logoutUserAction())} className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Logout</NavLink>
+            ) : (
+              <>
+                  <NavLink to="/login" className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Login</NavLink>
+                <NavLink to="/register"  className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Sign Up</NavLink>
+              </>
+            )}
           </div>
           <button className="hamburger-btn" onClick={toggleMenu} aria-label="Toggle menu">
             <span className="hamburger-bar"></span>

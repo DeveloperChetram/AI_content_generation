@@ -14,7 +14,7 @@ try {
         }
     ))
     const result = await axios.post('/api/auth/register',data);
-    console.log("result from action", result)
+    // console.log("result from action", result)
     dispatch(setUser(result.data.user));
     localStorage.setItem('user',JSON.stringify(result.data.user));
     dispatch(addAlert(
@@ -58,6 +58,7 @@ try {
         }
     ))
     const result = await axios.post('/api/auth/login',data);
+    console.log("result from login action", result)
     dispatch(setUser(result.data.user));
     localStorage.setItem('user',JSON.stringify(result.data.user));
     dispatch(addAlert(
@@ -87,9 +88,7 @@ try {
 export const logoutUserAction = ()=> async (dispatch)=>{
 
 try {
-    const result = await axios.post('/api/auth/logout');
-    localStorage.removeItem('user');
-    dispatch(removeUser());
+    const result = await axios.get('/api/auth/logout');
     dispatch(addAlert(
         {
             type:"success",
@@ -97,19 +96,22 @@ try {
             duration:5000
         }
     ))
+    localStorage.removeItem('user');
+    dispatch(removeUser());
+   
     return result;
     
 } catch (error) {
     console.log("error",error)
     localStorage.removeItem('user');
     dispatch(removeUser());
-    dispatch(addAlert(
-        {
-            type:"error",
-            content:error?.response?.data?.message || "Something went wrong",
-            duration:5000
-        }
-    ))
+    // dispatch(addAlert(
+    //     {
+    //         type:"error",
+    //         content:error?.response?.data?.message || "Something went wrong",
+    //         duration:5000
+    //     }
+    // ))
     return error;
 }
 }
@@ -117,10 +119,14 @@ try {
 export const getCurrentUserAction = ()=> async (dispatch)=>{
 
 try {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const result = await axios.get('/api/verify');
+    dispatch(setUser(result.data.user));
+    localStorage.setItem('user',JSON.stringify(result.data.user));
     return result;
 } catch (error) {
     console.log("error",error)
+    dispatch(removeUser());
+    localStorage.removeItem('user');
     return error;
 }
 }

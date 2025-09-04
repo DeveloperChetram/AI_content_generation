@@ -5,11 +5,18 @@ import Dashboard from "./pages/Dashboard"
 import Login from "./pages/Login"
 
 import MainRoutes from "./routes/MainRoutes"
+import { useDispatch } from "react-redux";
+import { getCurrentUserAction } from "./redux/actions/userActions";
+import { useEffect } from "react";
 
 
 
 
 const App = () => {
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(getCurrentUserAction());
+  },[]);
 
 
   return (

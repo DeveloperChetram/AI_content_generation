@@ -7,17 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import { loginUserAction } from '../redux/actions/userActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { addAlert } from '../redux/slices/alertSlice';
+import { useEffect } from 'react';
 const Login = () => {
   const user = useSelector((state) => state.user);
-  const { handleSubmit, register, reset } = useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const submitHandler = async (data) => {
-    const result = await dispatch(loginUserAction(data));
-
-    console.log("user", user)
-    console.log("result", result)
+  useEffect(()=>{
+    // console.log("user in login page", user)
     if(user.isAuthenticated){
       navigate('/dashboard');
       dispatch(addAlert(
@@ -28,6 +22,18 @@ const Login = () => {
         }
       ))
     }
+
+  },[user])
+  const { handleSubmit, register, reset } = useForm();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const submitHandler = async (data) => {
+    const result = await dispatch(loginUserAction(data));
+
+
+    // console.log("result in login page", result)
+   
     reset();
   }
   return (

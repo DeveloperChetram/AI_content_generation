@@ -23,7 +23,7 @@ const registerController = async (req, res) => {
        passwordHash: await bcrypt.hash(password, 10),
        role,
      });
-     const token = jwt.sign({id:user._id},process.env.JWT_SECRET)
+     const token = jwt.sign({id:user._id}, process.env.JWT_SECRET, {expiresIn: '1d'})
      res.cookie('token',token)
      res.status(201).json({
         messege:"user registered successfully",
@@ -61,7 +61,7 @@ const loginController = async (req,res)=>{
             messege:"Invalid password"
         })
     }
-    const token = jwt.sign({id:user._id},process.env.JWT_SECRET)
+    const token = jwt.sign({id:user._id},process.env.JWT_SECRET, {expiresIn: '1d'})
     res.cookie('token',token)
     res.status(200).json({
         messege:"user logged in successfully",
