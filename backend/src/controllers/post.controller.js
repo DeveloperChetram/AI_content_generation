@@ -37,7 +37,7 @@ const createPostController = async (req, res) => {
         message: "post created successfully",
         content: generatedPost,
         userID: user._id,
-        postId: post._id,
+        postId: generatedPost._id,
         title: title,
         type: type,
         prompt: prompt,
@@ -51,10 +51,10 @@ const createPostController = async (req, res) => {
 }
 
 const savePostController = async (req, res) => {
-    const {title, content, userID, postId, type, prompt } = req.body;
+    const {title, content, userID, type, prompt } = req.body;
     const { user } = req;
     // const savedPost = await postModel.findById(postId);
-    if (!content || !userID || !postId || !type || !prompt) {
+    if (!content || !userID || !type || !prompt) {
         return res.status(404).json({ message: "Post not found" });
     }
     const newPost = await postModel.create({
@@ -78,7 +78,7 @@ const savePostController = async (req, res) => {
    });
    
       await userModel.findByIdAndUpdate(user._id, {
-       $push: { posts: { postId: newPost._id } }
+       $push: { posts:  {_id:newPost._id, title:title,}  }
    });
 }
 

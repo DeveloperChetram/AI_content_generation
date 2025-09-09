@@ -98,12 +98,19 @@ const Dashboard = () => {
                             <a href="#" className="card-link">View all posts</a>
                         </div>
                         <div className="recent-posts-list">
-                            {user?.user?.posts?.map((post) => (
-                                <div key={post.id} className="post-item">
-                                    <p className="post-title">{post.title}</p>
-                                    <span className="post-time">{post.time}</span>
+                            {user?.user?.posts?.length > 0 ? (
+                                user.user.posts.slice(0, 5).map((post, index) => (
+                                    <div key={post._id || index} className="post-item">
+                                        <p className="post-title">{post.title}</p>
+                                        <span className="post-time">Recently created</span>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="post-item">
+                                    <p className="post-title">No posts yet</p>
+                                    <span className="post-time">Create your first post!</span>
                                 </div>
-                            ))}
+                            )}
                         </div>
                     </div>
                 </main>

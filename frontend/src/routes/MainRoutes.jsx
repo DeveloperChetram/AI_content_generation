@@ -5,18 +5,19 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import AuthRoutes from "./AuthRoutes";
-import Playground from "../components/Playground";
+// import Playground from "../components/Playground";
+import PlaygroundUI from "../components/PlaygroundUI";
 
 const MainRoutes = () => {
   return (
 
-      <Routes>
+      <Routes >
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
         <Route path="/" element={<Home/>} />
         <Route path="/profile" element={<AuthRoutes><Profile/></AuthRoutes>} />
         <Route path="/dashboard" element={<AuthRoutes><Dashboard/></AuthRoutes>} />
-        <Route path="/playground" element={<AuthRoutes><Playground/></AuthRoutes>} />
+        <Route path="/playground" element={<AuthRoutes><PlaygroundUI/></AuthRoutes>} />
         {/* <Route path="/dashboard" element={<Dashboard/>} /> */}
         
       </Routes>

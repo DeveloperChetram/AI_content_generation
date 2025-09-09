@@ -16,7 +16,7 @@ try {
         next()
 } catch (error) {
     return res.status(401).json({
-        messege:"unauthorized : invalid token",
+        message:"unauthorized : invalid token",
         
     })
 }

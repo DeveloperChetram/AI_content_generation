@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/Home.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import DynamicIsland from './DynamicIsland';
@@ -12,8 +12,28 @@ const Navbar = () => {
   const isPlaygroundOpen = useSelector((state) => state.index.isPlaygroundOpen);
   // console.log("user in navbar", user)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Scroll detection with smooth transition
+  useEffect(() => {
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          setIsScrolled(scrollTop > 20); // Much lower threshold for navbar to disappear quickly
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     document.body.style.overflow = !isMenuOpen ? 'hidden' : '';
@@ -78,11 +98,11 @@ const Navbar = () => {
   }
 
   return (
-    <div>
+    <>
+      <DynamicIsland className="floating-island" isScrolled={isScrolled} />
       <header className="navbar">
         <div className="nav-section nav-left">
-          {/* You can change the variant here: 'normal', 'success', 'error', 'warning', 'info' */}
-          <DynamicIsland  />
+          <DynamicIsland className={`navbar-island ${isScrolled ? 'hidden' : ''}`} />
         </div>
         
         <nav className="nav-section nav-center">
@@ -124,7 +144,7 @@ const Navbar = () => {
           <a href="#contact" >Contact</a>
         </nav>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -71,7 +71,7 @@ try {
     return result;
 
 } catch (error) {
-    console.log("error",error)
+    // console.log("error",error.response.data)
     dispatch(removeUser());
     dispatch(addAlert(
         {

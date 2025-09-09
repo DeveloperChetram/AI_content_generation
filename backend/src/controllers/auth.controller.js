@@ -26,7 +26,7 @@ const registerController = async (req, res) => {
      const token = jwt.sign({id:user._id}, process.env.JWT_SECRET, {expiresIn: '1d'})
      res.cookie('token',token)
      res.status(201).json({
-        messege:"user registered successfully",
+          message:"user registered successfully",
         user: {
           _id: user._id,
           name: user.name,
@@ -40,7 +40,7 @@ const registerController = async (req, res) => {
      })
  }  catch (error) {
     return res.status(500).json({
-        messege:"error in database"
+        message:"error in database"
     })
  }
 };
@@ -53,7 +53,7 @@ const loginController = async (req,res)=>{
 
     if(!user){
         return res.status(404).json({
-            messege:"user not found"
+            message:"user not found"
         })
 
         
@@ -62,13 +62,13 @@ const loginController = async (req,res)=>{
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if(!isPasswordValid){
         return res.status(400).json({
-            messege:"Invalid password"
+            message:"Invalid password"
         })
     }
     const token = jwt.sign({id:user._id},process.env.JWT_SECRET, {expiresIn: '1d'})
     res.cookie('token',token)
     res.status(200).json({
-        messege:"user logged in successfully",
+        message:"user logged in successfully",
         user: {
             _id: user._id,
             name: user.name,
@@ -84,14 +84,15 @@ const loginController = async (req,res)=>{
 
 const userController = async (req,res)=>{
     res.status(201).json({
-            message:"authorized you can get the users information"
+            message:"authorized you can get the users information",
+            user: req.user
         })
 }
 
 const logoutController = async (req, res)=>{
   res.clearCookie("token")
   res.status(200).json({
-    messege:"user logged out"
+    message:"user logged out"
   })
 }
 module.exports = {

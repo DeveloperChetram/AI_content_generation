@@ -10,7 +10,7 @@ const defaultMessages = [
   "Its free!"
 ];
 
-const DynamicIsland = () => {
+const DynamicIsland = ({ className = '', isScrolled = false }) => {
   const dispatch = useDispatch();
   const alert = useSelector((state) => state.alert);
 
@@ -20,6 +20,18 @@ const DynamicIsland = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
   const [containerWidth, setContainerWidth] = useState(280);
+
+  // Check if we should show the island
+  const shouldShowIsland = () => {
+    // For floating island, only show when:
+    // 1. There's an active alert (not default state)
+    // 2. AND the navbar is scrolled (not visible)
+    if (className.includes('floating-island')) {
+      return alert.show && alert.type && alert.type !== 'default' && isScrolled;
+    }
+    // For navbar island, always show (existing behavior)
+    return true;
+  };
 
   const animationIntervalRef = useRef(null);
   const hideTimeoutRef = useRef(null);
@@ -82,28 +94,39 @@ const DynamicIsland = () => {
       clearInterval(animationIntervalRef.current);
     }
 
-    if (alert.show && alert.content && alert.type !== 'default') {
+    // Handle alert messages
+    if (alert.show && alert.content && alert.type && alert.type !== 'default') {
       setIsAnimating(false);
       setDisplayedMessage(alert.content);
       // Calculate width for alert message only
       const width = calculateTextWidth(alert.content);
       setContainerWidth(width);
-    } else {
-      let currentMessageIndex = 0;
-      setDisplayedMessage(defaultMessages[currentMessageIndex]);
-      // Keep default width for default messages
-      setContainerWidth(280);
+      return; // Don't start default animation when showing alert
+    }
 
-      animationIntervalRef.current = setInterval(() => {
-        setIsAnimating(true);
-        setTimeout(() => {
-          currentMessageIndex = (currentMessageIndex + 1) % defaultMessages.length;
-          const newMessage = defaultMessages[currentMessageIndex];
-          setDisplayedMessage(newMessage);
-          // Don't change width for default message changes
-          setIsAnimating(false);
-        }, 500);
-      }, 3000);
+    // Handle default messages only when no alert is active
+    if (!alert.show || alert.type === 'default' || !alert.content) {
+      // Small delay to ensure smooth transition from alert to default
+      setTimeout(() => {
+        let currentMessageIndex = 0;
+        setDisplayedMessage(defaultMessages[currentMessageIndex]);
+        // Keep default width for default messages
+        setContainerWidth(280);
+
+        // Only start animation for navbar island (not floating island)
+        if (!className.includes('floating-island')) {
+          animationIntervalRef.current = setInterval(() => {
+            setIsAnimating(true);
+            setTimeout(() => {
+              currentMessageIndex = (currentMessageIndex + 1) % defaultMessages.length;
+              const newMessage = defaultMessages[currentMessageIndex];
+              setDisplayedMessage(newMessage);
+              // Don't change width for default message changes
+              setIsAnimating(false);
+            }, 500);
+          }, 3000);
+        }
+      }, 100);
     }
 
     return () => {
@@ -111,7 +134,7 @@ const DynamicIsland = () => {
         clearInterval(animationIntervalRef.current);
       }
     };
-  }, [alert]);
+  }, [alert, className]);
 
   const getAnimationClass = () => {
     return isAnimating ? 'message-exit' : 'message-enter';
@@ -138,6 +161,11 @@ const DynamicIsland = () => {
     setIsMobileExpanded(!isMobileExpanded);
   };
 
+  // Don't render anything if we shouldn't show the island
+  if (!shouldShowIsland()) {
+    return null;
+  }
+
   return (
     <>
       {/* Hidden element for text measurement */}
@@ -154,7 +182,7 @@ const DynamicIsland = () => {
       />
       
       <div 
-        className={`island-container ${isMobileExpanded ? 'mobile-expanded' : ''}`}
+        className={`island-container ${className} ${isMobileExpanded ? 'mobile-expanded' : ''}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleMobileClick}

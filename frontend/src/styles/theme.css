@@ -19,6 +19,12 @@
   --accent-color: #5CC9C1;
   --accent-card-bg-color: #4a3f3a;
 
+  /* Playground Gradient Colors */
+  --pg-gradient-red: #ff5e62;    /* soft red */
+  --pg-gradient-orange: #fca311; /* rich orange */
+  --pg-gradient-pastel: #ffd07f; /* pastel orange */
+  --pg-gradient-cream: #fff5e1;  /* cream */
+
   --bg-gradient-color_1: #1B1C1D;
   --bg-gradient-color_2: #2C2D2E;
   --bg-gradient-color_3: #444546;
@@ -64,6 +70,12 @@
     --accent-card-bg-color: #f5f2ef;
     /* UPDATED: Changed to a solid, more vibrant orange */
     --bottom-gradient-color: #F18F4E; 
+    
+    /* Playground Gradient Colors - Light Theme */
+    --pg-gradient-red: #ff5e62;    /* soft red */
+    --pg-gradient-orange: #fca311; /* rich orange */
+    --pg-gradient-pastel: #ffd07f; /* pastel orange */
+    --pg-gradient-cream: #fff5e1;  /* cream */
   }
 }
 
