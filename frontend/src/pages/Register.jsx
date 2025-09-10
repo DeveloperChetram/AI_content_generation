@@ -1,25 +1,50 @@
-import { Link } from 'react-router-dom';
-import  {useForm} from 'react-hook-form' 
-import axios from '../api/axios'
-import Background from '../components/Background';
-import '../styles/Auth.css';
-import '../styles/Home.css'; // For cta-input and cta-button styles
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import axios from "../api/axios";
+import Background from "../components/Background";
+import "../styles/Auth.css";
+import "../styles/Home.css"; // For cta-input and cta-button styles
+import { useEffect, useState } from "react";
+import { registerUserAction } from "../redux/actions/userActions";
+import { useDispatch } from "react-redux";
+import { addAlert, defaultAlert } from "../redux/slices/alertSlice";
 
 const Register = () => {
+  const dispatch = useDispatch();
+  const [loading, setloading] = useState(false);
+  const { handleSubmit, register, reset } = useForm();
+  const navigate = useNavigate();
+  const submitHandler = async (data) => {
+      
+    setloading(true)
+  
+    const result = await dispatch(registerUserAction(data));
+    
+    
+    // console.log("result.payload.success", result.payload.success)
+    if(result.status === 200){
+      navigate('/dashboard');
+    }
+    reset()
+    setloading(false)
 
-  const {handleSubmit, register, reset} = useForm()
-
-  const submitHandler =async  (data)=>{
-   try {
-    const result = await axios.post('/api/auth/register', data)
-    console.log (result)
-   } catch (error) {
-    console.log(error)
-   }
-   reset()
-
-  }
-
+ 
+  };
+// useEffect(()=>{
+//   if(loading){
+  
+//   }
+//   else{
+//     dispatch(addAlert([
+//       {
+//         type:"",
+//         content:"normal"
+//       }
+//     ]))
+//   }
+  
+  
+// },[loading, dispatch])
   return (
     <div className="auth-page-container">
       <Background animationType="equalizer" />
@@ -27,7 +52,7 @@ const Register = () => {
         <h1 className="auth-title">Create Account</h1>
         <form className="auth-form" onSubmit={handleSubmit(submitHandler)}>
           <input
-          {...register('name')}
+            {...register("name")}
             type="text"
             placeholder="Enter Your Name"
             className="cta-input"
@@ -35,7 +60,7 @@ const Register = () => {
             required
           />
           <input
-           {...register('email')}
+            {...register("email")}
             type="email"
             placeholder="Enter Your Email"
             className="cta-input"
@@ -43,7 +68,7 @@ const Register = () => {
             required
           />
           <input
-           {...register('password')}
+            {...register("password")}
             type="password"
             placeholder="Enter Your Password"
             className="cta-input"

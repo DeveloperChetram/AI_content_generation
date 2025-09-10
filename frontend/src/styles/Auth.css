@@ -2,7 +2,7 @@
 
 .auth-page-container {
   position: relative;
-  min-height: calc(100vh - 70px); /* Adjust 80px based on your navbar height */
+  min-height: calc(100vh ); /* Adjust 80px based on your navbar height */
   display: flex;
   justify-content: center;
   align-items: center;

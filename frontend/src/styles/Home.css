@@ -1,10 +1,9 @@
 /* Home.css */
 
 @import './theme.css';
-.logo-text{
-  font-family: var(--font-serif-display);
-}
+/* .logo-text styles moved to DynamicIsland.css */
 .home-container {
+  /* padding-top: 70px !important; */
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -13,7 +12,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 /* ... existing styles for .background-bars and .bar remain the same ... */
@@ -60,56 +59,88 @@
 
 /* ... other styles remain the same ... */
 
+/* frontend/src/styles/Home.css */
+
+/* --- App Container --- */
+.app-container {
+  position: relative;
+  min-height: 100vh;
+  /* margin-bottom: 70px; */
+  /* padding-top: 70px; */
+}
+
+/* --- Navbar --- */
 .navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   height: 70px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  /* Apply consistent horizontal padding */
-  padding: var(--spacing-md) var(--spacing-lg); 
+  align-items: flex-start; /* Align sections to the top */
+  padding-top: var(--spacing-md);
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
   width: 100%;
-  max-width: 1400px; /* Ensure navbar max-width matches home-container */
-  margin: 0 auto; /* Center the navbar */
-  box-sizing: border-box; /* Include padding in the element's total width */
+  max-width: 1400px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background-color: transparent;
+  /* border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
 }
 
-/* ... other styles remain the same ... */
 .nav-section {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  opacity: 0;
-  transform: translateY(-20px);
+  flex: 1;
 }
-.nav-left{
-min-width: 20%;
+.nav-left { 
+  justify-content: flex-start; 
+  height: 40px; 
+  align-items: flex-start; /* Prevent vertical centering of dynamic island */
 }
-.nav-right{
-  /* align-items: flex-end; */
-  display: flex;
-  justify-content: flex-end;
-min-width: 20%;
-}
-.animate-on-load .nav-section {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-.animate-on-load .nav-center { animation-delay: 0.2s; }
-.animate-on-load .nav-right { animation-delay: 0.4s; }
+.nav-center { justify-content: center; height: 40px; }
+.nav-right { justify-content: flex-end; height: 40px; }
 
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
+/* Dynamic Island styles moved to DynamicIsland.css */
+
+
+/* --- Responsive Design --- */
+@media (max-width: 900px) {
+  .navbar {
+    gap: 1.5rem;
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
   }
-}
+  .nav-center,
+  .nav-buttons {
+    display: none;
+  }
+    .nav-left {
+    flex-grow: 1; /* Allow the left side to fill available space */
+  }
 
-.nav-logo {
-  /* letter-spacing: .4rem; */
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--text-color);
-  text-decoration: none;
+  /* Add this new rule */
+  .nav-right {
+    flex: 0 1 auto; /* This stops the right side from growing */
+  }
+  /* .nav-right{
+    width: fit-content;
+  } */
+  .hamburger-btn {
+    display: flex;
+  }
+  
+  .nav-left { flex-grow: 1; }
+
+  /* Dynamic Island mobile styles moved to DynamicIsland.css */
 }
+/* .nav-logo styles moved to DynamicIsland.css */
 .nav-menu a {
   color: var(--text-color);
   text-decoration: none;
@@ -156,7 +187,7 @@ min-width: 20%;
   border: none;
   cursor: pointer;
   padding: 0;
-  z-index: 1001;
+  /* z-index: 1001; */
   flex-direction: column;
   gap: 5px;
 }
@@ -215,6 +246,7 @@ min-width: 20%;
 
 /* ... existing hero section styles remain the same ... */
 .hero-section {
+   
   flex-grow: 1;
   /* height: calc(100vh -70px); */
   display: flex;
@@ -262,6 +294,14 @@ min-width: 20%;
   font-size: 1rem;
   min-width: 280px;
   font-family: var(--font-sans);
+  /* Hide scrollbars */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Hide scrollbar for webkit browsers */
+.cta-input::-webkit-scrollbar {
+  display: none;
 }
 .cta-input::placeholder {
   color: var(--text-color-secondary);
@@ -307,7 +347,7 @@ min-width: 20%;
 
 
 /* --- Responsive Design --- */
-@media (max-width: 767px) {
+@media (max-width: 900px) {
   .home-container {
     padding: 0 var(--spacing-md);
   }

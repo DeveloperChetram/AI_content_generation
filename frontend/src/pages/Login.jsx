@@ -2,15 +2,48 @@ import { Link } from 'react-router-dom';
 import Background from '../components/Background';
 import '../styles/Auth.css';
 import '../styles/Home.css'; // For cta-input and cta-button styles
-
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { loginUserAction } from '../redux/actions/userActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { addAlert } from '../redux/slices/alertSlice';
+import { useEffect } from 'react';
 const Login = () => {
+  const user = useSelector((state) => state.user);
+  useEffect(()=>{
+    // console.log("user in login page", user)
+    if(user.isAuthenticated){
+      navigate('/dashboard');
+      dispatch(addAlert(
+        {
+          type:"success",
+          content:` ${user.user.name} Logged in successfully`,
+          duration:10000
+        }
+      ))
+    }
+
+  },[user])
+  const { handleSubmit, register, reset } = useForm();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const submitHandler = async (data) => {
+    const result = await dispatch(loginUserAction(data));
+
+
+    // console.log("result in login page", result)
+   
+    reset();
+  }
   return (
     <div className="auth-page-container">
       <Background animationType="equalizer" />
       <div className="auth-form-container">
         <h1 className="auth-title">Welcome Back</h1>
-        <form className="auth-form" onSubmit={(e) => e.preventDefault()}>
+        <form className="auth-form" onSubmit={handleSubmit(submitHandler)}>
           <input
+            {...register("email")}
             type="email"
             placeholder="Enter Your Email"
             className="cta-input"
@@ -18,6 +51,7 @@ const Login = () => {
             required
           />
           <input
+            {...register("password")}
             type="password"
             placeholder="Enter Your Password"
             className="cta-input"

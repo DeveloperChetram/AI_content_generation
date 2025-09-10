@@ -1,0 +1,333 @@
+/* styles/Dashboard.css */
+
+/* --- Main Layout --- */
+.dashboard-container {
+    padding-top: 70px !important;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: var(--spacing-sm);
+}
+
+.dashboard-content {
+    width: 100%;
+    max-width: 1400px;
+    padding: var(--spacing-md);
+}
+
+/* --- Header --- */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-sm);
+}
+
+.header-greeting {
+    flex: 1;
+    min-width: 0;
+}
+
+.header-title {
+    font-family: var(--font-serif-display);
+    font-size: 2rem; /* 32px */
+    font-style: italic;
+    margin: 0;
+    line-height: 1.1;
+}
+
+.header-subtitle {
+    color: var(--text-color-secondary);
+    margin-top: var(--spacing-xs);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+    padding: var(--spacing-xs);
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.icon-button:hover {
+    background-color: var(--input-bg-color);
+}
+
+.icon {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--input-border-color);
+    flex-shrink: 0;
+}
+
+/* --- Grid Layout --- */
+.dashboard-grid {
+    display: grid;
+    gap: var(--spacing-sm);
+    /* Mobile-first: default to 1 column */
+    grid-template-columns: 1fr;
+}
+
+/* --- Cards --- */
+.card {
+    background-color: var(--card-bg-color);
+    padding: var(--spacing-sm);
+    border-radius: 12px;
+    border: 1px solid var(--input-border-color);
+}
+
+.card-label {
+    color: var(--text-color-secondary);
+    font-size: 0.875rem; /* 14px */
+}
+
+.card-value {
+    font-size: 1.875rem; /* 30px */
+    font-weight: 700;
+    margin: var(--spacing-xs) 0;
+    line-height: 1.2;
+}
+
+.card-sublabel {
+    color: var(--text-color-secondary);
+    font-size: 0.875rem; /* 14px */
+}
+
+/* --- CTA Card --- */
+.cta-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    grid-row: span 2; /* Make it taller */
+    background-color: var(--accent-card-bg-color);
+}
+
+.cta-title {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+.cta-subtitle {
+    color: var(--text-color-secondary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.cta-button {
+    background-color: var(--bottom-gradient-color);
+    color: var(--primary-btn-text);
+    font-weight: 700;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.cta-button:hover {
+    transform: scale(1.05);
+}
+
+/* --- Recent Posts Card --- */
+.recent-posts-card {
+    /* Span multiple columns on larger screens */
+    grid-column: span 1; 
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-title {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 500;
+}
+
+.card-link {
+    color: var(--bottom-gradient-color);
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.card-link:hover {
+    text-decoration: underline;
+}
+
+.recent-posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.post-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--input-bg-color);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 8px;
+}
+
+.post-title {
+    margin: 0;
+}
+
+.post-time {
+    color: var(--text-color-secondary);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    margin-left: var(--spacing-md);
+}
+
+/* --- Mobile Responsive Adjustments --- */
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: var(--spacing-xs);
+    }
+    
+    .dashboard-content {
+        padding: var(--spacing-sm);
+    }
+    
+    .dashboard-header {
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+    
+    .header-title {
+        font-size: 1.5rem; /* 24px */
+        line-height: 1;
+    }
+    
+    .header-subtitle {
+        font-size: 0.75rem;
+        margin-top: 2px;
+    }
+    
+    .header-actions {
+        gap: var(--spacing-xs);
+    }
+    
+    .icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .user-avatar {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .card {
+        padding: var(--spacing-sm);
+    }
+    
+    .card-value {
+        font-size: 1.5rem; /* 24px */
+    }
+    
+    .cta-title {
+        font-size: 1.25rem; /* 20px */
+    }
+    
+    .cta-button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* --- Tablet Responsive Adjustments --- */
+@media (min-width: 481px) and (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .card {
+        padding: var(--spacing-md);
+    }
+    
+    .header-title {
+        font-size: 2.25rem; /* 36px */
+    }
+}
+
+/* --- Desktop Responsive Adjustments --- */
+@media (min-width: 901px) {
+    .dashboard-container {
+        padding: var(--spacing-md);
+    }
+    
+    .dashboard-content {
+        padding: var(--spacing-lg);
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .recent-posts-card {
+        grid-column: span 2;
+    }
+    
+    .header-title {
+        font-size: 2.5rem; /* 40px */
+    }
+}
+
+@media (min-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--spacing-lg);
+    }
+    
+    .recent-posts-card {
+        grid-column: span 3;
+    }
+    
+    .cta-card {
+        grid-column: 4 / 5;
+        grid-row: 1 / 3;
+    }
+    
+    .header-title {
+        font-size: 3rem; /* 48px */
+    }
+    
+    .card {
+        padding: var(--spacing-md);
+    }
+    
+    .card-value {
+        font-size: 2.25rem; /* 36px */
+    }
+}

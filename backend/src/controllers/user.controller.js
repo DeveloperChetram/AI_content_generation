@@ -11,13 +11,13 @@ const {token} = req.cookies;
 const {username, email, password} = req.body;
 if(!token){
     return res.status(404).json({
-        message:'anuthorized: token not found'
+        message:'unauthorized: token not found'
     })
 }
 const userId = jtw.verify(token, process.env.JWT_SECRET).id
 if(!userId){
     return res.status(404).json({
-        message:'user id not found'
+        message:'unauthorized: user id not found'
     })
 
 }
