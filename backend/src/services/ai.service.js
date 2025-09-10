@@ -1,4 +1,4 @@
-const { GoogleGenAI } =  require("@google/genai");
+const { GoogleGenAI } = require("@google/genai");
 
 const ai = new GoogleGenAI({});
 
@@ -6,10 +6,9 @@ async function generateContent(title, contentType, prompt) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: prompt,
-    maxOutputTokens: 1000,
-     config: {
+
+    config: {
       systemInstruction: `
-    
 - You are a professional content writer with expertise in crafting original, engaging, and well-structured content.
 - Your task is to write a ${contentType} on the topic ${title}, based strictly on the provided prompt: ${prompt}.
 - Maintain a **professional, polished, and reader-friendly tone** throughout the content.
@@ -21,12 +20,12 @@ async function generateContent(title, contentType, prompt) {
 - Prioritize **originality and engagement**—avoid generic templates or overly mechanical writing.
 - Use **professional formatting techniques** where applicable, such as headings, subheadings, lists, or examples to enhance readability.
 `,
-temperature: 0.8,
-
+      temperature: 0.8,
+      maxOutputTokens: 4096, 
     },
   });
- return response;
+  // console.log(response.candidates[0].content)
+  return response;
 }
 
 module.exports = generateContent;
-

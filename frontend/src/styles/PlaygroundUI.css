@@ -257,7 +257,7 @@ select.pg-input option {
   gap: 0.5rem;
   padding: 0.75rem;
   border-bottom: 1px solid var(--input-border-color);
-  background-color: var(--input-bg-color);
+  /* background-color: var(--input-bg-color); */
   border-radius: 8px 8px 0 0;
 }
 
@@ -268,39 +268,57 @@ select.pg-input option {
   padding: 0.5rem;
   color: var(--pg-text-primary);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  user-select: none;
+  outline: none;
 }
 
 .pg-toolbar-btn:hover {
   background-color: var(--accent-color);
   color: #ffffff;
   border-color: var(--accent-color);
+  transform: translateY(-1px);
 }
 
 .pg-toolbar-btn:active {
-  transform: scale(0.95);
+  transform: translateY(0) scale(0.98);
+  transition: all 0.1s ease;
 }
 
-/* Active state for preview button */
+.pg-toolbar-btn:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Active state for all toolbar buttons */
 .pg-toolbar-btn.active {
   background-color: var(--accent-color);
   color: #ffffff;
   border-color: var(--accent-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Bold button styling */
-.pg-toolbar-btn:nth-child(1) {
-  font-weight: bold;
+/* Disabled state for toolbar buttons */
+.pg-toolbar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
-/* Italic button styling */
-.pg-toolbar-btn:nth-child(2) {
-  font-style: italic;
+.pg-toolbar-btn:disabled:hover {
+  background-color: transparent;
+  color: var(--pg-text-primary);
+  border-color: var(--input-border-color);
+  transform: none;
 }
+
+/* Remove outdated nth-child selectors */
 
 .pg-output-content {
   flex-grow: 1;
@@ -451,11 +469,40 @@ select.pg-input option {
   color: var(--pg-text-secondary);
 }
 
+.pg-generating-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background-color: var(--input-bg-color);
+  border-radius: 12px;
+  border: 1px solid var(--input-border-color);
+}
+
+.pg-generating-message p {
+  color: var(--pg-text-primary);
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+  text-align: center;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
 .pg-output-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: 0.75rem;
   margin-top: 1rem;
+  flex-wrap: wrap;
 }
 
 .pg-save-btn {
@@ -631,6 +678,317 @@ select.pg-input option {
   min-width: 0; /* Allow shrinking */
 }
 
+.tiptap {
+  min-height: 200px;
+  border:none;
+  outline: none;
+  
+}
+/* Tiptap Editor Custom Styling */
+.tiptap-editor-container {
+  background: transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.tiptap-editor {
+  background-color: transparent;
+  color: var(--pg-text-primary);
+  /* padding: 1rem; */
+  min-height: 200px;
+  font-family: var(--pg-font-sans);
+  font-size: 1rem;
+  font-weight: normal;
+  line-height: 1.6;
+  outline: none;
+}
+
+/* Ensure all text elements have normal font-weight unless explicitly styled */
+.tiptap-editor * {
+  font-weight: inherit;
+}
+
+.tiptap-editor p,
+.tiptap-editor li,
+.tiptap-editor span:not(.hljs-keyword):not(.hljs-string):not(.hljs-comment):not(.hljs-number):not(.hljs-function):not(.hljs-variable) {
+  font-weight: 400 !important;
+}
+
+.tiptap-editor.preview-mode {
+  pointer-events: none;
+}
+
+.tiptap-editor p.is-editor-empty:first-child::before {
+  color: var(--pg-text-secondary);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Tiptap Content Styling */
+.tiptap-editor h1,
+.tiptap-editor h2,
+.tiptap-editor h3,
+.tiptap-editor h4,
+.tiptap-editor h5,
+.tiptap-editor h6 {
+  color: var(--pg-text-primary);
+  margin: 1.5rem 0 1rem 0;
+  font-weight: 600;
+}
+
+.tiptap-editor h1 {
+  font-size: 1.75rem;
+  border-bottom: 2px solid var(--input-border-color);
+  padding-bottom: 0.5rem;
+}
+
+.tiptap-editor h2 {
+  font-size: 1.5rem;
+}
+
+.tiptap-editor h3 {
+  font-size: 1.25rem;
+}
+
+.tiptap-editor p {
+  margin: 1rem 0;
+  color: var(--pg-text-primary);
+  font-weight: 400;
+}
+
+.tiptap-editor ul,
+.tiptap-editor ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.tiptap-editor li {
+  margin: 0.5rem 0;
+  color: var(--pg-text-primary);
+  font-weight: 400;
+}
+
+.tiptap-editor blockquote {
+  border-left: 4px solid var(--accent-color);
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  background-color: var(--input-bg-color);
+  border-radius: 0 8px 8px 0;
+  color: var(--pg-text-secondary);
+  font-style: italic;
+}
+
+.tiptap-editor strong {
+  font-weight: 700;
+  color: var(--pg-text-primary);
+}
+
+.tiptap-editor em {
+  font-style: italic;
+  color: var(--pg-text-primary);
+}
+
+/* Removed duplicate pre styles - using enhanced version below */
+
+.tiptap-editor code {
+  background-color: var(--input-bg-color);
+  border: 1px solid var(--input-border-color);
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
+  font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+  font-size: 0.85rem;
+  color: #ff6b35;
+}
+
+.tiptap-editor pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  color: #d4d4d4;
+}
+
+/* Enhanced Syntax Highlighting for Tiptap Code Blocks */
+.tiptap-editor pre {
+  background-color: #1e1e1e !important;
+  border: 1px solid var(--input-border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+  font-family: 'Fira Code', 'Monaco', 'Consolas', 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  position: relative;
+}
+
+.tiptap-editor pre code {
+  background: none !important;
+  padding: 0 !important;
+  border: none !important;
+  color: #d4d4d4 !important;
+  font-family: inherit !important;
+}
+
+/* Syntax highlighting classes for code blocks */
+.tiptap-editor pre .hljs {
+  background: #1e1e1e !important;
+  color: #d4d4d4 !important;
+  padding: 0 !important;
+}
+
+.tiptap-editor pre .hljs-keyword {
+  color: #569cd6 !important;
+  font-weight: bold;
+}
+
+.tiptap-editor pre .hljs-string {
+  color: #ce9178 !important;
+}
+
+.tiptap-editor pre .hljs-comment {
+  color: #6a9955 !important;
+  font-style: italic;
+}
+
+.tiptap-editor pre .hljs-number {
+  color: #b5cea8 !important;
+}
+
+.tiptap-editor pre .hljs-function {
+  color: #dcdcaa !important;
+}
+
+.tiptap-editor pre .hljs-variable {
+  color: #9cdcfe !important;
+}
+
+.tiptap-editor pre .hljs-title {
+  color: #dcdcaa !important;
+}
+
+.tiptap-editor pre .hljs-type {
+  color: #4ec9b0 !important;
+}
+
+.tiptap-editor pre .hljs-built_in {
+  color: #4ec9b0 !important;
+}
+
+.tiptap-editor pre .hljs-literal {
+  color: #569cd6 !important;
+}
+
+.tiptap-editor pre .hljs-params {
+  color: #d4d4d4 !important;
+}
+
+.tiptap-editor pre .hljs-property {
+  color: #9cdcfe !important;
+}
+
+.tiptap-editor pre .hljs-attr {
+  color: #92c5f8 !important;
+}
+
+.tiptap-editor pre .hljs-tag {
+  color: #569cd6 !important;
+}
+
+.tiptap-editor pre .hljs-name {
+  color: #569cd6 !important;
+}
+
+.tiptap-editor pre .hljs-attribute {
+  color: #92c5f8 !important;
+}
+
+.tiptap-editor pre .hljs-value {
+  color: #ce9178 !important;
+}
+
+.tiptap-editor pre .hljs-selector-tag {
+  color: #569cd6 !important;
+}
+
+.tiptap-editor pre .hljs-selector-id {
+  color: #d7ba7d !important;
+}
+
+.tiptap-editor pre .hljs-selector-class {
+  color: #d7ba7d !important;
+}
+
+.tiptap-editor pre .hljs-selector-attr {
+  color: #d7ba7d !important;
+}
+
+.tiptap-editor pre .hljs-selector-pseudo {
+  color: #d7ba7d !important;
+}
+
+.tiptap-editor pre .hljs-meta {
+  color: #569cd6 !important;
+}
+
+.tiptap-editor pre .hljs-meta-keyword {
+  color: #569cd6 !important;
+}
+
+.tiptap-editor pre .hljs-meta-string {
+  color: #ce9178 !important;
+}
+
+.tiptap-editor pre .hljs-doctag {
+  color: #569cd6 !important;
+}
+
+.tiptap-editor pre .hljs-quote {
+  color: #6a9955 !important;
+}
+
+.tiptap-editor pre .hljs-template-tag {
+  color: #d7ba7d !important;
+}
+
+.tiptap-editor pre .hljs-template-variable {
+  color: #d7ba7d !important;
+}
+
+.tiptap-editor pre .hljs-addition {
+  color: #6a9955 !important;
+}
+
+.tiptap-editor pre .hljs-deletion {
+  color: #f44747 !important;
+}
+
+.tiptap-editor pre .hljs-emphasis {
+  font-style: italic;
+}
+
+.tiptap-editor pre .hljs-strong {
+  font-weight: bold;
+}
+
+.tiptap-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.tiptap-editor a {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+.tiptap-editor a:hover {
+  color: var(--bottom-gradient-color);
+}
+
 /* Mobile-first responsive design */
 @media (max-width: 480px) {
   .playground-ui-container {
@@ -679,6 +1037,24 @@ select.pg-input option {
   
   .pg-header-icon {
     font-size: 2rem;
+  }
+  
+  /* Mobile Tiptap Editor Adjustments */
+  .pg-output-toolbar {
+    padding: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  
+  .pg-toolbar-btn {
+    padding: 0.4rem;
+    font-size: 1rem;
+  }
+  
+  .tiptap-editor {
+    min-height: 250px;
+    padding: 0.75rem;
+    font-size: 0.9rem;
   }
 }
 

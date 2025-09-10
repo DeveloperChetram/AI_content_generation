@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import '../styles/PlaygroundUI.css';
 import {
-  IoChatbubbleEllipsesOutline,
   IoArrowUp,
+  IoList,
+  IoCode,
   IoText,
-  IoListOutline,
-  IoLinkOutline,
   IoEye,
   IoCreate
 } from 'react-icons/io5';
@@ -13,10 +12,16 @@ import { useForm } from 'react-hook-form';
 import { generatePostAction } from '../redux/actions/postActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { addAlert } from '../redux/slices/alertSlice';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeHighlight from 'rehype-highlight';
-import 'highlight.js/styles/github-dark.css';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import { createLowlight } from 'lowlight';
+import javascript from 'highlight.js/lib/languages/javascript';
+import python from 'highlight.js/lib/languages/python';
+import html from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import json from 'highlight.js/lib/languages/json';
+import { marked } from 'marked';
 
 const PlaygroundUI = () => {
   const recentPost = useSelector((state) => state.post.recentPost);
@@ -25,85 +30,142 @@ const PlaygroundUI = () => {
   const dispatch = useDispatch();
 
   const [isGenerating, setIsGenerating] = useState(false);
-  const [outputContent, setOutputContent] = useState('');
   const [isPreviewMode, setIsPreviewMode] = useState(false);
-  const textareaRef = useRef(null);
-  const hiddenPreviewRef = useRef(null);
-  
-  // Watch the output content for changes
-  const watchedOutput = watch('outputContent', '');
 
-  // Auto-resize textarea to match preview mode height
-  const autoResize = () => {
-    if (textareaRef.current && hiddenPreviewRef.current) {
-      // Reset textarea height to auto
-      textareaRef.current.style.height = 'auto';
+  // Configure lowlight with multiple languages
+  const lowlight = createLowlight();
+  lowlight.register('javascript', javascript);
+  lowlight.register('python', python);
+  lowlight.register('html', html);
+  lowlight.register('css', css);
+  lowlight.register('json', json);
+
+  // Tiptap editor configuration
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        codeBlock: false, // We'll use CodeBlockLowlight instead
+      }),
+      CodeBlockLowlight.configure({
+        lowlight: lowlight,
+        defaultLanguage: 'javascript',
+      }),
+    ],
+    content: `
+      <h1>Welcome to your output space! 🚀</h1>
+      <p>Start writing or generate content with <em>wrAIte</em>.</p>
       
-      // Get the height of the hidden preview element
-      const previewHeight = hiddenPreviewRef.current.offsetHeight;
-      const minHeight = 200;
-      
-      // Use the preview height or minimum height, whichever is larger
-      const finalHeight = Math.max(previewHeight, minHeight);
-      textareaRef.current.style.height = finalHeight + 'px';
-    }
+      <h2>Features:</h2>
+      <p>Use <strong>bold</strong>, <em>italic</em>, and headings (H1, H2, H3).</p>
+      <ul>
+        <li>Bullet points</li>
+        <li>Numbered lists</li>
+      </ul>
+      <blockquote>
+        <p>"Quote your thoughts!"</p>
+      </blockquote>
+      <h3>Code Example:</h3>
+      <pre><code class="language-javascript">// JS code
+console.log("Hello!");</code></pre>
+      <p>Ready to create? ✨</p>
+    `,
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none',
+      },
+    },
+  });
+
+  // Function to convert Markdown to HTML
+  const convertMarkdownToHTML = (markdownContent) => {
+    if (!markdownContent) return '';
+    
+    // Configure marked options for better compatibility with Tiptap
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+      headerIds: false,
+      mangle: false
+    });
+    
+    return marked(markdownContent);
   };
 
-  // Update output content when recentPost changes
+  // Update editor content when recentPost changes
   useEffect(() => {
-    if (recentPost && recentPost.content) {
-      setValue('outputContent', recentPost.content);
-      setOutputContent(recentPost.content);
+    if (recentPost && recentPost.content && editor) {
+      // Check if content is Markdown (contains markdown syntax)
+      const isMarkdown = /^#{1,6}\s|^\*\*|^\*[^*]|^```|^`[^`]|^\-\s|^\d+\.\s|^\>\s|^\[.*\]\(.*\)/m.test(recentPost.content);
+      
+      console.log('Content type detected:', isMarkdown ? 'Markdown' : 'HTML');
+      console.log('Content preview:', recentPost.content.substring(0, 200) + '...');
+      
+      if (isMarkdown) {
+        // Convert Markdown to HTML
+        const htmlContent = convertMarkdownToHTML(recentPost.content);
+        console.log('Converted HTML:', htmlContent.substring(0, 200) + '...');
+        editor.commands.setContent(htmlContent);
+      } else {
+        // Use content as-is (already HTML)
+        editor.commands.setContent(recentPost.content);
+      }
     }
-  }, [recentPost, setValue]);
+  }, [recentPost, editor]);
 
-  // Auto-resize when content changes
-  useEffect(() => {
-    autoResize();
-  }, [outputContent]);
+  // Toolbar functions
+  const togglePreview = (e) => {
+    e.preventDefault();
+    setIsPreviewMode(!isPreviewMode);
+  };
 
-  // Maintain textarea height when switching modes
-  useEffect(() => {
-    if (!isPreviewMode && textareaRef.current) {
-      // Small delay to ensure DOM is updated
+  const handleToolbarClick = (command, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (editor && command) {
+      command.run();
+      // Force a small delay to ensure the editor updates properly
       setTimeout(() => {
-        autoResize();
+        editor.commands.focus();
       }, 10);
     }
-  }, [isPreviewMode]);
-
-  // Rich text editor functions
-  const insertMarkdown = (before, after = '') => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const currentValue = watchedOutput || '';
-    const selectedText = currentValue.substring(start, end);
-    const newText = before + selectedText + after;
-    
-    const newValue = currentValue.substring(0, start) + newText + currentValue.substring(end);
-    setValue('outputContent', newValue);
-    setOutputContent(newValue);
-    
-    // Restore cursor position
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + before.length, start + before.length + selectedText.length);
-    }, 0);
   };
 
-  const makeBold = () => insertMarkdown('**', '**');
-  const makeItalic = () => insertMarkdown('*', '*');
-  const makeList = () => insertMarkdown('- ');
-  const makeLink = () => {
-    const url = prompt('Enter URL:');
-    if (url) insertMarkdown('[', `](${url})`);
-  };
-
-  const togglePreview = () => {
-    setIsPreviewMode(!isPreviewMode);
+  // Function to get editor content as Markdown
+  const getEditorContentAsMarkdown = () => {
+    if (!editor) return '';
+    
+    // Get HTML content from editor
+    const htmlContent = editor.getHTML();
+    
+    // Simple HTML to Markdown conversion for basic elements
+    let markdown = htmlContent
+      .replace(/<h1[^>]*>(.*?)<\/h1>/gi, '# $1\n\n')
+      .replace(/<h2[^>]*>(.*?)<\/h2>/gi, '## $1\n\n')
+      .replace(/<h3[^>]*>(.*?)<\/h3>/gi, '### $1\n\n')
+      .replace(/<h4[^>]*>(.*?)<\/h4>/gi, '#### $1\n\n')
+      .replace(/<h5[^>]*>(.*?)<\/h5>/gi, '##### $1\n\n')
+      .replace(/<h6[^>]*>(.*?)<\/h6>/gi, '###### $1\n\n')
+      .replace(/<strong[^>]*>(.*?)<\/strong>/gi, '**$1**')
+      .replace(/<b[^>]*>(.*?)<\/b>/gi, '**$1**')
+      .replace(/<em[^>]*>(.*?)<\/em>/gi, '*$1*')
+      .replace(/<i[^>]*>(.*?)<\/i>/gi, '*$1*')
+      .replace(/<code[^>]*>(.*?)<\/code>/gi, '`$1`')
+      .replace(/<pre[^>]*><code[^>]*>(.*?)<\/code><\/pre>/gis, '```\n$1\n```\n\n')
+      .replace(/<blockquote[^>]*>(.*?)<\/blockquote>/gis, '> $1\n\n')
+      .replace(/<ul[^>]*>(.*?)<\/ul>/gis, (match, content) => {
+        return content.replace(/<li[^>]*>(.*?)<\/li>/gi, '- $1\n') + '\n';
+      })
+      .replace(/<ol[^>]*>(.*?)<\/ol>/gis, (match, content) => {
+        let counter = 1;
+        return content.replace(/<li[^>]*>(.*?)<\/li>/gi, () => `${counter++}. $1\n`) + '\n';
+      })
+      .replace(/<p[^>]*>(.*?)<\/p>/gi, '$1\n\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]*>/g, '') // Remove any remaining HTML tags
+      .replace(/\n{3,}/g, '\n\n') // Clean up excessive newlines
+      .trim();
+    
+    return markdown;
   };
 
   const contentOptions = [
@@ -194,17 +256,86 @@ const PlaygroundUI = () => {
 
         <div className="pg-output-card glass-card">
           <div className="pg-output-toolbar">
-            <button type="button" className="pg-toolbar-btn" onClick={makeBold} title="Bold">
-              <IoText />
+            <button 
+              type="button" 
+              className={`pg-toolbar-btn ${editor?.isActive('heading', { level: 1 }) ? 'active' : ''}`}
+              onClick={(e) => handleToolbarClick(editor?.chain().focus().toggleHeading({ level: 1 }), e)}
+              title="Heading 1"
+              disabled={!editor}
+            >
+              H1
             </button>
-            <button type="button" className="pg-toolbar-btn" onClick={makeItalic} title="Italic">
-              <IoText />
+            <button 
+              type="button" 
+              className={`pg-toolbar-btn ${editor?.isActive('heading', { level: 2 }) ? 'active' : ''}`}
+              onClick={(e) => handleToolbarClick(editor?.chain().focus().toggleHeading({ level: 2 }), e)}
+              title="Heading 2"
+              disabled={!editor}
+            >
+              H2
             </button>
-            <button type="button" className="pg-toolbar-btn" onClick={makeList} title="List">
-              <IoListOutline />
+            <button 
+              type="button" 
+              className={`pg-toolbar-btn ${editor?.isActive('heading', { level: 3 }) ? 'active' : ''}`}
+              onClick={(e) => handleToolbarClick(editor?.chain().focus().toggleHeading({ level: 3 }), e)}
+              title="Heading 3"
+              disabled={!editor}
+            >
+              H3
             </button>
-            <button type="button" className="pg-toolbar-btn" onClick={makeLink} title="Link">
-              <IoLinkOutline />
+            <button 
+              type="button" 
+              className={`pg-toolbar-btn ${editor?.isActive('bold') ? 'active' : ''}`}
+              onClick={(e) => handleToolbarClick(editor?.chain().focus().toggleBold(), e)}
+              title="Bold"
+              disabled={!editor}
+            >
+              <strong>B</strong>
+            </button>
+            <button 
+              type="button" 
+              className={`pg-toolbar-btn ${editor?.isActive('italic') ? 'active' : ''}`}
+              onClick={(e) => handleToolbarClick(editor?.chain().focus().toggleItalic(), e)}
+              title="Italic"
+              disabled={!editor}
+            >
+              <em>I</em>
+            </button>
+            <button 
+              type="button" 
+              className={`pg-toolbar-btn ${editor?.isActive('bulletList') ? 'active' : ''}`}
+              onClick={(e) => handleToolbarClick(editor?.chain().focus().toggleBulletList(), e)}
+              title="Bullet List"
+              disabled={!editor}
+            >
+              <IoList />
+            </button>
+            <button 
+              type="button" 
+              className={`pg-toolbar-btn ${editor?.isActive('orderedList') ? 'active' : ''}`}
+              onClick={(e) => handleToolbarClick(editor?.chain().focus().toggleOrderedList(), e)}
+              title="Numbered List"
+              disabled={!editor}
+            >
+             123
+            </button>
+            <button 
+              type="button" 
+              className={`pg-toolbar-btn ${editor?.isActive('codeBlock') ? 'active' : ''}`}
+              onClick={(e) => handleToolbarClick(editor?.chain().focus().toggleCodeBlock(), e)}
+              title="Code Block"
+              disabled={!editor}
+            >
+              <IoCode />
+            </button>
+            <button 
+              type="button" 
+              className={`pg-toolbar-btn ${editor?.isActive('blockquote') ? 'active' : ''}`}
+              onClick={(e) => handleToolbarClick(editor?.chain().focus().toggleBlockquote(), e)}
+              title="Quote"
+              disabled={!editor}
+            >
+              <span style={{fontSize: '1.2rem', fontWeight: 'bold'}}>|' '</span>
             </button>
             <button 
               type="button" 
@@ -216,88 +347,23 @@ const PlaygroundUI = () => {
             </button>
           </div>
           
-          {/* Hidden preview element for height measurement */}
-          <div 
-            ref={hiddenPreviewRef}
-            className="markdown-content"
-            style={{
-              position: 'absolute',
-              visibility: 'hidden',
-              width: '100%',
-              padding: '1rem',
-              pointerEvents: 'none',
-              zIndex: -1
-            }}
-          >
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeHighlight]}
-            >
-              {outputContent || ''}
-            </ReactMarkdown>
-          </div>
-          
           <div className="pg-output-content">
-            {isGenerating && <p className="pg-output-placeholder">Generating...</p>}
-            {!isGenerating && !outputContent && (
-              <p className="pg-output-placeholder">output post</p>
+            {isGenerating && (
+              <div className="pg-generating-message">
+                <p>wrAIte is generating please wait...</p>
+          </div>
             )}
-            {!isGenerating && outputContent && !isPreviewMode && (
-              <textarea
-                ref={textareaRef}
-                className="pg-output-textarea"
-                placeholder="Generated content will appear here..."
-                {...register('outputContent', {
-                  value: outputContent,
-                  onChange: (e) => {
-                    setOutputContent(e.target.value);
-                    autoResize();
-                  }
-                })}
-              />
-            )}
-            {!isGenerating && outputContent && isPreviewMode && (
-              <div className="markdown-content">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeHighlight]}
-                  components={{
-                    code({ node, inline, className, children, ...props }) {
-                      const match = /language-(\w+)/.exec(className || '');
-                      return !inline && match ? (
-                        <pre className="code-block">
-                          <code className={className} {...props}>
-                            {children}
-                          </code>
-                        </pre>
-                      ) : (
-                        <code className="inline-code" {...props}>
-                          {children}
-                        </code>
-                      );
-                    },
-                    pre({ children, ...props }) {
-                      return <pre className="code-block" {...props}>{children}</pre>;
-                    },
-                    h1: ({ children }) => <h1 className="markdown-h1">{children}</h1>,
-                    h2: ({ children }) => <h2 className="markdown-h2">{children}</h2>,
-                    h3: ({ children }) => <h3 className="markdown-h3">{children}</h3>,
-                    p: ({ children }) => <p className="markdown-p">{children}</p>,
-                    ul: ({ children }) => <ul className="markdown-ul">{children}</ul>,
-                    ol: ({ children }) => <ol className="markdown-ol">{children}</ol>,
-                    li: ({ children }) => <li className="markdown-li">{children}</li>,
-                    blockquote: ({ children }) => <blockquote className="markdown-blockquote">{children}</blockquote>,
-                    strong: ({ children }) => <strong className="markdown-strong">{children}</strong>,
-                    em: ({ children }) => <em className="markdown-em">{children}</em>,
-                  }}
-                >
-                  {outputContent}
-                </ReactMarkdown>
+            {!isGenerating && editor && (
+              <div className="tiptap-editor-container">
+                <EditorContent 
+                  editor={editor} 
+                  className={`tiptap-editor ${isPreviewMode ? 'preview-mode' : ''}`}
+                />
               </div>
             )}
           </div>
           <div className="pg-output-actions">
-            {outputContent && !isGenerating && (
+            {editor?.getHTML() && !isGenerating && (
               <button type="button" className="pg-save-btn">
                 Post
               </button>
