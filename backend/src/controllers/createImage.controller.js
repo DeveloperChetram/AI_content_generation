@@ -26,31 +26,39 @@ const createImageController = async (req, res) => {
         });
     }
     console.log(result)
-    const imagekitResponse = await uploadImage(result.image_url)
-
-const updatedPost = await postModel.findByIdAndUpdate(postId, {
-    $set: {
-        'postBody.image.prompt': prompt,
-        'postBody.image.url': imagekitResponse.url
-    }
-}, { new: true }); // {new: true} returns the updated document
-    await userModel.findOneAndUpdate(
-        { _id: user._id }, { aiImageCredits: user.aiImageCredits - 1 })
-
-
-
-
-
-    updatedUser = await userModel.findById(user._id);
-    req.user = updatedUser;
-    user = req.user;
-
-
+  
     res.status(200).json({
         message: "Image generated successfully",
-        updatedPost,
-        user
+        image: result.image_url,
+        user: user,
     });
 }
 
-module.exports = { createImageController };
+const uploadImageController = async (req, res) => {
+    const { postId } = req.params;
+    const { imagePrompt, image_url } = req.body;
+    const { user } = req;
+
+    const imagekitResponse = await uploadImage(image_url)
+
+    const updatedPost = await postModel.findByIdAndUpdate(postId, {
+        $set: {
+            'postBody.image.prompt': imagePrompt,
+            'postBody.image.url': imagekitResponse.url
+        }
+    }, { new: true }); // {new: true} returns the updated document
+        await userModel.findOneAndUpdate(
+            { _id: user._id }, { aiImageCredits: user.aiImageCredits - 1 })
+
+            updatedUser = await userModel.findById(user._id);
+            req.user = updatedUser;
+            user = req.user;
+    
+    res.status(200).json({
+        message: "Image uploaded successfully",
+        image: imagekitResponse.url,
+        user: user,
+        post: updatedPost,
+    });
+}
+module.exports = { createImageController, uploadImageController };

@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import '../styles/Home.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import DynamicIsland from './DynamicIsland';
+import Profile from './Profile';
 import { addAlert } from "../redux/slices/alertSlice";
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUserAction } from '../redux/actions/userActions';
 import { setIsPlaygroundOpen } from '../redux/slices/indexSlice';
+import { FiUser } from 'react-icons/fi';
 
 const Navbar = () => {
   const user = useSelector((state) => state.user);
@@ -13,6 +15,9 @@ const Navbar = () => {
   // console.log("user in navbar", user)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [profilePosition, setProfilePosition] = useState({ top: 0, right: 0 });
+  const profileButtonRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -39,16 +44,7 @@ const Navbar = () => {
     document.body.style.overflow = !isMenuOpen ? 'hidden' : '';
   };
 
-  const featuresHandler = () => {
-    toggleMenu();
-    // window.location.href = '#features';
-    setIsMenuOpen(false);
-    dispatch(addAlert({
-      type: 'info',
-      content: 'This is the demo of the dynamic island and it is showing features of this page',
-      duration: 5000
-    }));
-  }
+
 
   const logoutHandler = async () => {
     const result = await dispatch(logoutUserAction());
@@ -97,6 +93,21 @@ const Navbar = () => {
     ))
   }
 
+  const toggleProfile = () => {
+    if (profileButtonRef.current) {
+      const rect = profileButtonRef.current.getBoundingClientRect();
+      setProfilePosition({
+        top: rect.top,
+        right: window.innerWidth - rect.right
+      });
+    }
+    setIsProfileOpen(!isProfileOpen);
+  };
+
+  const closeProfile = () => {
+    setIsProfileOpen(false);
+  };
+
   return (
     <>
       <DynamicIsland className="floating-island" isScrolled={isScrolled} />
@@ -107,9 +118,8 @@ const Navbar = () => {
         
         <nav className="nav-section nav-center">
           <div className="nav-menu">
-          <a href="#features" onClick={featuresHandler}>Features</a>
+          <a href="#feed">Feed</a>
             <a href="#about">About</a>
-            <a href="#newsletter">Newsletter</a>
             <a href="#contact">Contact</a>
           </div>
         </nav>
@@ -118,7 +128,14 @@ const Navbar = () => {
             {user.isAuthenticated ? (
              <>
               {isPlaygroundOpen? <NavLink to="/dashboard" onClick={()=>dashboardHandler()} className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Dashboard</NavLink> : <NavLink to="/playground" onClick={()=>playgroundHandler()} className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Playground</NavLink>}
-              <NavLink onClick={()=>logoutHandler()} className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Logout</NavLink>
+              <button 
+                ref={profileButtonRef}
+                className="profile-icon-btn" 
+                onClick={toggleProfile}
+                aria-label="Open profile"
+              >
+                <FiUser className="profile-icon" />
+              </button>
              </>
             ) : (
               <>
@@ -138,12 +155,19 @@ const Navbar = () => {
       <div className={`mobile-nav ${isMenuOpen ? 'is-open' : ''}`}>
         <button className="close-btn" onClick={toggleMenu} aria-label="Close menu">&times;</button>
         <nav className="mobile-nav-menu">
-          <a href="#features" onClick={featuresHandler}>Features</a>
+          <a href="#feed" >Feed</a>
           <a href="#about" >About</a>
-          <a href="#newsletter" >Newsletter</a>
           <a href="#contact" >Contact</a>
+ 
         </nav>
       </div>
+
+      {/* Profile Dropdown */}
+      <Profile 
+        isOpen={isProfileOpen} 
+        onClose={closeProfile}
+        position={profilePosition}
+      />
     </>
   );
 };

@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { getCurrentUserAction } from "./redux/actions/userActions";
 import { useEffect } from "react";
 import ButtonEffects from "./components/ButtonEffects";
+import CoverImageUpload from "./components/CoverImageUpload";
 // import PlaygroundUI from "./components/PlaygroundUI";
 
 
@@ -34,6 +35,7 @@ const App = () => {
       {/* <Login/> */}
       {/* <ReduxSample /> */}
       {/* <Dashboard /> */}
+      <CoverImageUpload />
        
     </div>
   )

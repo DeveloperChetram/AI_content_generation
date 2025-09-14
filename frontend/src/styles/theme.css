@@ -5,30 +5,29 @@
 
 /* Defines theme variables for colors, fonts, spacing, and breakpoints. */
 :root {
-  /* Default to dark theme */
-  --bg-color: #1B1C1D;
-  --text-color: #FFFFFF;
+  /* Default to dark theme - using soft black instead of pure black */
+  --bg-color: #1a1a1a;
+  --text-color: #f5f5f5;
   --text-color-secondary: #a0a0a0;
-  --primary-btn-bg: #FFFFFF;
-  --primary-btn-text: #000000;
-  --input-bg-color: #2C2D2E;
-  --input-border-color: #444546;
-  /* UPDATED: Changed to a solid, more vibrant orange */
-  --bottom-gradient-color: #E9935A; 
-  --card-bg-color: #2C2D2E;
-  --accent-color: #5CC9C1;
-  --accent-card-bg-color: #4a3f3a;
+  --primary-btn-bg: #ff7600;
+  --primary-btn-text: #ffffff;
+  --input-bg-color: #2a2a2a;
+  --input-border-color: #404040;
+  --bottom-gradient-color: #ff7600; 
+  --card-bg-color: #2a2a2a;
+  --accent-color: #09ff00;
+  --accent-card-bg-color: #2a2a2a;
 
   /* Playground Gradient Colors */
-  --pg-gradient-red: #ff5e62;    /* soft red */
-  --pg-gradient-orange: #fca311; /* rich orange */
-  --pg-gradient-pastel: #ffd07f; /* pastel orange */
-  --pg-gradient-cream: #fff5e1;  /* cream */
+  --pg-gradient-red: #ff0000;    /* error red */
+  --pg-gradient-orange: #ff7600; /* primary orange */
+  --pg-gradient-pastel: #ff9133; /* primary light */
+  --pg-gradient-cream: #fbfbfb;  /* foreground */
 
-  --bg-gradient-color_1: #1B1C1D;
-  --bg-gradient-color_2: #2C2D2E;
-  --bg-gradient-color_3: #444546;
-  --bg-gradient-color_4: #555657;
+  --bg-gradient-color_1: #1a1a1a;
+  --bg-gradient-color_2: #2a2a2a;
+  --bg-gradient-color_3: #3a3a3a;
+  --bg-gradient-color_4: #4a4a4a;
   /* Fonts */
   --font-sans: 'Inter', sans-serif;
   --font-serif-display: 'Playfair Display', serif;
@@ -58,24 +57,23 @@
 /* Light theme overrides */
 @media (prefers-color-scheme: light) {
   :root {
-    --bg-color: #f9f9f9;
-    --text-color: #000000;
-    --text-color-secondary: #555555;
-    --primary-btn-bg: #000000;
-    --primary-btn-text: #FFFFFF;
-    --input-bg-color: #f0f0f0;
-    --input-border-color: #cccccc;
-    --card-bg-color: #ffffff;
-    --accent-color: #4BAE9E;
-    --accent-card-bg-color: #f5f2ef;
-    /* UPDATED: Changed to a solid, more vibrant orange */
-    --bottom-gradient-color: #F18F4E; 
+    --bg-color: #f1f0ef;
+    --text-color: #292623;
+    --text-color-secondary: #6e655e;
+    --primary-btn-bg: #ff7600;
+    --primary-btn-text: #000000;
+    --input-bg-color: #fbfbfb;
+    --input-border-color: #e2dfdd;
+    --card-bg-color: #fbfbfb;
+    --accent-color: #09ff00;
+    --accent-card-bg-color: #f1f0ef;
+    --bottom-gradient-color: #ff7600; 
     
     /* Playground Gradient Colors - Light Theme */
-    --pg-gradient-red: #ff5e62;    /* soft red */
-    --pg-gradient-orange: #fca311; /* rich orange */
-    --pg-gradient-pastel: #ffd07f; /* pastel orange */
-    --pg-gradient-cream: #fff5e1;  /* cream */
+    --pg-gradient-red: #ff0000;    /* error red */
+    --pg-gradient-orange: #ff7600; /* primary orange */
+    --pg-gradient-pastel: #ff9133; /* primary light */
+    --pg-gradient-cream: #fbfbfb;  /* foreground */
   }
 }
 
@@ -87,7 +85,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
 }
 
