@@ -1,8 +1,13 @@
 import { useState, useRef } from 'react';
 import { IoArrowUp, IoCloudUploadOutline } from 'react-icons/io5';
 import '../styles/CoverImageUpload.css';
+import axios from '../api/axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPostPayload } from '../redux/slices/postSlice';
 
 const CoverImageUpload = () => {
+  const dispatch = useDispatch();
+  const [imageData, setImageData] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [uploadedFileName, setUploadedFileName] = useState('');
   const [prompt, setPrompt] = useState('');
@@ -10,9 +15,32 @@ const CoverImageUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
 
+  const postPayload = useSelector((state) => state.post.postPayload);
   const handleGenerateImage = async (e) => {
     e.preventDefault();
-    if (!prompt.trim()) return;
+    console.log("prompt from handleGenerateImage", prompt)
+    const response = await axios.post('/api/generate-image', { 
+      prompt,
+      aspectRatio: "16:9" // Send 16:9 aspect ratio to 
+      
+    })
+   await setImageData(response.data.image);
+   await setPreviewImage(response.data.image);
+   await dispatch(setPostPayload({
+      "title": postPayload.title,
+        "type": postPayload.type,
+        "postBody": {
+            "content": postPayload.postBody.content,
+            "prompt": postPayload.postBody.prompt,
+            "image": {
+                "prompt": imageData.prompt,
+                "url": imageData.url
+            }
+        },
+        "isPosted": false,
+    }));
+    // if (!prompt.trim()) return;
+    console.log("response from handleGenerateImage", response)
     
     setIsGenerating(true);
     // Simulate AI generation
@@ -92,6 +120,7 @@ const CoverImageUpload = () => {
               disabled={isGenerating}
             />
             <button 
+              onClick={handleGenerateImage}
               type="submit" 
               className="pg-submit-btn"
               disabled={isGenerating || !prompt.trim()}

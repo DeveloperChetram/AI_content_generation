@@ -6,7 +6,8 @@ import {
   IoCode,
   IoText,
   IoEye,
-  IoCreate
+  IoCreate,
+  IoTrash
 } from 'react-icons/io5';
 import { useForm } from 'react-hook-form';
 import { generatePostAction } from '../redux/actions/postActions';
@@ -22,15 +23,51 @@ import html from 'highlight.js/lib/languages/xml';
 import css from 'highlight.js/lib/languages/css';
 import json from 'highlight.js/lib/languages/json';
 import { marked } from 'marked';
+import { setPostPayload, setRecentPost } from '../redux/slices/postSlice';
+import { useNavigate } from 'react-router-dom';
 
 const PlaygroundUI = () => {
+  const navigate = useNavigate();
   const recentPost = useSelector((state) => state.post.recentPost);
   console.log("recentPost from PlaygroundUI", recentPost)
   const {register, handleSubmit, setValue, watch} = useForm();
+  const watchedTitle = watch('title');
+  const watchedType = watch('type');
   const dispatch = useDispatch();
+
+  // Function to update recent post state with current title and content
+  const updateRecentPostState = () => {
+    if (editor && (watchedTitle || editor.getHTML())) {
+      const currentContent = editor.getHTML();
+      const updatedRecentPost = {
+        ...recentPost,
+        title: watchedTitle || recentPost?.title || '',
+        type: watchedType || recentPost?.type || '',
+        content: currentContent || recentPost?.content || ''
+      };
+      dispatch(setRecentPost(updatedRecentPost));
+    }
+  };
+
+  // Function to check if all required fields are provided
+  const isContinueEnabled = () => {
+    const hasTitle = (watchedTitle && watchedTitle.trim()) || (recentPost?.title && recentPost.title.trim());
+    const hasType = (watchedType && watchedType.trim()) || (recentPost?.type && recentPost.type.trim());
+    const hasContent = editor?.getHTML() && editor.getHTML().trim() !== '' && editor.getHTML() !== '<p></p>' && editor.getHTML() !== '<p><br></p>';
+    
+    // Check if content is not just the default placeholder content
+    const isDefaultContent = editor?.getHTML()?.includes('Welcome to your output space') || 
+                            editor?.getHTML()?.includes('default-content') ||
+                            editor?.getHTML()?.includes('Start writing or generate content with');
+    
+    const hasRealContent = hasContent && !isDefaultContent;
+    
+    return hasTitle && hasType && hasRealContent && !isGenerating;
+  };
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [isClearingContent, setIsClearingContent] = useState(false);
 
   // Configure lowlight with multiple languages
   const lowlight = createLowlight();
@@ -39,6 +76,7 @@ const PlaygroundUI = () => {
   lowlight.register('html', html);
   lowlight.register('css', css);
   lowlight.register('json', json);
+
 
   // Tiptap editor configuration
   const editor = useEditor({
@@ -52,22 +90,24 @@ const PlaygroundUI = () => {
       }),
     ],
     content: `
-      <h1>Welcome to your output space! 🚀</h1>
-      <p>Start writing or generate content with <em>wrAIte</em>.</p>
-      
-      <h2>Features:</h2>
-      <p>Use <strong>bold</strong>, <em>italic</em>, and headings (H1, H2, H3).</p>
-      <ul>
-        <li>Bullet points</li>
-        <li>Numbered lists</li>
-      </ul>
-      <blockquote>
-        <p>"Quote your thoughts!"</p>
-      </blockquote>
-      <h3>Code Example:</h3>
-      <pre><code class="language-javascript">// JS code
+      <div class="default-content">
+        <h1>Welcome to your output space! 🚀</h1>
+        <p>Start writing or generate content with <em>wrAIte</em>.</p>
+        
+        <h2>Features:</h2>
+        <p>Use <strong>bold</strong>, <em>italic</em>, and headings (H1, H2, H3).</p>
+        <ul>
+          <li>Bullet points</li>
+          <li>Numbered lists</li>
+        </ul>
+        <blockquote>
+          <p>"Quote your thoughts!"</p>
+        </blockquote>
+        <h3>Code Example:</h3>
+        <pre><code class="language-javascript">// JS code
 console.log("Hello!");</code></pre>
-      <p>Ready to create? ✨</p>
+        <p>Ready to create? ✨</p>
+      </div>
     `,
     editorProps: {
       attributes: {
@@ -112,10 +152,45 @@ console.log("Hello!");</code></pre>
     }
   }, [recentPost, editor]);
 
+  // Watch title changes and update recent post state
+  useEffect(() => {
+    if (watchedTitle && watchedTitle.trim()) {
+      updateRecentPostState();
+    }
+  }, [watchedTitle]);
+
+  // Watch editor content changes and update recent post state
+  useEffect(() => {
+    if (editor) {
+      const handleEditorUpdate = () => {
+        updateRecentPostState();
+      };
+
+      editor.on('update', handleEditorUpdate);
+      
+      return () => {
+        editor.off('update', handleEditorUpdate);
+      };
+    }
+  }, [editor, watchedTitle, watchedType, recentPost]);
+
   // Toolbar functions
   const togglePreview = (e) => {
     e.preventDefault();
     setIsPreviewMode(!isPreviewMode);
+  };
+
+  const handleClearContent = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (editor) {
+      setIsClearingContent(true);
+      setTimeout(() => {
+        editor.commands.clearContent();
+        editor.commands.insertContent('<p></p>'); // Insert empty paragraph
+        setIsClearingContent(false);
+      }, 300); // Animation duration - matches CSS
+    }
   };
 
   const handleToolbarClick = (command, e) => {
@@ -179,7 +254,7 @@ console.log("Hello!");</code></pre>
 
   const handleGenerate = async (data) => {
     console.log("data from handleGenerate", data)
-    if (!data.prompt.trim() || !data.title.trim()) return;
+    if (!data.title.trim()) return;
     setIsGenerating(true);
     try {
       const result = await dispatch(generatePostAction(data.prompt, data.type, data.title));
@@ -204,6 +279,41 @@ console.log("Hello!");</code></pre>
       console.log("error from handleGenerate", error)
     }
   };
+
+  const handleContinue = () => {
+    console.log("editor content from handleContinue", editor?.getHTML())
+    // console.log("recentPost from handleContinue", recentPost)
+    // console.log("watchedTitle from handleContinue", watchedTitle)
+    // console.log("watchedType from handleContinue", watchedType)
+    
+    const postPayload = {
+      title: watchedTitle || recentPost?.title || '',
+      type: watchedType || recentPost?.type || '',
+      postBody: {
+        content: recentPost?.content || '',
+        prompt: "",
+        image: {
+          prompt: "",
+          url: ""
+        }
+      },
+      isPosted: false
+    }
+    // console.log("postPayload from handleContinue", postPayload)
+    dispatch(setPostPayload(postPayload))
+    if(postPayload.title && postPayload.type && postPayload.postBody.content){
+      dispatch(addAlert(
+        {
+          type:"info",
+          content: `Post saved with title: "${postPayload.title}" and type: "${postPayload.type} continue generating cover image "`,
+          duration:5000
+        }
+      ))
+      navigate("/create-cover-image")
+    }
+
+    
+  }
 
 
   return (
@@ -241,9 +351,10 @@ console.log("Hello!");</code></pre>
                   </select>
                   <input
                     type="text"
-                    {...register('title')}
+                    {...register('title', { required: true })}
                     className="pg-input pg-input-expanded"
                     placeholder="Enter title"
+                    required
                   />
                 </div>
              
@@ -345,6 +456,14 @@ console.log("Hello!");</code></pre>
             >
               {isPreviewMode ? <IoCreate /> : <IoEye />}
             </button>
+            <button 
+              type="button" 
+              className="pg-toolbar-btn pg-clear-btn" 
+              onClick={handleClearContent} 
+              title="Clear Content"
+            >
+              <IoTrash />
+            </button>
           </div>
           
           <div className="pg-output-content">
@@ -357,16 +476,30 @@ console.log("Hello!");</code></pre>
               <div className="tiptap-editor-container">
                 <EditorContent 
                   editor={editor} 
-                  className={`tiptap-editor ${isPreviewMode ? 'preview-mode' : ''}`}
+                  className={`tiptap-editor ${isPreviewMode ? 'preview-mode' : ''} ${isClearingContent ? 'woosh-animation' : ''}`}
                 />
               </div>
             )}
           </div>
           <div className="pg-output-actions">
-            {editor?.getHTML() && !isGenerating && (
-              <button type="button" className="pg-save-btn">
-                Post
+            {isContinueEnabled() ? (
+              <button onClick={handleContinue} type="button" className="pg-save-btn">
+                Continue
               </button>
+            ) : (
+              <div className="pg-continue-disabled">
+                <span className="pg-disabled-text">
+                  {!isGenerating && (
+                    <>
+                      Complete all fields to continue: 
+                      {(!watchedTitle?.trim() && !recentPost?.title?.trim()) && <span className="missing-field"> Title</span>}
+                      {(!watchedType?.trim() && !recentPost?.type?.trim()) && <span className="missing-field"> Type</span>}
+                      {(!editor?.getHTML() || editor.getHTML().trim() === '' || editor.getHTML() === '<p></p>' || editor.getHTML() === '<p><br></p>') && <span className="missing-field"> Content</span>}
+                      {(editor?.getHTML()?.includes('Welcome to your output space') || editor?.getHTML()?.includes('default-content') || editor?.getHTML()?.includes('Start writing or generate content with')) && <span className="missing-field"> (Write your own content)</span>}
+                    </>
+                  )}
+                </span>
+              </div>
             )}
           </div>
         </div>

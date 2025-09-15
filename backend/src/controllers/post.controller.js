@@ -51,10 +51,10 @@ const createPostController = async (req, res) => {
 }
 
 const savePostController = async (req, res) => {
-    const {title, content, userID, type, prompt } = req.body;
+    const {title, content, userID, type, prompt, imagePrompt, imageUrl } = req.body;
     const { user } = req;
     // const savedPost = await postModel.findById(postId);
-    if (!content || !userID || !type || !prompt) {
+    if (!content || !userID || !type || !prompt || !imagePrompt || !imageUrl) {
         return res.status(404).json({ message: "Post not found" });
     }
     const newPost = await postModel.create({
@@ -63,6 +63,10 @@ const savePostController = async (req, res) => {
        postBody: {
            content: content,
            prompt: prompt,
+           image: {
+            prompt: imagePrompt,
+            url: imageUrl   
+           }
        },
        user: userID 
    });

@@ -35,7 +35,7 @@ const App = () => {
       {/* <Login/> */}
       {/* <ReduxSample /> */}
       {/* <Dashboard /> */}
-      <CoverImageUpload />
+      {/* <CoverImageUpload /> */}
        
     </div>
   )
