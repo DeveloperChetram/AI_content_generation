@@ -1,6 +1,7 @@
 const postModel = require('../models/post.model');
 const userModel = require('../models/user.model');
 const generateContent = require('../services/ai.service')
+const { uploadImage, uploadImageFromUrl } = require('../services/imagekit.service')
 const createPostController = async (req, res) => {
 
     let { user } = req;
@@ -49,14 +50,66 @@ const createPostController = async (req, res) => {
     });
 
 }
+const uploadImageControllerForLink = async (req, res) => {
+    const {imageUrl} = req.body;
+    try {
+        if (!imageUrl) {
+            return res.status(400).json({
+                message: "Image URL is required"
+            });
+        }
+        
+        const imagekitResponse = await uploadImageFromUrl(imageUrl);
+        res.status(200).json({
+            message: "Image uploaded successfully",
+            image: imagekitResponse
+        });
+    } catch (error) {
+        console.error("Error uploading image:", error);
+        res.status(500).json({
+            message: "Failed to upload image",
+            error: error.message
+        });
+    }
+}
+const uploadImageController = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                message: "No file uploaded"
+            });
+        }
+        
+        console.log("req.file", req.file);
+        const imagekitResponse = await uploadImage(req.file);
+        console.log("imagekitResponse", imagekitResponse);
+        
+        res.status(200).json({
+            message: "Image uploaded successfully",
+            image: imagekitResponse
+        });
+    } catch (error) {
+        console.error("Error uploading image:", error);
+        res.status(500).json({
+            message: "Failed to upload image",
+            error: error.message
+        });
+    }
+}
 
 const savePostController = async (req, res) => {
     const {title, content, userID, type, prompt, imagePrompt, imageUrl } = req.body;
     const { user } = req;
+    // const {file} = req.files
+  
     // const savedPost = await postModel.findById(postId);
-    if (!content || !userID || !type || !prompt || !imagePrompt || !imageUrl) {
-        return res.status(404).json({ message: "Post not found" });
-    }
+    // if (!content || !userID || !type || !imageUrl ) {
+    //     return res.status(404).json({ message: "Post not found" });
+    // }
+
+
+
+ 
     const newPost = await postModel.create({
        title: title,
        type: type,
@@ -86,4 +139,19 @@ const savePostController = async (req, res) => {
    });
 }
 
-module.exports = { createPostController, savePostController };
+const getPostController = async (req, res) => {
+    try {
+    const posts = await postModel.find({isPosted: true});
+    res.status(200).json({
+        message: "Posts fetched successfully",
+        posts: posts
+    });
+    } catch (error) {
+        console.error("Error fetching posts:", error);
+        res.status(500).json({
+            message: "Failed to fetch posts",
+            error: error.message
+        });
+    }
+}
+module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController};

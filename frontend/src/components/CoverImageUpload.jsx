@@ -1,11 +1,14 @@
 import { useState, useRef } from 'react';
 import { IoArrowUp, IoCloudUploadOutline } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 import '../styles/CoverImageUpload.css';
 import axios from '../api/axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPostPayload } from '../redux/slices/postSlice';
+import { addAlert } from '../redux/slices/alertSlice';
 
 const CoverImageUpload = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [imageData, setImageData] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
@@ -13,42 +16,62 @@ const CoverImageUpload = () => {
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [savedPost, setSavedPost] = useState(null);
   const fileInputRef = useRef(null);
 
   const postPayload = useSelector((state) => state.post.postPayload);
   const handleGenerateImage = async (e) => {
     e.preventDefault();
-    console.log("prompt from handleGenerateImage", prompt)
-    const response = await axios.post('/api/generate-image', { 
-      prompt,
-      aspectRatio: "16:9" // Send 16:9 aspect ratio to 
+    if (!prompt.trim()) return;
+    
+    console.log("prompt from handleGenerateImage", prompt);
+    setIsGenerating(true);
+    dispatch(addAlert({
+      type: 'info',
+      content: 'Generating image...',
+      duration: false
+    }));
+    try {
+      const response = await axios.post('/api/generate-image', { 
+        prompt,
+        aspectRatio: "16:9"
+      });
+      dispatch(addAlert({
+        type: 'success',
+        content: 'Image generated successfully',
+        duration: 3000
+      }));
+      console.log("response from handleGenerateImage", response);
       
-    })
-   await setImageData(response.data.image);
-   await setPreviewImage(response.data.image);
-   await dispatch(setPostPayload({
-      "title": postPayload.title,
+      // Set the image data and preview
+      setImageData(response.data);
+      setPreviewImage(response.data.image);
+      
+      // Update Redux state with AI generated image data
+      dispatch(setPostPayload({
+        "title": postPayload.title,
         "type": postPayload.type,
         "postBody": {
-            "content": postPayload.postBody.content,
-            "prompt": postPayload.postBody.prompt,
-            "image": {
-                "prompt": imageData.prompt,
-                "url": imageData.url
-            }
+          "content": postPayload.postBody.content,
+          "prompt": postPayload.postBody.prompt,
+          "image": {
+            "prompt": response.data.prompt,
+            "url": "" // Will be set after ImageKit upload
+          }
         },
         "isPosted": false,
-    }));
-    // if (!prompt.trim()) return;
-    console.log("response from handleGenerateImage", response)
-    
-    setIsGenerating(true);
-    // Simulate AI generation
-    setTimeout(() => {
+      }));
+      
+    } catch (error) {
+      console.error("Error generating image:", error);
+      dispatch(addAlert({
+        type: 'error',
+        content: 'Error generating image',
+        duration: 3000
+      }));
+    } finally {
       setIsGenerating(false);
-      // In real implementation, you would call your AI service here
-      console.log('Generating image with prompt:', prompt);
-    }, 2000);
+    }
   };
 
   const handleFileUpload = (e) => {
@@ -60,6 +83,11 @@ const CoverImageUpload = () => {
       reader.onload = (e) => {
         setPreviewImage(e.target.result);
         setIsUploading(false);
+        dispatch(addAlert({
+          type: 'success',
+          content: 'Image uploaded successfully',
+          duration: 3000
+        }));
       };
       reader.readAsDataURL(file);
     }
@@ -67,12 +95,96 @@ const CoverImageUpload = () => {
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
+    console.log(fileInputRef.current.files[0])
   };
 
-  const handleConfirmAndPost = () => {
-    if (previewImage) {
-      console.log('Posting with cover image:', previewImage);
-      // In real implementation, you would save the post with the cover image
+  const handleConfirmAndPost = async () => {
+    if (!previewImage) return;
+
+    try {
+      let imageUrl = '';
+
+      // Flow 1: AI Generated Image - Upload to ImageKit via link
+      if (imageData && imageData.image) {
+        dispatch(addAlert({
+          type: 'info',
+          content: 'Uploading AI generated image to ImageKit...',
+          duration: false
+        }));
+
+        const imageResponse = await axios.post('/api/posts/upload-image-for-link', {
+          imageUrl: imageData.image
+        });
+        
+        imageUrl = imageResponse.data.image.url;
+        
+        dispatch(addAlert({
+          type: 'success',
+          content: 'AI image uploaded to ImageKit successfully',
+          duration: 3000
+        }));
+      }
+      
+      // Flow 2: Manual Upload - Upload file to ImageKit
+      else if (uploadedFileName && fileInputRef.current.files[0]) {
+        dispatch(addAlert({
+          type: 'info',
+          content: 'Uploading image to ImageKit...',
+          duration: false
+        }));
+
+        const formData = new FormData();
+        formData.append('file', fileInputRef.current.files[0]);
+        
+        const imageResponse = await axios.post('/api/posts/upload-image', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        
+        imageUrl = imageResponse.data.image.url;
+        
+        dispatch(addAlert({
+          type: 'success',
+          content: 'Image uploaded to ImageKit successfully',
+          duration: 3000
+        }));
+      }
+
+      // Save post with final imageUrl
+      const postResponse = await axios.post('/api/posts/save-post', {
+        title: postPayload.title,
+        type: postPayload.type,
+        content: postPayload.postBody.content,
+        prompt: postPayload.postBody.prompt,
+        imagePrompt: postPayload.postBody.image.prompt,
+        imageUrl: imageUrl,
+        userID: postPayload.userID
+      });
+      
+      console.log('Post saved successfully:', postResponse.data);
+      
+      // Store the saved post data
+      setSavedPost(postResponse.data);
+      
+      dispatch(addAlert({
+        type: 'success',
+        content: `Post "${postResponse.data.post.title}" saved successfully! Post ID: ${postResponse.data.postId}`,
+        duration: 5000
+      }));
+      
+      // Navigate to posts page or dashboard after successful creation
+      setTimeout(() => {
+        navigate('/dashboard'); // or wherever you want to redirect after post creation
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error saving post:', error);
+      dispatch(addAlert({
+        type: 'error',
+        content: 'Error saving post',
+        duration: 3000
+      }));
     }
   };
 
@@ -87,7 +199,16 @@ const CoverImageUpload = () => {
         {/* Preview Card */}
         <div className="glass-card pg-preview-card">
           <div className="preview-area">
-            {previewImage ? (
+            {isGenerating ? (
+              <div className="preview-loading">
+                <div className="loading-text">Generating Image</div>
+                <div className="loading-dots">
+                  <div className="loading-dot"></div>
+                  <div className="loading-dot"></div>
+                  <div className="loading-dot"></div>
+                </div>
+              </div>
+            ) : previewImage ? (
               <img src={previewImage} alt="Preview" className="preview-image" />
             ) : (
               <div className="preview-placeholder">
@@ -130,55 +251,78 @@ const CoverImageUpload = () => {
           </form>
         </div>
 
-        {/* Separator */}
-        <div className="pg-separator">
-          <span className="pg-separator-text">or</span>
-        </div>
+        {/* Separator - Only show if no AI image generated */}
+        {!imageData && (
+          <div className="pg-separator">
+            <span className="pg-separator-text">or</span>
+          </div>
+        )}
 
-        {/* Upload Card */}
-        <div className="glass-card pg-upload-card">
-          <h3 className="pg-section-title">Upload Local file</h3>
-          <button 
-            type="button" 
-            className="pg-upload-btn"
-            onClick={handleUploadClick}
-            disabled={isUploading}
-          >
-            <IoCloudUploadOutline className="pg-upload-icon" />
-            <span className="pg-upload-text">upload manually</span>
-          </button>
-          {uploadedFileName && (
-            <div className="pg-file-info">
-              <span className="pg-file-name">{uploadedFileName}</span>
+        {/* Upload Card - Only show if no AI image generated */}
+        {!imageData && (
+          <div className="glass-card pg-upload-card">
+            <h3 className="pg-section-title">Upload Local file</h3>
+            <button 
+              type="button" 
+              className="pg-upload-btn"
+              onClick={handleUploadClick}
+              disabled={isUploading}
+            >
+              <IoCloudUploadOutline className="pg-upload-icon" />
+              <span className="pg-upload-text">upload manually</span>
+            </button>
+            {uploadedFileName && (
+              <div className="pg-file-info">
+                <span className="pg-file-name">{uploadedFileName}</span>
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="pg-hidden-file-input"
+            />
+          </div>
+        )}
+
+        {/* Success Card - Show when post is saved */}
+        {savedPost && (
+          <div className="glass-card pg-success-card">
+            <div className="pg-success-content">
+              <h3 className="pg-success-title">✅ Post Saved Successfully!</h3>
+              <div className="pg-post-details">
+                <p><strong>Title:</strong> {savedPost.post.title}</p>
+                <p><strong>Type:</strong> {savedPost.post.type}</p>
+                <p><strong>Post ID:</strong> {savedPost.postId}</p>
+                <p><strong>User:</strong> {savedPost.userName}</p>
+                <p><strong>Credits Left:</strong> {savedPost.creditLeft}</p>
+              </div>
+              <p className="pg-redirect-text">Redirecting to dashboard...</p>
             </div>
-          )}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileUpload}
-            className="pg-hidden-file-input"
-          />
-        </div>
+          </div>
+        )}
 
         {/* Action Card */}
-        <div className="glass-card pg-action-card">
-          <div className="pg-action-content">
-            <div className="pg-content-warning">
-              <p className="warning-text">
-                Please ensure your content is respectful and appropriate. 
-                No NSFW, offensive, or harmful content will be tolerated.
-              </p>
+        {!savedPost && (
+          <div className="glass-card pg-action-card">
+            <div className="pg-action-content">
+              <div className="pg-content-warning">
+                <p className="warning-text">
+                  Please ensure your content is respectful and appropriate. 
+                  No NSFW, offensive, or harmful content will be tolerated.
+                </p>
+              </div>
+              <button 
+                className="pg-save-btn"
+                onClick={handleConfirmAndPost}
+                disabled={!previewImage}
+              >
+                Confirm and Post
+              </button>
             </div>
-            <button 
-              className="pg-save-btn"
-              onClick={handleConfirmAndPost}
-              disabled={!previewImage}
-            >
-              Confirm and Post
-            </button>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

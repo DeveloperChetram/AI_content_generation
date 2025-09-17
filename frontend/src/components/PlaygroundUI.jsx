@@ -244,12 +244,14 @@ console.log("Hello!");</code></pre>
   };
 
   const contentOptions = [
-    { value: 'blog', label: 'Blog' },
-    { value: 'tweet', label: 'Tweet' },
-    { value: 'email', label: 'Email' },
-    { value: 'article', label: 'Article' },
-    { value: 'social', label: 'Social Media' },
-    { value: 'newsletter', label: 'Newsletter' }
+    { value: 'general-hit', label: 'General hit' },
+    { value: 'bold-thoughts', label: 'Bold thoughts' },
+    { value: 'ai-prompts', label: 'AI prompts' },
+    { value: 'coding-meme', label: 'Coding meme' },
+    { value: 'story-set', label: 'Story set' },
+    { value: 'vibe-talk', label: 'Vibe talk' },
+    { value: 'hot-quote', label: 'Hot quote' },
+    { value: 'tips-tricks', label: 'Tips & Tricks' }
   ];
 
   const handleGenerate = async (data) => {
