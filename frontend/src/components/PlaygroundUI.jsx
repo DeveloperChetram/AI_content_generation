@@ -33,19 +33,15 @@ const PlaygroundUI = () => {
   const [isEditorEffectivelyEmpty, setIsEditorEffectivelyEmpty] = useState(true);
 
   console.log("recentPost from PlaygroundUI", recentPost)
-  const {register, handleSubmit, setValue, watch} = useForm();
+  const {register, handleSubmit, setValue, watch} = useForm({
+    defaultValues: {
+      title: recentPost?.title || '',
+      type: recentPost?.type || ''
+    }
+  });
   const watchedTitle = watch('title');
   const watchedType = watch('type');
   const dispatch = useDispatch();
-
-  // Sync form with Redux state to ensure UI consistency
-  useEffect(() => {
-    if (recentPost) {
-      // Use setValue to programmatically update form field values
-      setValue('title', recentPost.title || '');
-      setValue('type', recentPost.type || '');
-    }
-  }, [recentPost, setValue]);
 
   // Function to update recent post state with current title and content
   const updateRecentPostState = () => {

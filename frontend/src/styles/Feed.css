@@ -121,61 +121,61 @@
 /* --- Tag Color System --- */
 /* Tag color variables for different content types */
 :root {
-  /* Tips & Tricks - Blue */
-  --tag-tips-bg: rgba(59, 130, 246, 0.15);
-  --tag-tips-border: rgba(59, 130, 246, 0.3);
-  --tag-tips-text: #93c5fd;
-  --tag-tips-card-border: rgba(59, 130, 246, 0.1);
-  --tag-tips-card-bg: rgba(59, 130, 246, 0.03);
+  /* Tips & Tricks - Golden Yellow */
+  --tag-tips-bg: rgba(234, 179, 8, 0.2);
+  --tag-tips-border: rgba(234, 179, 8, 0.4);
+  --tag-tips-text: var(--type-color-tips-tricks);
+  --tag-tips-card-border: rgba(234, 179, 8, 0.15);
+  --tag-tips-card-bg: rgba(234, 179, 8, 0.05);
 
-  /* Coding meme - Green */
-  --tag-coding-bg: rgba(16, 185, 129, 0.15);
-  --tag-coding-border: rgba(16, 185, 129, 0.3);
-  --tag-coding-text: #6ee7b7;
-  --tag-coding-card-border: rgba(16, 185, 129, 0.1);
-  --tag-coding-card-bg: rgba(16, 185, 129, 0.03);
+  /* Coding meme - Emerald Green */
+  --tag-coding-bg: rgba(16, 185, 129, 0.2);
+  --tag-coding-border: rgba(16, 185, 129, 0.4);
+  --tag-coding-text: var(--type-color-coding-meme);
+  --tag-coding-card-border: rgba(16, 185, 129, 0.15);
+  --tag-coding-card-bg: rgba(16, 185, 129, 0.05);
 
-  /* Hot quote - Red */
-  --tag-quote-bg: rgba(245, 101, 101, 0.15);
-  --tag-quote-border: rgba(245, 101, 101, 0.3);
-  --tag-quote-text: #fca5a5;
-  --tag-quote-card-border: rgba(245, 101, 101, 0.1);
-  --tag-quote-card-bg: rgba(245, 101, 101, 0.03);
+  /* Hot quote - Hot Pink */
+  --tag-quote-bg: rgba(236, 72, 153, 0.2);
+  --tag-quote-border: rgba(236, 72, 153, 0.4);
+  --tag-quote-text: var(--type-color-hot-quote);
+  --tag-quote-card-border: rgba(236, 72, 153, 0.15);
+  --tag-quote-card-bg: rgba(236, 72, 153, 0.05);
 
-  /* General hit - Purple */
-  --tag-general-bg: rgba(168, 85, 247, 0.15);
-  --tag-general-border: rgba(168, 85, 247, 0.3);
-  --tag-general-text: #c4b5fd;
-  --tag-general-card-border: rgba(168, 85, 247, 0.1);
-  --tag-general-card-bg: rgba(168, 85, 247, 0.03);
+  /* General hit - Vibrant Purple */
+  --tag-general-bg: rgba(168, 85, 247, 0.2);
+  --tag-general-border: rgba(168, 85, 247, 0.4);
+  --tag-general-text: var(--type-color-general-hit);
+  --tag-general-card-border: rgba(168, 85, 247, 0.15);
+  --tag-general-card-bg: rgba(168, 85, 247, 0.05);
 
-  /* Bold thoughts - Yellow */
-  --tag-bold-bg: rgba(251, 191, 36, 0.15);
-  --tag-bold-border: rgba(251, 191, 36, 0.3);
-  --tag-bold-text: #fcd34d;
-  --tag-bold-card-border: rgba(251, 191, 36, 0.1);
-  --tag-bold-card-bg: rgba(251, 191, 36, 0.03);
+  /* Bold thoughts - Bright Red */
+  --tag-bold-bg: rgba(239, 68, 68, 0.2);
+  --tag-bold-border: rgba(239, 68, 68, 0.4);
+  --tag-bold-text: var(--type-color-bold-thoughts);
+  --tag-bold-card-border: rgba(239, 68, 68, 0.15);
+  --tag-bold-card-bg: rgba(239, 68, 68, 0.05);
 
-  /* AI prompts - Violet */
-  --tag-ai-bg: rgba(139, 92, 246, 0.15);
-  --tag-ai-border: rgba(139, 92, 246, 0.3);
-  --tag-ai-text: #a78bfa;
-  --tag-ai-card-border: rgba(139, 92, 246, 0.1);
-  --tag-ai-card-bg: rgba(139, 92, 246, 0.03);
+  /* AI prompts - Electric Blue */
+  --tag-ai-bg: rgba(59, 130, 246, 0.2);
+  --tag-ai-border: rgba(59, 130, 246, 0.4);
+  --tag-ai-text: var(--type-color-ai-prompts);
+  --tag-ai-card-border: rgba(59, 130, 246, 0.15);
+  --tag-ai-card-bg: rgba(59, 130, 246, 0.05);
 
-  /* Story set - Pink */
-  --tag-story-bg: rgba(236, 72, 153, 0.15);
-  --tag-story-border: rgba(236, 72, 153, 0.3);
-  --tag-story-text: #f9a8d4;
-  --tag-story-card-border: rgba(236, 72, 153, 0.1);
-  --tag-story-card-bg: rgba(236, 72, 153, 0.03);
+  /* Story set - Orange */
+  --tag-story-bg: rgba(249, 115, 22, 0.2);
+  --tag-story-border: rgba(249, 115, 22, 0.4);
+  --tag-story-text: var(--type-color-story-set);
+  --tag-story-card-border: rgba(249, 115, 22, 0.15);
+  --tag-story-card-bg: rgba(249, 115, 22, 0.05);
 
-  /* Vibe talk - Emerald */
-  --tag-vibe-bg: rgba(34, 197, 94, 0.15);
-  --tag-vibe-border: rgba(34, 197, 94, 0.3);
-  --tag-vibe-text: #86efac;
-  --tag-vibe-card-border: rgba(34, 197, 94, 0.1);
-  --tag-vibe-card-bg: rgba(34, 197, 94, 0.03);
+  /* Vibe talk - Cyan */
+  --tag-vibe-bg: rgba(6, 182, 212, 0.2);
+  --tag-vibe-border: rgba(6, 182, 212, 0.4);
+  --tag-vibe-text: var(--type-color-vibe-talk);
+  --tag-vibe-card-border: rgba(6, 182, 212, 0.15);
+  --tag-vibe-card-bg: rgba(6, 182, 212, 0.05);
 
   /* Default tag */
   --tag-default-bg: rgba(30, 30, 30, 0.8);
