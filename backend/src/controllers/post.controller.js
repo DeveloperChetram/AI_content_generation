@@ -121,7 +121,8 @@ const savePostController = async (req, res) => {
             url: imageUrl   
            }
        },
-       user: userID 
+       user: userID,
+       username: user.name
    });
    res.status(200).json({
     message: "Post saved successfully",
@@ -141,7 +142,7 @@ const savePostController = async (req, res) => {
 
 const getPostController = async (req, res) => {
     try {
-    const posts = await postModel.find({isPosted: true});
+    const posts = await postModel.find({isPosted: true}).sort({createdAt: -1});
     res.status(200).json({
         message: "Posts fetched successfully",
         posts: posts

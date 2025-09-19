@@ -248,7 +248,7 @@ select.pg-input option {
   flex-direction: column;
   min-height: 250px;
   position: relative;
-  z-index: -1;
+  z-index: 1;
 }
 
 /* Rich Text Editor Toolbar */
@@ -713,23 +713,64 @@ select.pg-input option {
   border-radius: 12px;
   overflow: hidden;
   min-height: 200px;
+  border: 1px solid var(--input-border-color);
+  transition: border-color 0.2s ease;
+}
+
+.tiptap-editor-container:focus-within {
+  border-color: var(--accent-color);
 }
 
 .tiptap-editor {
   background-color: transparent;
   color: var(--pg-text-primary);
-  /* padding: 1rem; */
+  padding: 1rem;
   min-height: 200px;
   font-family: var(--pg-font-sans);
   font-size: 1rem;
   font-weight: normal;
   line-height: 1.6;
   outline: none;
+  cursor: text;
+  border: 1px solid transparent;
+  transition: border-color 0.2s ease;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.tiptap-editor:focus {
+  border-color: var(--accent-color);
 }
 
 /* Ensure all text elements have normal font-weight unless explicitly styled */
 .tiptap-editor * {
   font-weight: inherit;
+}
+
+/* Ensure spaces are preserved in all text elements */
+.tiptap-editor span,
+.tiptap-editor div,
+.tiptap-editor p,
+.tiptap-editor li,
+.tiptap-editor td,
+.tiptap-editor th {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ProseMirror specific fixes for space handling */
+.ProseMirror {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.ProseMirror p {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 .tiptap-editor p,
@@ -857,6 +898,19 @@ select.pg-input option {
   margin: 1rem 0;
   color: var(--pg-text-primary);
   font-weight: 400;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Specific styling for paragraph class */
+.tiptap-editor .paragraph {
+  margin: 1rem 0;
+  color: var(--pg-text-primary);
+  font-weight: 400;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .tiptap-editor ul,

@@ -99,12 +99,10 @@ const CoverImageUpload = () => {
   };
 
   const handleConfirmAndPost = async () => {
-    if (!previewImage) return;
-
     try {
       let imageUrl = '';
 
-      // Flow 1: AI Generated Image - Upload to ImageKit via link
+      // Only process image if one exists
       if (imageData && imageData.image) {
         dispatch(addAlert({
           type: 'info',
@@ -124,8 +122,6 @@ const CoverImageUpload = () => {
           duration: 3000
         }));
       }
-      
-      // Flow 2: Manual Upload - Upload file to ImageKit
       else if (uploadedFileName && fileInputRef.current.files[0]) {
         dispatch(addAlert({
           type: 'info',
@@ -151,14 +147,14 @@ const CoverImageUpload = () => {
         }));
       }
 
-      // Save post with final imageUrl
+      // Save post with or without image
       const postResponse = await axios.post('/api/posts/save-post', {
         title: postPayload.title,
         type: postPayload.type,
         content: postPayload.postBody.content,
         prompt: postPayload.postBody.prompt,
-        imagePrompt: postPayload.postBody.image.prompt,
-        imageUrl: imageUrl,
+        imagePrompt: postPayload.postBody.image.prompt || '',
+        imageUrl: imageUrl || '', // Allow empty image URL
         userID: postPayload.userID
       });
       
@@ -175,7 +171,7 @@ const CoverImageUpload = () => {
       
       // Navigate to posts page or dashboard after successful creation
       setTimeout(() => {
-        navigate('/dashboard'); // or wherever you want to redirect after post creation
+        navigate('/feed'); 
       }, 2000);
       
     } catch (error) {
@@ -192,8 +188,8 @@ const CoverImageUpload = () => {
     <div className="cover-upload-container">
       <div className="cover-upload-content">
         <header className="pg-header">
-          <h1>Upload cover image</h1>
-          <p>Generate or upload your cover image</p>
+          <h1>Add cover image (optional)</h1>
+          <p>Generate or upload a cover image, or continue without one</p>
         </header>
 
         {/* Preview Card */}
@@ -286,22 +282,11 @@ const CoverImageUpload = () => {
           </div>
         )}
 
+   
+
+
         {/* Success Card - Show when post is saved */}
-        {savedPost && (
-          <div className="glass-card pg-success-card">
-            <div className="pg-success-content">
-              <h3 className="pg-success-title">✅ Post Saved Successfully!</h3>
-              <div className="pg-post-details">
-                <p><strong>Title:</strong> {savedPost.post.title}</p>
-                <p><strong>Type:</strong> {savedPost.post.type}</p>
-                <p><strong>Post ID:</strong> {savedPost.postId}</p>
-                <p><strong>User:</strong> {savedPost.userName}</p>
-                <p><strong>Credits Left:</strong> {savedPost.creditLeft}</p>
-              </div>
-              <p className="pg-redirect-text">Redirecting to dashboard...</p>
-            </div>
-          </div>
-        )}
+      
 
         {/* Action Card */}
         {!savedPost && (
@@ -316,9 +301,8 @@ const CoverImageUpload = () => {
               <button 
                 className="pg-save-btn"
                 onClick={handleConfirmAndPost}
-                disabled={!previewImage}
               >
-                Confirm and Post
+                {previewImage ? 'Confirm and Post' : 'Post Without Image'}
               </button>
             </div>
           </div>

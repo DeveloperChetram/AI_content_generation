@@ -10,7 +10,8 @@ import { getCurrentUserAction } from "./redux/actions/userActions";
 import { useEffect } from "react";
 import ButtonEffects from "./components/ButtonEffects";
 import CoverImageUpload from "./components/CoverImageUpload";
-// import PlaygroundUI from "./components/PlaygroundUI";
+// import Feed from "./pages/Feed";
+import PlaygroundUI from "./components/PlaygroundUI";
 
 
 
@@ -30,6 +31,7 @@ const App = () => {
       {/* <DurationExample /> */}
       {/* <AlertUsageExample /> */}
       <MainRoutes />
+      {/* <Feed /> */}
       {/* <PlaygroundUI /> */}
       {/* <DynamicIsland /> */}
       {/* <Login/> */}

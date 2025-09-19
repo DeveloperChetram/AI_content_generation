@@ -118,7 +118,7 @@ const Navbar = () => {
         
         <nav className="nav-section nav-center">
           <div className="nav-menu">
-          <a href="#feed">Feed</a>
+          <NavLink to="/feed">Feed</NavLink>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
           </div>

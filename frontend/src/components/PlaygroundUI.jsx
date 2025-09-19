@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import '../styles/PlaygroundUI.css';
 import {
   IoArrowUp,
@@ -29,39 +29,49 @@ import { useNavigate } from 'react-router-dom';
 const PlaygroundUI = () => {
   const navigate = useNavigate();
   const recentPost = useSelector((state) => state.post.recentPost);
+  const [contentForValidation, setContentForValidation] = useState('');
+  const [isEditorEffectivelyEmpty, setIsEditorEffectivelyEmpty] = useState(true);
+
   console.log("recentPost from PlaygroundUI", recentPost)
   const {register, handleSubmit, setValue, watch} = useForm();
   const watchedTitle = watch('title');
   const watchedType = watch('type');
   const dispatch = useDispatch();
 
+  // Sync form with Redux state to ensure UI consistency
+  useEffect(() => {
+    if (recentPost) {
+      // Use setValue to programmatically update form field values
+      setValue('title', recentPost.title || '');
+      setValue('type', recentPost.type || '');
+    }
+  }, [recentPost, setValue]);
+
   // Function to update recent post state with current title and content
   const updateRecentPostState = () => {
-    if (editor && (watchedTitle || editor.getHTML())) {
-      const currentContent = editor.getHTML();
-      const updatedRecentPost = {
-        ...recentPost,
-        title: watchedTitle || recentPost?.title || '',
-        type: watchedType || recentPost?.type || '',
-        content: currentContent || recentPost?.content || ''
-      };
-      dispatch(setRecentPost(updatedRecentPost));
-    }
+    if (!editor) return; // Guard against editor not being ready
+    const updatedRecentPost = {
+      title: watchedTitle,
+      type: watchedType,
+      content: editor.getHTML(),
+    };
+    dispatch(setRecentPost(updatedRecentPost));
   };
+
+  // Memoize validation checks to prevent re-calculation on every render
+  const isDefaultContent = useMemo(() => {
+    if (!contentForValidation) return false;
+    return contentForValidation.includes('Welcome to your output space') ||
+            contentForValidation.includes('default-content') ||
+            contentForValidation.includes('Start writing or generate content with');
+  }, [contentForValidation]);
+
+  const hasRealContent = useMemo(() => !isEditorEffectivelyEmpty && !isDefaultContent, [isEditorEffectivelyEmpty, isDefaultContent]);
+  const hasTitle = useMemo(() => !!(watchedTitle && watchedTitle.trim()), [watchedTitle]);
+  const hasType = useMemo(() => !!(watchedType && watchedType.trim()), [watchedType]);
 
   // Function to check if all required fields are provided
   const isContinueEnabled = () => {
-    const hasTitle = (watchedTitle && watchedTitle.trim()) || (recentPost?.title && recentPost.title.trim());
-    const hasType = (watchedType && watchedType.trim()) || (recentPost?.type && recentPost.type.trim());
-    const hasContent = editor?.getHTML() && editor.getHTML().trim() !== '' && editor.getHTML() !== '<p></p>' && editor.getHTML() !== '<p><br></p>';
-    
-    // Check if content is not just the default placeholder content
-    const isDefaultContent = editor?.getHTML()?.includes('Welcome to your output space') || 
-                            editor?.getHTML()?.includes('default-content') ||
-                            editor?.getHTML()?.includes('Start writing or generate content with');
-    
-    const hasRealContent = hasContent && !isDefaultContent;
-    
     return hasTitle && hasType && hasRealContent && !isGenerating;
   };
 
@@ -83,6 +93,11 @@ const PlaygroundUI = () => {
     extensions: [
       StarterKit.configure({
         codeBlock: false, // We'll use CodeBlockLowlight instead
+        paragraph: {
+          HTMLAttributes: {
+            class: 'paragraph',
+          },
+        },
       }),
       CodeBlockLowlight.configure({
         lowlight: lowlight,
@@ -112,7 +127,30 @@ console.log("Hello!");</code></pre>
     editorProps: {
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none',
+        spellcheck: 'false',
       },
+    },
+    onUpdate: ({ editor }) => {
+      // Ensure editor updates are tracked
+      setContentForValidation(editor.getHTML());
+      // An editor is "effectively empty" if it's pristine empty OR only contains whitespace
+      const isEmpty = editor.isEmpty || editor.getText().trim() === '';
+      setIsEditorEffectivelyEmpty(isEmpty);
+      console.log('Editor updated:', editor.getHTML());
+    },
+    onCreate: ({ editor }) => {
+      // Focus the editor when it's created
+      setContentForValidation(editor.getHTML());
+      // An editor is "effectively empty" if it's pristine empty OR only contains whitespace
+      const isEmpty = editor.isEmpty || editor.getText().trim() === '';
+      setIsEditorEffectivelyEmpty(isEmpty);
+      console.log('Editor created successfully');
+      setTimeout(() => {
+        editor.commands.focus();
+      }, 100);
+    },
+    onDestroy: () => {
+      console.log('Editor destroyed');
     },
   });
 
@@ -134,34 +172,38 @@ console.log("Hello!");</code></pre>
   // Update editor content when recentPost changes
   useEffect(() => {
     if (recentPost && recentPost.content && editor) {
+      const editorContent = editor.getHTML();
+      
       // Check if content is Markdown (contains markdown syntax)
       const isMarkdown = /^#{1,6}\s|^\*\*|^\*[^*]|^```|^`[^`]|^\-\s|^\d+\.\s|^\>\s|^\[.*\]\(.*\)/m.test(recentPost.content);
       
       console.log('Content type detected:', isMarkdown ? 'Markdown' : 'HTML');
       console.log('Content preview:', recentPost.content.substring(0, 200) + '...');
       
+      let newContent;
       if (isMarkdown) {
         // Convert Markdown to HTML
-        const htmlContent = convertMarkdownToHTML(recentPost.content);
-        console.log('Converted HTML:', htmlContent.substring(0, 200) + '...');
-        editor.commands.setContent(htmlContent);
+        newContent = convertMarkdownToHTML(recentPost.content);
+        console.log('Converted HTML:', newContent.substring(0, 200) + '...');
       } else {
         // Use content as-is (already HTML)
-        editor.commands.setContent(recentPost.content);
+        newContent = recentPost.content;
+      }
+      
+      // Only update if the content has actually changed to avoid cursor jumps
+      if (newContent !== editorContent) {
+        editor.commands.setContent(newContent, { emitUpdate: true });
       }
     }
   }, [recentPost, editor]);
 
-  // Watch title changes and update recent post state
-  useEffect(() => {
-    if (watchedTitle && watchedTitle.trim()) {
-      updateRecentPostState();
-    }
-  }, [watchedTitle]);
-
-  // Watch editor content changes and update recent post state
+  // This single effect now handles syncing all form state to Redux
   useEffect(() => {
     if (editor) {
+      // Sync state when dependencies change (e.g., title/type inputs)
+      updateRecentPostState();
+
+      // Also set up a listener for editor content changes
       const handleEditorUpdate = () => {
         updateRecentPostState();
       };
@@ -172,7 +214,7 @@ console.log("Hello!");</code></pre>
         editor.off('update', handleEditorUpdate);
       };
     }
-  }, [editor, watchedTitle, watchedType, recentPost]);
+  }, [editor, watchedTitle, watchedType]); // Simplified dependencies
 
   // Toolbar functions
   const togglePreview = (e) => {
@@ -283,16 +325,23 @@ console.log("Hello!");</code></pre>
   };
 
   const handleContinue = () => {
-    console.log("editor content from handleContinue", editor?.getHTML())
-    // console.log("recentPost from handleContinue", recentPost)
-    // console.log("watchedTitle from handleContinue", watchedTitle)
-    // console.log("watchedType from handleContinue", watchedType)
+    console.log("editor content from handleContinue", contentForValidation)
+    
+    // Use the same validation as the button's enabled state for a final check
+    if (!isContinueEnabled()) {
+      dispatch(addAlert({
+        type: "error",
+        content: "Please complete all fields to continue.",
+        duration: 3000
+      }));
+      return;
+    }
     
     const postPayload = {
       title: watchedTitle || recentPost?.title || '',
       type: watchedType || recentPost?.type || '',
       postBody: {
-        content: recentPost?.content || '',
+        content: contentForValidation, // Use current editor content
         prompt: "",
         image: {
           prompt: "",
@@ -301,8 +350,10 @@ console.log("Hello!");</code></pre>
       },
       isPosted: false
     }
-    // console.log("postPayload from handleContinue", postPayload)
+    
     dispatch(setPostPayload(postPayload))
+    
+    // This check is now slightly redundant due to the guard clause above, but safe to keep
     if(postPayload.title && postPayload.type && postPayload.postBody.content){
       dispatch(addAlert(
         {
@@ -313,8 +364,6 @@ console.log("Hello!");</code></pre>
       ))
       navigate("/create-cover-image")
     }
-
-    
   }
 
 
@@ -475,11 +524,24 @@ console.log("Hello!");</code></pre>
           </div>
             )}
             {!isGenerating && editor && (
-              <div className="tiptap-editor-container">
+              <div 
+                className="tiptap-editor-container"
+                onClick={() => {
+                  console.log('Editor container clicked, focusing editor');
+                  if (editor && !isPreviewMode) {
+                    editor.commands.focus();
+                  }
+                }}
+              >
                 <EditorContent 
                   editor={editor} 
                   className={`tiptap-editor ${isPreviewMode ? 'preview-mode' : ''} ${isClearingContent ? 'woosh-animation' : ''}`}
                 />
+              </div>
+            )}
+            {!isGenerating && !editor && (
+              <div className="pg-generating-message">
+                <p>Loading editor...</p>
               </div>
             )}
           </div>
@@ -494,10 +556,10 @@ console.log("Hello!");</code></pre>
                   {!isGenerating && (
                     <>
                       Complete all fields to continue: 
-                      {(!watchedTitle?.trim() && !recentPost?.title?.trim()) && <span className="missing-field"> Title</span>}
-                      {(!watchedType?.trim() && !recentPost?.type?.trim()) && <span className="missing-field"> Type</span>}
-                      {(!editor?.getHTML() || editor.getHTML().trim() === '' || editor.getHTML() === '<p></p>' || editor.getHTML() === '<p><br></p>') && <span className="missing-field"> Content</span>}
-                      {(editor?.getHTML()?.includes('Welcome to your output space') || editor?.getHTML()?.includes('default-content') || editor?.getHTML()?.includes('Start writing or generate content with')) && <span className="missing-field"> (Write your own content)</span>}
+                      {!hasTitle && <span className="missing-field"> Title</span>}
+                      {!hasType && <span className="missing-field"> Type</span>}
+                      {isEditorEffectivelyEmpty && !isDefaultContent && <span className="missing-field"> Content</span>}
+                      {isDefaultContent && <span className="missing-field"> (Write your own content)</span>}
                     </>
                   )}
                 </span>
