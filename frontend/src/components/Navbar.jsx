@@ -127,7 +127,15 @@ const Navbar = () => {
           <div className="nav-buttons">
             {user.isAuthenticated ? (
              <>
-              {isPlaygroundOpen? <NavLink to="/dashboard" onClick={()=>dashboardHandler()} className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Dashboard</NavLink> : <NavLink to="/playground" onClick={()=>playgroundHandler()} className={({isActive})=> isActive? 'btn btn-primary' : 'btn btn-secondary'}>Playground</NavLink>}
+              <NavLink
+                to="/playground"
+                onClick={() => playgroundHandler()}
+                className={({ isActive }) =>
+                  isActive ? 'btn btn-primary' : 'btn btn-secondary'
+                }
+              >
+                Playground
+              </NavLink>
               <button 
                 ref={profileButtonRef}
                 className="profile-icon-btn" 

@@ -11,7 +11,7 @@ const Profile = ({ isOpen, onClose, position = { top: 0, right: 0 } }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const profileRef = useRef(null);
-
+  // console.log(user.user.createdAt);
   // Close profile when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {

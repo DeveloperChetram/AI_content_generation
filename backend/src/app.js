@@ -29,7 +29,7 @@ res.send("You'll not see cannot get GET '/' Because SERVER IS RUNNING BABY")
 
 app.use('/api/auth/',authRouter)
 
-app.use('/user', userRouter)
+app.use('/api/user', userRouter)
 
 app.use('/api/admin/', adminRouter)
 

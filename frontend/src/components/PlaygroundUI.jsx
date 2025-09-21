@@ -142,7 +142,7 @@ console.log("Hello!");</code></pre>
       setIsEditorEffectivelyEmpty(isEmpty);
       console.log('Editor created successfully');
       setTimeout(() => {
-        editor.commands.focus();
+        editor?.commands?.focus();
       }, 100);
     },
     onDestroy: () => {
@@ -238,7 +238,7 @@ console.log("Hello!");</code></pre>
       command.run();
       // Force a small delay to ensure the editor updates properly
       setTimeout(() => {
-        editor.commands.focus();
+             editor?.commands?.focus();
       }, 10);
     }
   };
@@ -525,7 +525,7 @@ console.log("Hello!");</code></pre>
                 onClick={() => {
                   console.log('Editor container clicked, focusing editor');
                   if (editor && !isPreviewMode) {
-                    editor.commands.focus();
+                    editor?.commands?.focus();
                   }
                 }}
               >

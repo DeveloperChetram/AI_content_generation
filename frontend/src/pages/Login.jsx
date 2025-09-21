@@ -13,7 +13,7 @@ const Login = () => {
   useEffect(()=>{
     // console.log("user in login page", user)
     if(user.isAuthenticated){
-      navigate('/dashboard');
+      navigate('/profile');
       dispatch(addAlert(
         {
           type:"success",

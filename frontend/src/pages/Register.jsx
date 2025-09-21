@@ -23,7 +23,7 @@ const Register = () => {
     
     // console.log("result.payload.success", result.payload.success)
     if(result.status === 200){
-      navigate('/dashboard');
+      navigate('/profile');
     }
     reset()
     setloading(false)

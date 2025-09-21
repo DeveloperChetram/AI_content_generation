@@ -21,6 +21,10 @@ const postSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    likeCount:{
+        type:Number,
+        default:0
+    },
     username: String,
     user: {
         type: mongoose.Schema.Types.ObjectId,

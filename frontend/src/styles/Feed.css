@@ -422,6 +422,27 @@
   font-size: 1.25rem;
 }
 
+.feed-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.like-count {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-color-secondary);
+}
+
+.feed-action-liked {
+  animation: likePulse 0.3s ease-in-out;
+}
+
+@keyframes likePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
 /* --- Comment Section --- */
 .feed-comment-section {
   display: flex;
