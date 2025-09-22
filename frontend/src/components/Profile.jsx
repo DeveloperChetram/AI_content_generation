@@ -6,7 +6,7 @@ import { logoutUserAction } from '../redux/actions/userActions';
 import { addAlert } from '../redux/slices/alertSlice';
 import '../styles/Profile.css';
 
-const Profile = ({ isOpen, onClose, position = { top: 0, right: 0 } }) => {
+const Profile = ({ isOpen, onClose }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -65,20 +65,15 @@ const Profile = ({ isOpen, onClose, position = { top: 0, right: 0 } }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="profile-overlay">
-      <div 
-        ref={profileRef}
-        className="profile-dropdown"
-        style={{
-          top: `${position.top + 60}px`,
-          right: `${position.right}px`
-        }}
-      >
-        {/* Profile Header */}
-        <div className="profile-header">
+    <div 
+      ref={profileRef}
+      className="profile-dropdown"
+    >
+      {/* Profile Header */}
+      <div className="profile-header">
           <div className="profile-avatar">
             <img 
-              src={user?.user?.avatar || `https://ui-avatars.com/api/?name=${user?.user?.name}&background=ff7600&color=fff`} 
+              src={user?.user?.profilePicture || `https://ui-avatars.com/api/?name=${user?.user?.name}&background=ff7600&color=fff`} 
               alt="Profile" 
             />
           </div>
@@ -140,7 +135,6 @@ const Profile = ({ isOpen, onClose, position = { top: 0, right: 0 } }) => {
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 };

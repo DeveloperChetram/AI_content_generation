@@ -18,11 +18,11 @@ const userSchema = new mongoose.Schema(
     },
     aiCredits: {
       type: Number,
-      default: 2,
+      default: 50,
     },
     aiImageCredits: {
       type: Number,
-      default: 2,
+      default: 0,
     },
     // posts: [
     //   {

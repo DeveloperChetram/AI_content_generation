@@ -74,20 +74,37 @@ const getTagIcon = (type) => {
 
 // --- Main Feed Component ---
   const Feed = () => {
+    const[isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const allPosts = useSelector((state) => state.post.allPosts);
     const likedPosts = useSelector((state) => state.post.likedPosts);
     const likingPosts = useSelector((state) => state.post.likingPosts);
+    const user = useSelector((state) => state.user);
     
     const getPostsHandler = async () => {
       try {
-        const posts = await Axios.get('/api/posts/get-posts');
+        setIsLoading(true);
+        let posts;
+       if(user.isAuthenticated){
+        posts = await Axios.get('/api/posts/get-posts');
+        if(posts.status === 200){
+          setIsLoading(false);
+        }
+       }else{
+        posts = await Axios.get('/api/posts/get-all-posts');
+        if(posts.status === 200){
+          setIsLoading(false);
+        }
+       }
         console.log(posts.data.likedPosts);
         
         // Update Redux state with posts and liked posts
         dispatch(setAllPosts(posts.data.posts));
         dispatch(setLikedPosts(posts.data.likedPosts || []));
+        
       } catch (error) {
+        setIsLoading(false);
+        console.log(isLoading)
         console.error('Error fetching posts:', error);
       }
     };
@@ -119,6 +136,7 @@ const getTagIcon = (type) => {
      
       </div>
     ) : (
+      isLoading ? (
       <div className="feed-loading-container">
         <div className="feed-loading-content">
           <div className="feed-loading-spinner"></div>
@@ -126,6 +144,14 @@ const getTagIcon = (type) => {
           <p className="feed-loading-subtitle">Fetching the latest content for you...</p>
         </div>
       </div>
+      ) : (
+        <div className="feed-loading-container">
+          <div className="feed-loading-content">
+            <h2 className="feed-loading-title">No Posts Found</h2>
+            <p className="feed-loading-subtitle">May be the server error or something went wrong!</p>
+          </div>
+        </div>
+      )
     )
   );
 };

@@ -7,7 +7,7 @@ import { addAlert } from "../redux/slices/alertSlice";
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUserAction } from '../redux/actions/userActions';
 import { setIsPlaygroundOpen } from '../redux/slices/indexSlice';
-import { FiUser } from 'react-icons/fi';
+import { FiUser, FiHome, FiPlus } from 'react-icons/fi';
 
 const Navbar = () => {
   const user = useSelector((state) => state.user);
@@ -17,6 +17,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [profilePosition, setProfilePosition] = useState({ top: 0, right: 0 });
+  const [showLogin, setShowLogin] = useState(true);
   const profileButtonRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,6 +43,16 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     document.body.style.overflow = !isMenuOpen ? 'hidden' : '';
+  };
+
+  const toggleLoginSignup = () => {
+    setShowLogin(!showLogin);
+    // Navigate to the appropriate page
+    if (showLogin) {
+      navigate('/register');
+    } else {
+      navigate('/login');
+    }
   };
 
 
@@ -97,8 +108,8 @@ const Navbar = () => {
     if (profileButtonRef.current) {
       const rect = profileButtonRef.current.getBoundingClientRect();
       setProfilePosition({
-        top: rect.top,
-        right: window.innerWidth - rect.right
+        top: rect.bottom + 8, // Position just below the button with a small gap
+        right: window.innerWidth - rect.right, // Align with the right edge of the button
       });
     }
     setIsProfileOpen(!isProfileOpen);
@@ -136,14 +147,28 @@ const Navbar = () => {
               >
                 Playground
               </NavLink>
-              <button 
-                ref={profileButtonRef}
-                className="profile-icon-btn" 
-                onClick={toggleProfile}
-                aria-label="Open profile"
-              >
-                <FiUser className="profile-icon" />
-              </button>
+              <div className="profile-container">
+                <button 
+                  ref={profileButtonRef}
+                  className="profile-icon-btn" 
+                  onClick={toggleProfile}
+                  aria-label="Open profile"
+                >
+                  {user.user?.profilePicture ? (
+                    <img 
+                      src={user.user.profilePicture} 
+                      alt="Profile" 
+                      className="profile-picture"
+                    />
+                  ) : (
+                    <FiUser className="profile-icon" />
+                  )}
+                </button>
+                <Profile
+                  isOpen={isProfileOpen}
+                  onClose={closeProfile}
+                />
+              </div>
              </>
             ) : (
               <>
@@ -152,32 +177,56 @@ const Navbar = () => {
               </>
             )}
           </div>
-          <button className="hamburger-btn" onClick={toggleMenu} aria-label="Toggle menu">
-            <span className="hamburger-bar"></span>
-            <span className="hamburger-bar"></span>
-            <span className="hamburger-bar"></span>
-          </button>
+
+           {/* NEW: Inline container for mobile icons */}
+           <div className="mobile-nav-inline">
+             <NavLink to="/feed" className="mobile-feed-btn">
+               <FiHome className="feed-icon" />
+             </NavLink>
+             
+             {user.isAuthenticated ? (
+               <>
+                 <NavLink to="/playground" className="mobile-playground-btn" onClick={playgroundHandler}>
+                   <FiPlus className="plus-icon" />
+                 </NavLink>
+                 <div className="profile-container">
+                   <button
+                     ref={profileButtonRef}
+                     className="mobile-profile-btn"
+                     onClick={toggleProfile}
+                     aria-label="Open profile"
+                   >
+                     {user.user?.profilePicture ? (
+                       <img
+                         src={user.user.profilePicture}
+                         alt="Profile"
+                         className="mobile-profile-picture"
+                       />
+                     ) : (
+                       <FiUser className="mobile-profile-icon" />
+                     )}
+                   </button>
+                   <Profile
+                     isOpen={isProfileOpen}
+                     onClose={closeProfile}
+                   />
+                 </div>
+               </>
+             ) : (
+               <button
+                 className="mobile-login-toggle-btn"
+                 onClick={toggleLoginSignup}
+               >
+                 {showLogin ? 'Login' : 'Sign Up'}
+               </button>
+             )}
+           </div>
         </div>
       </header>
-      
-      <div className={`mobile-nav ${isMenuOpen ? 'is-open' : ''}`}>
-        <button className="close-btn" onClick={toggleMenu} aria-label="Close menu">&times;</button>
-        <nav className="mobile-nav-menu">
-          <a href="#feed" >Feed</a>
-          <a href="#about" >About</a>
-          <a href="#contact" >Contact</a>
  
-        </nav>
-      </div>
-
-      {/* Profile Dropdown */}
-      <Profile 
-        isOpen={isProfileOpen} 
-        onClose={closeProfile}
-        position={profilePosition}
-      />
-    </>
-  );
-};
+       {/* Remove Redundant Profile Dropdown */}
+     </>
+   );
+ };
 
 export default Navbar;

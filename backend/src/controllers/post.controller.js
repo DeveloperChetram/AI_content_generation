@@ -140,7 +140,21 @@ const savePostController = async (req, res) => {
 //        $push: { posts:  {_id:newPost._id, title:title,}  }
 //    });
 }
-
+const getAllPostsWithoutAuthController = async (req, res) => {
+   try {
+     const posts = await postModel.find({isPosted: true}).sort({createdAt: -1});
+     res.status(200).json({
+         message: "Posts fetched successfully",
+         posts: posts
+     });
+   } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({
+        message: "Failed to fetch posts",
+        error: error.message
+    });
+   }
+}
 const getPostController = async (req, res) => {
     const { user } = req;
     try {
@@ -160,6 +174,7 @@ const getPostController = async (req, res) => {
         });
     }
 }
+
 const getPostsByUserController = async (req, res) => {
     const { user } = req;
     // console.log("user from getPostsByUserController", user)
@@ -173,4 +188,4 @@ const getPostsByUserController = async (req, res) => {
         
     });
 }
-module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController};
+module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController, getAllPostsWithoutAuthController};
