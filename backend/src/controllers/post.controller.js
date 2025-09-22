@@ -2,6 +2,7 @@ const postModel = require('../models/post.model');
 const userModel = require('../models/user.model');
 const generateContent = require('../services/ai.service')
 const { uploadImage, uploadImageFromUrl } = require('../services/imagekit.service')
+const likeModel = require('../models/like.model');
 const createPostController = async (req, res) => {
 
     let { user } = req;
@@ -98,7 +99,7 @@ const uploadImageController = async (req, res) => {
 }
 
 const savePostController = async (req, res) => {
-    const {title, content, userID, type, prompt, imagePrompt, imageUrl } = req.body;
+    const {title, content, type, prompt, imagePrompt, imageUrl } = req.body;
     const { user } = req;
     // const {file} = req.files
   
@@ -121,7 +122,7 @@ const savePostController = async (req, res) => {
             url: imageUrl   
            }
        },
-       user: userID,
+       user: user._id,
        username: user.name
    });
    res.status(200).json({
@@ -135,17 +136,35 @@ const savePostController = async (req, res) => {
     creditLeft: user.aiCredits
    });
    
-      await userModel.findByIdAndUpdate(user._id, {
-       $push: { posts:  {_id:newPost._id, title:title,}  }
-   });
+//       await userModel.findByIdAndUpdate(user._id, {
+//        $push: { posts:  {_id:newPost._id, title:title,}  }
+//    });
 }
-
+const getAllPostsWithoutAuthController = async (req, res) => {
+   try {
+     const posts = await postModel.find({isPosted: true}).sort({createdAt: -1});
+     res.status(200).json({
+         message: "Posts fetched successfully",
+         posts: posts
+     });
+   } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({
+        message: "Failed to fetch posts",
+        error: error.message
+    });
+   }
+}
 const getPostController = async (req, res) => {
+    const { user } = req;
     try {
     const posts = await postModel.find({isPosted: true}).sort({createdAt: -1});
+    const LikedPosts = await likeModel.find({user: user._id})
+    const likedPostsIds = LikedPosts.map(like => like.post)
     res.status(200).json({
         message: "Posts fetched successfully",
-        posts: posts
+        posts: posts,
+        likedPosts:likedPostsIds
     });
     } catch (error) {
         console.error("Error fetching posts:", error);
@@ -155,4 +174,18 @@ const getPostController = async (req, res) => {
         });
     }
 }
-module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController};
+
+const getPostsByUserController = async (req, res) => {
+    const { user } = req;
+    // console.log("user from getPostsByUserController", user)
+    const posts = await postModel.find({user: user._id})
+    console.log(user)
+   
+    console.log("posts from getPostsByUserController", posts)
+    res.status(200).json({
+        message: "Posts fetched successfully",
+        posts: posts,
+        
+    });
+}
+module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController, getAllPostsWithoutAuthController};

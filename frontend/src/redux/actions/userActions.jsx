@@ -139,3 +139,33 @@ try {
     return error;
 }
 }
+
+export const updateProfileAction = (data)=> async (dispatch)=>{
+    try {
+        dispatch(addAlert(
+            {
+                type:"warning",
+                content:"Updating profile...",
+                duration:5000
+            }
+        ))
+        const result = await axios.patch('/api/user/update-user',data);
+        dispatch(addAlert(
+            {
+                type:"success",
+                content:"Profile updated successfully",
+                duration:5000
+            }
+        ))
+        return result;
+    } catch (error) {
+        dispatch(addAlert(
+            {
+                type:"error",
+                content:error?.response?.data?.message || "Something went wrong",
+                duration:5000
+            }
+        ))
+        return error;
+    }
+}

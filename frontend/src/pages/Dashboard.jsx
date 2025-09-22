@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/theme.css'; // Import theme variables
-import '../styles/Dashboard.css'; // Import component-specific styles
+import '../styles/dashboard.css'; // Import component-specific styles
 import { FiSearch, FiBell } from 'react-icons/fi';
 import { useSelector, useDispatch } from 'react-redux';
 import { addAlert } from '../redux/slices/alertSlice';

@@ -28,6 +28,17 @@
   --bg-gradient-color_2: #2a2a2a;
   --bg-gradient-color_3: #3a3a3a;
   --bg-gradient-color_4: #4a4a4a;
+
+  /* Post Type Colors */
+  --type-color-general-hit: #a855f7;   /* Vibrant Purple */
+  --type-color-bold-thoughts: #ef4444; /* Bright Red */
+  --type-color-ai-prompts: #3b82f6;    /* Electric Blue */
+  --type-color-coding-meme: #10b981;   /* Emerald Green */
+  --type-color-story-set: #f97316;     /* Orange */
+  --type-color-vibe-talk: #06b6d4;     /* Cyan */
+  --type-color-hot-quote: #ec4899;     /* Hot Pink */
+  --type-color-tips-tricks: #eab308;  /* Golden Yellow */
+
   /* Fonts */
   --font-sans: 'Inter', sans-serif;
   --font-serif-display: 'Playfair Display', serif;
@@ -74,6 +85,16 @@
     --pg-gradient-orange: #ff7600; /* primary orange */
     --pg-gradient-pastel: #ff9133; /* primary light */
     --pg-gradient-cream: #fbfbfb;  /* foreground */
+    
+    /* Post Type Colors - Light Theme */
+    --type-color-general-hit: #a855f7;   /* Lilac */
+    --type-color-bold-thoughts: #ef4444; /* Coral */
+    --type-color-ai-prompts: #38bdf8;    /* Blue */
+    --type-color-coding-meme: #34d399;   /* Green */
+    --type-color-story-set: #f97316;     /* Orange */
+    --type-color-vibe-talk: #22d3ee;     /* Cyan */
+    --type-color-hot-quote: #ec4899;     /* Pink */
+    --type-color-tips-tricks: #facc15;  /* Yellow */
   }
 }
 

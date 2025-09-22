@@ -1,6 +1,6 @@
 import axios from "../../api/axios"
 import { addAlert } from "../slices/alertSlice"
-import { setRecentPost } from "../slices/postSlice"
+import { setRecentPost, setAllPosts, toggleLike, updatePostLikeCount, setLikingPost } from "../slices/postSlice"
 
 export const generatePostAction = (prompt, type, title) => async (dispatch)=> {
 
@@ -33,6 +33,50 @@ export const generatePostAction = (prompt, type, title) => async (dispatch)=> {
             }
         ))
         return error;
+    }
+}
+
+export const getPostsAction = () => async (dispatch)=> {
+    try {
+        const result = await axios.get('/api/posts/get-posts-by-user')
+        console.log("result from getPostsAction", result.data)
+       await dispatch(setAllPosts(result.data.posts))
+       return result
+    } catch (error) {
+        return error
+        console.log( "error from getPostsAction", error)
+    }
+}
+
+export const likePostAction = (postId) => async (dispatch) => {
+    try {
+        dispatch(setLikingPost({ postId, isLiking: true }));
+        
+        const response = await axios.post('/api/posts/like-post', { postId });
+        
+        if (response.status === 200) {
+            // Toggle the like status in Redux
+            dispatch(toggleLike(postId));
+            
+            // Update the like count in the specific post
+            dispatch(updatePostLikeCount({
+                postId: postId,
+                likeCount: response.data.updatedPost.likeCount
+            }));
+            
+            console.log('Like action successful:', response.data);
+            return response;
+        }
+    } catch (error) {
+        console.error('Error liking post:', error);
+        dispatch(addAlert({
+            type: "error",
+            content: error?.response?.data?.message || "Failed to like post",
+            duration: 5000
+        }));
+        return error;
+    } finally {
+        dispatch(setLikingPost({ postId, isLiking: false }));
     }
 }
 

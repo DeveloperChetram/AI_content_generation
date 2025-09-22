@@ -7,9 +7,6 @@ import '../styles/RichTextContent.css';
 const RichTextContent = ({ content, className = '' }) => {
   if (!content) return null;
 
-  // Debug: Log the content to see its format
-  console.log('RichTextContent received:', content.substring(0, 200) + '...');
-
   // Function to convert Markdown to HTML
   const convertMarkdownToHTML = (markdownContent) => {
     if (!markdownContent) return '';
@@ -35,20 +32,7 @@ const RichTextContent = ({ content, className = '' }) => {
     return marked(markdownContent);
   };
 
-  // Check if content is Markdown (contains markdown syntax)
-  const isMarkdown = /^#{1,6}\s|^\*\*|^\*[^*]|^```|^`[^`]|^\-\s|^\d+\.\s|^\>\s|^\[.*\]\(.*\)/m.test(content);
-  
-  console.log('Content type detected:', isMarkdown ? 'Markdown' : 'HTML');
-  
-  let processedContent;
-  if (isMarkdown) {
-    // Convert Markdown to HTML
-    processedContent = convertMarkdownToHTML(content);
-    console.log('Converted HTML:', processedContent.substring(0, 200) + '...');
-  } else {
-    // Use content as-is (already HTML)
-    processedContent = content;
-  }
+  const processedContent = convertMarkdownToHTML(content);
 
   // Apply syntax highlighting to any code blocks after rendering
   useEffect(() => {

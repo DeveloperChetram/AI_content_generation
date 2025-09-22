@@ -14,6 +14,9 @@ const createImageController = async (req, res) => {
 
     const { prompt, aspectRatio = "16:9" } = req.body; // Default to 16:9
     let { user } = req;
+    user = await userModel.findById(user._id);
+
+    
 
     if (user.aiImageCredits <= 0) {
         return res.status(400).json({
@@ -27,13 +30,18 @@ const createImageController = async (req, res) => {
             message: "Failed to image"
         });
     }
+    const updatedUser = await userModel.findByIdAndUpdate(user._id, { aiImageCredits: user.aiImageCredits - 1 }, { new: true });
+    req.user = updatedUser;
+  
+
+
     console.log("result from createImageController", result)
   
     res.status(200).json({
         message: "Image generated successfully",
         image: result.image_url,
         prompt: prompt,
-        user: user,
+        user: updatedUser,
     });
 }
 

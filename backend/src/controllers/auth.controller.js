@@ -35,7 +35,8 @@ const registerController = async (req, res) => {
           aiCredits: user.aiCredits,
           aiImageCredits: user.aiImageCredits,
           posts: user.posts,
-
+          bio: user.bio,
+          profilePicture: user.profilePicture,
         },
      })
  }  catch (error) {
@@ -77,6 +78,8 @@ const loginController = async (req,res)=>{
             aiCredits: user.aiCredits,
             aiImageCredits: user.aiImageCredits,
             posts: user.posts,
+            bio: user.bio,
+            profilePicture: user.profilePicture,
 
         },
     });

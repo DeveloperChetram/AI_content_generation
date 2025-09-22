@@ -10,21 +10,22 @@ async function callA4FWithAxios(prompt, aspectRatio = "16:9") {
         "Content-Type": "application/json",
     };
 
-    // A4F API supported sizes: 1024x1024, 1792x1024, or 1024x1792
+    
     const sizeMap = {
-        "1:1": "1024x1024",     // Square
-        "16:9": "1792x1024",    // Landscape (closest to 16:9)
-        "9:16": "1024x1792"     // Portrait
+        "1:1": "1024x1024",    
+        "16:9": "1792x1024",    
+        "9:16": "1024x1792"     
     };
 
     const size = sizeMap[aspectRatio] || sizeMap["16:9"]; // Default to 16:9
 
     const payload = {
-        model: "provider-4/imagen-4", // Use an A4F provider-prefixed model
-        prompt: prompt + " always in a style of a comic book",
+        model: "provider-4/imagen-4", 
+        prompt: prompt + ", cinematic surreal photography style, moody atmosphere, soft focus, film grain, muted gradient backgrounds, motion blur, silhouettes, minimalistic composition",
         n: 1,
         size: size
     };
+    
 
     console.log(`Generating image with size: ${size} (aspect ratio: ${aspectRatio})`);
 
@@ -46,8 +47,7 @@ async function callA4FWithAxios(prompt, aspectRatio = "16:9") {
     }
 }
 
-// Export the function for use in other modules
+
 module.exports = { callA4FWithAxios };
 
-// Uncomment the line below to test the function directly
-// callA4FWithAxios();
+

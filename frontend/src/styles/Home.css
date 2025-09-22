@@ -105,7 +105,11 @@
   align-items: flex-start; /* Prevent vertical centering of dynamic island */
 }
 .nav-center { justify-content: center; height: 40px; }
-.nav-right { justify-content: flex-end; height: 40px; }
+.nav-right {
+  justify-content: flex-end;
+  height: 40px;
+  gap: var(--spacing-sm); /* Add gap for mobile icons */
+}
 
 /* Dynamic Island styles moved to DynamicIsland.css */
 
@@ -138,7 +142,43 @@
   
   .nav-left { flex-grow: 1; }
 
+  /* Show mobile navigation */
+  .mobile-nav-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
   /* Dynamic Island mobile styles moved to DynamicIsland.css */
+}
+
+/* Additional mobile adjustments for smaller screens */
+@media (max-width: 480px) {
+  .mobile-nav-inline {
+    gap: 8px;
+  }
+  
+  .mobile-login-toggle-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .mobile-feed-btn,
+  .mobile-profile-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .mobile-profile-picture {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .feed-icon,
+  .mobile-profile-icon {
+    width: 16px;
+    height: 16px;
+  }
 }
 /* .nav-logo styles moved to DynamicIsland.css */
 .nav-menu a {
@@ -196,6 +236,13 @@
   height: 20px;
   color: var(--primary-btn-text);
 }
+
+.profile-picture {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 .btn-secondary {
   background-color: transparent;
   color: var(--text-color);
@@ -213,68 +260,131 @@
 }
 
 /* --- NEW: Hamburger Menu Styles --- */
-.hamburger-btn {
-  display: none; /* Hidden on desktop */
-  background: none;
+/* Remove hamburger styles */
+
+.mobile-playground-btn {
+  display: none; /* Hidden by default */
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-btn-bg);
+  color: var(--primary-btn-text);
   border: none;
   cursor: pointer;
-  padding: 0;
-  /* z-index: 1001; */
-  flex-direction: column;
-  gap: 5px;
+  transition: all 0.2s ease;
 }
-.hamburger-bar {
-  display: block;
-  width: 25px;
-  height: 3px;
-  background-color: var(--text-color);
-  border-radius: 3px;
+
+.mobile-playground-btn .plus-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Hide mobile-nav-inline by default */
+.mobile-nav-inline {
+  display: none;
+}
+
+/* Show mobile nav elements and hide desktop ones */
+@media (min-width: 901px) {
+  .nav-center, .nav-buttons {
+    display: flex;
+  }
+}
+
+/* Show mobile nav elements and hide desktop ones */
+@media (max-width: 900px) {
+  .nav-center, .nav-buttons {
+    display: none;
+  }
+
+  .mobile-nav-inline, .mobile-playground-btn {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.mobile-nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.mobile-feed-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--input-bg-color);
+  border: 1px solid var(--input-border-color);
+  color: var(--text-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mobile-feed-btn:hover {
+  background-color: var(--primary-btn-bg);
+  color: var(--primary-btn-text);
+}
+
+.feed-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.mobile-profile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-btn-bg);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-profile-btn:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.mobile-profile-picture {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mobile-profile-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--primary-btn-text);
+}
+
+.mobile-login-toggle-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: var(--primary-btn-bg);
+  color: var(--primary-btn-text);
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.mobile-login-toggle-btn:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
 }
 
 /* --- NEW: Mobile Navigation Overlay --- */
-.mobile-nav {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--bg-color);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transform: translateX(100%);
-  opacity: 0;
-  visibility: hidden;
-  transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s;
-}
-.mobile-nav.is-open {
-  transform: translateX(0);
-  opacity: 1;
-  visibility: visible;
-}
-.close-btn {
-  position: absolute;
-  top: var(--spacing-md);
-  right: var(--spacing-lg);
-  background: none;
-  border: none;
-  color: var(--text-color);
-  font-size: 2.5rem;
-  cursor: pointer;
-}
-.mobile-nav-menu {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
-.mobile-nav-menu a {
-  color: var(--text-color);
-  text-decoration: none;
-  font-size: 1.8rem;
-  font-weight: 500;
-}
+/* Removing styles for .mobile-nav, .close-btn, .mobile-nav-menu as they are no longer used */
 
 /* ... existing hero section styles remain the same ... */
 .hero-section {
