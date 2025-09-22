@@ -7,6 +7,8 @@ import Dashboard from "../pages/Dashboard";
 import AuthRoutes from "./AuthRoutes";
 // import Playground from "../components/Playground";
 import PlaygroundUI from "../components/PlaygroundUI";
+import CoverImageUpload from "../components/CoverImageUpload";
+import Feed from "../pages/Feed";
 
 const MainRoutes = () => {
   return (
@@ -19,6 +21,8 @@ const MainRoutes = () => {
         <Route path="/dashboard" element={<AuthRoutes><Dashboard/></AuthRoutes>} />
         <Route path="/playground" element={<AuthRoutes><PlaygroundUI/></AuthRoutes>} />
         {/* <Route path="/dashboard" element={<Dashboard/>} /> */}
+        <Route path="/create-cover-image" element={<AuthRoutes><CoverImageUpload/></AuthRoutes>} />
+        <Route path="/feed" element={<Feed/>} /> 
         
       </Routes>
  

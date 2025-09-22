@@ -19,8 +19,9 @@ const postSchema = new mongoose.Schema({
    },
     isPosted: {
         type: Boolean,
-        default: false
+        default: true
     },
+    username: String,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"

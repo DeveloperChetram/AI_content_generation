@@ -248,7 +248,7 @@ select.pg-input option {
   flex-direction: column;
   min-height: 250px;
   position: relative;
-  z-index: -1;
+  z-index: 1;
 }
 
 /* Rich Text Editor Toolbar */
@@ -521,6 +521,29 @@ select.pg-input option {
   opacity: 0.85;
 }
 
+/* Continue button disabled state styling */
+.pg-continue-disabled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
+  border-radius: 25px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pg-disabled-text {
+  color: var(--pg-text-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.missing-field {
+  color: #ff6b6b;
+  font-weight: 600;
+  margin-left: 0.25rem;
+}
+
 /* Editable Output Textarea */
 .pg-output-textarea {
   background: transparent;
@@ -690,23 +713,64 @@ select.pg-input option {
   border-radius: 12px;
   overflow: hidden;
   min-height: 200px;
+  border: 1px solid var(--input-border-color);
+  transition: border-color 0.2s ease;
+}
+
+.tiptap-editor-container:focus-within {
+  border-color: var(--accent-color);
 }
 
 .tiptap-editor {
   background-color: transparent;
   color: var(--pg-text-primary);
-  /* padding: 1rem; */
+  padding: 1rem;
   min-height: 200px;
   font-family: var(--pg-font-sans);
   font-size: 1rem;
   font-weight: normal;
   line-height: 1.6;
   outline: none;
+  cursor: text;
+  border: 1px solid transparent;
+  transition: border-color 0.2s ease;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.tiptap-editor:focus {
+  border-color: var(--accent-color);
 }
 
 /* Ensure all text elements have normal font-weight unless explicitly styled */
 .tiptap-editor * {
   font-weight: inherit;
+}
+
+/* Ensure spaces are preserved in all text elements */
+.tiptap-editor span,
+.tiptap-editor div,
+.tiptap-editor p,
+.tiptap-editor li,
+.tiptap-editor td,
+.tiptap-editor th {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ProseMirror specific fixes for space handling */
+.ProseMirror {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.ProseMirror p {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 .tiptap-editor p,
@@ -725,6 +789,83 @@ select.pg-input option {
   float: left;
   height: 0;
   pointer-events: none;
+}
+
+/* Placeholder-like styling for default content - Ultra High Specificity */
+.tiptap-editor-container .tiptap-editor .default-content,
+.tiptap-editor .default-content,
+.ProseMirror .default-content {
+  opacity: 0.4 !important;
+  color: #888888 !important;
+  font-style: italic !important;
+  transition: opacity 0.3s ease, color 0.3s ease;
+  position: relative;
+}
+
+.tiptap-editor-container .tiptap-editor .default-content:hover,
+.tiptap-editor .default-content:hover {
+  opacity: 0.6 !important;
+}
+
+/* Override all child elements - Ultra High Specificity */
+.tiptap-editor-container .tiptap-editor .default-content *,
+.tiptap-editor .default-content *,
+.ProseMirror .default-content * {
+  opacity: 0.4 !important;
+  color: #888888 !important;
+  font-style: italic !important;
+}
+
+.tiptap-editor-container .tiptap-editor .default-content h1,
+.tiptap-editor-container .tiptap-editor .default-content h2,
+.tiptap-editor-container .tiptap-editor .default-content h3,
+.tiptap-editor-container .tiptap-editor .default-content h4,
+.tiptap-editor-container .tiptap-editor .default-content h5,
+.tiptap-editor-container .tiptap-editor .default-content h6,
+.tiptap-editor .default-content h1,
+.tiptap-editor .default-content h2,
+.tiptap-editor .default-content h3,
+.tiptap-editor .default-content h4,
+.tiptap-editor .default-content h5,
+.tiptap-editor .default-content h6 {
+  opacity: 0.4 !important;
+  color: #888888 !important;
+  font-style: italic !important;
+}
+
+.tiptap-editor-container .tiptap-editor .default-content p,
+.tiptap-editor .default-content p {
+  opacity: 0.4 !important;
+  color: #888888 !important;
+  font-style: italic !important;
+}
+
+.tiptap-editor-container .tiptap-editor .default-content li,
+.tiptap-editor .default-content li {
+  opacity: 0.4 !important;
+  color: #888888 !important;
+  font-style: italic !important;
+}
+
+.tiptap-editor-container .tiptap-editor .default-content blockquote,
+.tiptap-editor .default-content blockquote {
+  opacity: 0.4 !important;
+  color: #888888 !important;
+  font-style: italic !important;
+}
+
+.tiptap-editor-container .tiptap-editor .default-content pre,
+.tiptap-editor .default-content pre {
+  opacity: 0.4 !important;
+  color: #888888 !important;
+  font-style: italic !important;
+}
+
+.tiptap-editor-container .tiptap-editor .default-content code,
+.tiptap-editor .default-content code {
+  opacity: 0.4 !important;
+  color: #888888 !important;
+  font-style: italic !important;
 }
 
 /* Tiptap Content Styling */
@@ -757,6 +898,19 @@ select.pg-input option {
   margin: 1rem 0;
   color: var(--pg-text-primary);
   font-weight: 400;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Specific styling for paragraph class */
+.tiptap-editor .paragraph {
+  margin: 1rem 0;
+  color: var(--pg-text-primary);
+  font-weight: 400;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .tiptap-editor ul,
@@ -988,6 +1142,76 @@ select.pg-input option {
 .tiptap-editor a:hover {
   color: var(--bottom-gradient-color);
 }
+
+/* Force placeholder styling - Nuclear Option */
+div.default-content,
+.default-content,
+[class*="default-content"] {
+  opacity: 0.4 !important;
+  color: #888888 !important;
+  font-style: italic !important;
+}
+
+div.default-content *,
+.default-content *,
+[class*="default-content"] * {
+  opacity: 0.4 !important;
+  color: #888888 !important;
+  font-style: italic !important;
+}
+
+/* Woosh Animation for Content Clearing - Fast & Smooth */
+.woosh-animation {
+  animation: woosh-out 0.3s ease-in-out forwards;
+  will-change: transform, opacity, filter;
+  transform-origin: center center;
+}
+
+@keyframes woosh-out {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1) rotateY(0deg);
+    filter: blur(0px) brightness(1);
+  }
+  15% {
+    opacity: 0.9;
+    transform: translateX(-5px) scale(0.99) rotateY(-2deg);
+    filter: blur(0.5px) brightness(0.95);
+  }
+  35% {
+    opacity: 0.7;
+    transform: translateX(-15px) scale(0.96) rotateY(-5deg);
+    filter: blur(1px) brightness(0.9);
+  }
+  55% {
+    opacity: 0.4;
+    transform: translateX(-35px) scale(0.9) rotateY(-8deg);
+    filter: blur(2px) brightness(0.8);
+  }
+  75% {
+    opacity: 0.2;
+    transform: translateX(-55px) scale(0.8) rotateY(-10deg);
+    filter: blur(4px) brightness(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-80px) scale(0.7) rotateY(-12deg);
+    filter: blur(8px) brightness(0.3);
+  }
+}
+
+/* Clear button specific styling */
+.pg-clear-btn {
+  color: #ff6b6b !important;
+  border-color: #ff6b6b !important;
+}
+
+.pg-clear-btn:hover {
+  background-color: #ff6b6b !important;
+  color: #ffffff !important;
+  border-color: #ff6b6b !important;
+}
+
 
 /* Mobile-first responsive design */
 @media (max-width: 480px) {
