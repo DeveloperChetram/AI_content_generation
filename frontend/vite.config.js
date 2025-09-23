@@ -9,7 +9,7 @@ export default defineConfig({
     {
       name: 'remove-console',
       transform(code, id) {
-        if (process.env.NODE_ENV === 'production' || import.meta.env.PROD) {
+        if (process.env.NODE_ENV === 'production' || process.env.VERCEL || import.meta.env.PROD) {
           // Remove various console statements
           return code
             .replace(/console\.log\([^)]*\);?/g, '')
@@ -34,14 +34,6 @@ export default defineConfig({
         drop_console: true,
         drop_debugger: true,
       },
-    },
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          redux: ['@reduxjs/toolkit', 'react-redux']
-        }
-      }
     }
   },
   server: {
