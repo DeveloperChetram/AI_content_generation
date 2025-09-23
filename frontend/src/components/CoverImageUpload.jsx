@@ -85,7 +85,7 @@ const CoverImageUpload = () => {
         setIsUploading(false);
         dispatch(addAlert({
           type: 'success',
-          content: 'Image uploaded successfully',
+          content: 'Image selected successfully',
           duration: 3000
         }));
       };
@@ -106,7 +106,7 @@ const CoverImageUpload = () => {
       if (imageData && imageData.image) {
         dispatch(addAlert({
           type: 'info',
-          content: 'Uploading AI generated image to ImageKit...',
+          content: 'Uploading AI generated image',
           duration: false
         }));
 
@@ -118,14 +118,14 @@ const CoverImageUpload = () => {
         
         dispatch(addAlert({
           type: 'success',
-          content: 'AI image uploaded to ImageKit successfully',
+          content: 'AI image uploaded successfully',
           duration: 3000
         }));
       }
       else if (uploadedFileName && fileInputRef.current.files[0]) {
         dispatch(addAlert({
           type: 'info',
-          content: 'Uploading image to ImageKit...',
+          content: 'Uploading image',
           duration: false
         }));
 
@@ -142,7 +142,7 @@ const CoverImageUpload = () => {
         
         dispatch(addAlert({
           type: 'success',
-          content: 'Image uploaded to ImageKit successfully',
+          content: 'Image uploaded successfully',
           duration: 3000
         }));
       }

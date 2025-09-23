@@ -86,10 +86,11 @@
   align-items: flex-start;
   background-color: var(--input-bg-color);
   border-radius: 50px;
-  padding: 10px 15px;
+  padding: 10px 12px 10px 15px; /* top right bottom left - reduced right padding */
   overflow: visible;
-  transition: width 0.6s ease-out, max-height 0.3s ease-out, border-radius 0.3s ease-out, box-shadow 0.3s ease-out;
-  min-width: 280px;
+  transition: max-height 0.3s ease-out, border-radius 0.3s ease-out, box-shadow 0.3s ease-out;
+  width: 120px; /* Default logo-only width */
+  min-width: 120px; /* Reduced to fit only logo */
   max-width: 400px;
   max-height: 40px;
   box-sizing: border-box;
@@ -100,45 +101,57 @@
   align-self: flex-start;
 }
 
+/* Alert state - expanded width (Tablet and Desktop) */
+@media (min-width: 769px) {
+  .dynamic-island.alert-expanded {
+    width: var(--island-width, 280px) !important; /* Use CSS variable for dynamic width - instant application */
+  }
+}
+
+/* Smooth transition class - only applied when needed */
+.dynamic-island.smooth-transition {
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), max-height 0.3s ease-out, border-radius 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
 /* Alert Toast Variants */
 .dynamic-island.success {
   background: linear-gradient(135deg, #10b981, #059669);
   box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3);
   color: white;
-  min-width: 280px;
+  min-width: 280px; /* Expand for alerts */
   max-width: 400px;
   max-height: 40px;
-  transition: width 0.6s ease-out, max-height 0.3s ease-out, border-radius 0.3s ease-out;
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), max-height 0.3s ease-out, border-radius 0.3s ease-out;
 }
 
 .dynamic-island.error {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
   color: white;
-  min-width: 280px;
+  min-width: 280px; /* Expand for alerts */
   max-width: 400px;
   max-height: 40px;
-  transition: width 0.6s ease-out, max-height 0.3s ease-out, border-radius 0.3s ease-out;
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), max-height 0.3s ease-out, border-radius 0.3s ease-out;
 }
 
 .dynamic-island.warning {
   background: linear-gradient(135deg, #f59e0b, #d97706);
   box-shadow: 0 8px 32px rgba(245, 158, 11, 0.3);
   color: white;
-  min-width: 280px;
+  min-width: 280px; /* Expand for alerts */
   max-width: 400px;
   max-height: 40px;
-  transition: width 0.6s ease-out, max-height 0.3s ease-out, border-radius 0.3s ease-out;
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), max-height 0.3s ease-out, border-radius 0.3s ease-out;
 }
 
 .dynamic-island.info {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
   color: white;
-  min-width: 280px;
+  min-width: 280px; /* Expand for alerts */
   max-width: 400px;
   max-height: 40px;
-  transition: width 0.6s ease-out, max-height 0.3s ease-out, border-radius 0.3s ease-out;
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), max-height 0.3s ease-out, border-radius 0.3s ease-out;
 }
 
 /* Pulse Effect - Attached to div with no space */
@@ -268,7 +281,7 @@
   height: 20px;
   overflow: hidden;
   min-width: 0;
-  transition: height 0.3s ease-in-out;
+  transition: height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Alert variants should allow container to expand */
@@ -280,6 +293,69 @@
   overflow: visible;
 }
 
+/* Mobile text truncation for alerts */
+@media (max-width: 768px) {
+  /* Override desktop alert-expanded width on mobile */
+  .dynamic-island.alert-expanded {
+    width: 150px !important; /* Reduced width since only showing message */
+    min-width: 150px !important;
+    max-width: 150px !important;
+  }
+  
+  .dynamic-island.alert-expanded .message-container {
+    overflow: hidden; /* Truncate text on mobile */
+  }
+  
+  .dynamic-island.alert-expanded .message {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+  }
+  
+  /* Mobile tooltip/overlay for full text */
+  .dynamic-island.alert-expanded.mobile-expanded::after {
+    content: attr(data-message);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--input-bg-color);
+    color: var(--text-color);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    white-space: normal;
+    word-wrap: break-word;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    margin-top: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Alert variant tooltips */
+  .dynamic-island.alert-expanded.mobile-expanded.success::after {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+  }
+  
+  .dynamic-island.alert-expanded.mobile-expanded.error::after {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+  }
+  
+  .dynamic-island.alert-expanded.mobile-expanded.warning::after {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+  }
+  
+  .dynamic-island.alert-expanded.mobile-expanded.info::after {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+  }
+}
+
 /* Hover effects */
 .island-container:hover .dynamic-island {
   border-radius: 22px;
@@ -288,6 +364,7 @@
   transform-origin: top left;
   align-items: flex-start;
   align-self: flex-start;
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-radius 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 
 .island-container:hover .message-container {
@@ -381,12 +458,31 @@
   to { transform: translateY(-100%); opacity: 0; }
 }
 
-/* Responsive Design */
-@media (max-width: 900px) {
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  /* Hide logo only when an alert is active to avoid blank navbar */
+  .dynamic-island.alert-expanded .nav-logo {
+    display: none;
+  }
+  
+  /* Adjust message container for mobile */
+  /* When alert is active and logo is hidden, let message take full width */
+  .dynamic-island.alert-expanded .message-container {
+    margin-left: 0; /* Remove left margin since logo is hidden */
+    width: 100%; /* Take full width */
+  }
+
+  /* Hide floating island entirely on mobile to avoid duplicate messages */
+  .island-container.floating-island { display: none; }
 
   .island-container {
-    width: 100% !important;
+    width: 150px !important; /* Reduced width since only showing message */
+    min-width: 150px !important;
+    max-width: 150px !important;
     cursor: pointer;
+    flex-shrink: 0; /* Prevent shrinking */
+    flex-grow: 0; /* Prevent growing */
+    display: inline-block; /* Prevent flex expansion */
   }
 
   /* Mobile floating island positioning */
@@ -394,10 +490,14 @@
     position: fixed;
     top: 10px;
     left: 10px;
-    right: 10px;
-    width: auto !important;
-    max-width: calc(100vw - 20px);
+    right: 10px; /* Full width on mobile */
+    width: auto !important; /* Auto width for full width */
+    min-width: auto !important;
+    max-width: none !important;
     z-index: 1001;
+    flex-shrink: 0; /* Prevent shrinking */
+    flex-grow: 0; /* Prevent growing */
+    display: block; /* Block display for full width */
   }
 
   .hidden-text {
@@ -406,27 +506,74 @@
   }
 
   .dynamic-island {
-    width: 100% !important; 
-    min-width: auto !important;
-    max-width: 100% !important;
+    width: 150px !important; /* Reduced width since only showing message */
+    min-width: 150px !important; /* Reduced minimum width */
+    max-width: 150px !important; /* Reduced maximum width */
     max-height: 40px;
+    position: relative; /* Allow absolute positioning for text */
+    flex-shrink: 0; /* Prevent shrinking */
+    flex-grow: 0; /* Prevent growing */
+  }
+  
+  /* Mobile alert state - always fixed width with truncated text */
+  .dynamic-island.alert-expanded {
+    width: 150px !important; /* Reduced width since only showing message */
+    max-width: 150px !important;
+    min-width: 150px !important;
+  }
+  
+  /* Mobile alert state - show full text in overlay on click */
+  .dynamic-island.alert-expanded.mobile-expanded {
+    width: 150px !important; /* Still maintain reduced width */
+    max-width: 150px !important;
+    min-width: 150px !important;
   }
   
   .dynamic-island.success,
   .dynamic-island.error,
   .dynamic-island.warning,
   .dynamic-island.info {
-    min-width: 280px;
-    max-width: 100%;
+    min-width: 280px; /* Expand for alerts on mobile */
+    max-width: calc(100vw - 40px);
     max-height: 40px;
+  }
+  
+  /* Mobile smooth transition class */
+  .dynamic-island.smooth-transition {
+    transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), max-height 0.3s ease-out, border-radius 0.3s ease-out, box-shadow 0.3s ease-out;
   }
 
   /* Mobile floating island specific styles */
   .island-container.floating-island .dynamic-island {
-    width: 100% !important;
-    min-width: auto !important;
-    max-width: 100% !important;
+    width: 100% !important; /* Full width for floating island */
+    min-width: auto !important; /* Auto minimum width */
+    max-width: none !important; /* No maximum width */
     margin: 0;
+    flex-shrink: 0; /* Prevent shrinking */
+    flex-grow: 0; /* Prevent growing */
+  }
+  
+  /* Mobile floating island alert state - full width */
+  .island-container.floating-island .dynamic-island.alert-expanded {
+    width: 100% !important; /* Full width for floating island alerts */
+    max-width: none !important;
+    min-width: auto !important;
+  }
+  
+  /* Mobile floating island alert state - show full text in overlay on click */
+  .island-container.floating-island .dynamic-island.alert-expanded.mobile-expanded {
+    width: 100% !important; /* Still maintain full width */
+    max-width: none !important;
+    min-width: auto !important;
+  }
+  
+  /* Mobile floating island alert variants */
+  .island-container.floating-island .dynamic-island.success,
+  .island-container.floating-island .dynamic-island.error,
+  .island-container.floating-island .dynamic-island.warning,
+  .island-container.floating-island .dynamic-island.info {
+    min-width: auto; /* Auto minimum width for full width */
+    max-width: none; /* No maximum width for full width */
   }
 
   /* Mobile floating island touch improvements */
@@ -436,7 +583,7 @@
   }
 
   .island-container.floating-island .dynamic-island {
-    padding: 12px 16px; /* Slightly larger touch target */
+    padding: 12px 14px 12px 16px; /* Slightly larger touch target - reduced right padding */
   }
 
   /* Mobile floating island animation adjustments */

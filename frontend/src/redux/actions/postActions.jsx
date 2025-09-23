@@ -68,10 +68,10 @@ export const likePostAction = (postId) => async (dispatch) => {
             return response;
         }
     } catch (error) {
-        console.error('Error liking post:', error);
+        console.error('Error liking post:', error.response);
         dispatch(addAlert({
             type: "error",
-            content: error?.response?.data?.message || "Failed to like post",
+            content: error?.response?.statusText == "Unauthorized" ? "Login to like a post" : error?.response?.data?.message || "Failed to like post",
             duration: 5000
         }));
         return error;

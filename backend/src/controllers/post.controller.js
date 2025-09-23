@@ -123,7 +123,8 @@ const savePostController = async (req, res) => {
            }
        },
        user: user._id,
-       username: user.name
+       username: user.name,
+       userProfilePicture: user.profilePicture
    });
    res.status(200).json({
     message: "Post saved successfully",
@@ -133,7 +134,8 @@ const savePostController = async (req, res) => {
     type: type,
     prompt: prompt,
     userName: user.name,
-    creditLeft: user.aiCredits
+    creditLeft: user.aiCredits,
+    userProfilePicture: user.profilePicture
    });
    
 //       await userModel.findByIdAndUpdate(user._id, {
@@ -188,4 +190,12 @@ const getPostsByUserController = async (req, res) => {
         
     });
 }
-module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController, getAllPostsWithoutAuthController};
+const getPostByIdController = async (req, res) => {
+    const { id } = req.params;
+    const post = await postModel.findById(id);
+    res.status(200).json({
+        message: "Post fetched successfully",
+        post: post
+    });
+}
+module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController, getAllPostsWithoutAuthController, getPostByIdController};

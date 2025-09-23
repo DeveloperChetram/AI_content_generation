@@ -2,6 +2,58 @@
 @import './theme.css';
 @import './RichTextContent.css';
 
+/* --- Single Post Container --- */
+.single-post-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 100px var(--spacing-md) var(--spacing-lg);
+  width: 100%;
+}
+
+.single-post-container .feed-card {
+  max-width: 600px;
+  width: 100%;
+}
+
+/* --- Loading and Error States --- */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  text-align: center;
+  padding: var(--spacing-lg);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--input-border-color);
+  border-top: 4px solid var(--primary-btn-bg);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container h2 {
+  color: var(--text-color);
+  margin-bottom: var(--spacing-sm);
+}
+
+.error-container p {
+  color: var(--text-color-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
 /* --- Main Container --- */
 .feed-container {
   display: flex;
@@ -87,6 +139,36 @@
 }
 
 .feed-user-info {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.feed-profile-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.feed-profile-initials {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-btn-bg, #ff7600), #ff5722);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.feed-user-details {
   flex-grow: 1;
 }
 

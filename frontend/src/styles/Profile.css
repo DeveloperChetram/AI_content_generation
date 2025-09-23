@@ -1,6 +1,33 @@
 /* Profile.css */
 @import './theme.css';
 
+/* Profile Close Button */
+.profile-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-color-secondary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.profile-close-btn:hover {
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+}
+
+.profile-close-btn:active {
+  transform: scale(0.95);
+}
+
 .profile-container {
   position: relative;
   display: inline-block; /* Or 'block', depending on layout */
@@ -127,6 +154,9 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   gap: 12px;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
 }
 
 .profile-action-btn:hover {
