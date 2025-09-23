@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FiHeart, FiMessageCircle, FiSend } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiHeart, FiMessageCircle, FiSend, FiMoreVertical } from 'react-icons/fi';
 import { 
   AiOutlineBulb,
   AiOutlineCode,
@@ -20,10 +20,16 @@ const FeedCard = ({
   isLiking = false, 
   onLike, 
   onComment,
+  onDelete,
   showCommentSection = true,
+  isOwnPost = false,
   className = ''
 }) => {
   const [commentText, setCommentText] = useState('');
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [isCommenting, setIsCommenting] = useState(false);
+  const [showDeleteMenu, setShowDeleteMenu] = useState(false);
 
   const handleLike = async () => {
     if (isLiking || !onLike) return;
@@ -35,11 +41,66 @@ const FeedCard = ({
     if (!commentText.trim() || !onComment) return;
     
     try {
+      setIsCommenting(true);
       await onComment(post._id, commentText.trim());
       setCommentText('');
+      // Refresh comments after adding a new one
+      if (showComments) {
+        await loadComments();
+      }
     } catch (error) {
       console.error('Error commenting:', error);
+    } finally {
+      setIsCommenting(false);
     }
+  };
+
+  const loadComments = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3000'}/api/comments/get-comments/${post._id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setComments(data.comments || []);
+      }
+    } catch (error) {
+      console.error('Error loading comments:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!onDelete) return;
+    
+    try {
+      await onDelete(post._id);
+      setShowDeleteMenu(false);
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  };
+
+  const toggleDeleteMenu = () => {
+    setShowDeleteMenu(!showDeleteMenu);
+  };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showDeleteMenu && !event.target.closest('.feed-menu-container')) {
+        setShowDeleteMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDeleteMenu]);
+
+  const toggleComments = async () => {
+    if (!showComments) {
+      await loadComments();
+    }
+    setShowComments(!showComments);
   };
 
   const handleShare = async () => {
@@ -161,10 +222,34 @@ const FeedCard = ({
             </p>
           </div>
         </div>
-        <span className={`feed-type-tag tag-base ${getTagClass(post?.type)}`}>
-          {getTagIcon(post?.type)}
-          {post?.type}
-        </span>
+        <div className="feed-header-right">
+          <span className={`feed-type-tag tag-base ${getTagClass(post?.type)}`}>
+            {getTagIcon(post?.type)}
+            {post?.type}
+          </span>
+          {isOwnPost && (
+            <div className="feed-menu-container">
+              <button 
+                className="feed-menu-btn"
+                onClick={toggleDeleteMenu}
+                aria-label="Post options"
+                title="Post options"
+              >
+                <FiMoreVertical />
+              </button>
+              {showDeleteMenu && (
+                <div className="feed-menu-dropdown">
+                  <button 
+                    className="feed-menu-delete"
+                    onClick={handleDelete}
+                  >
+                    Delete Post
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     
       <div className="feed-content">
@@ -213,42 +298,102 @@ const FeedCard = ({
           </button>
           <button 
             className="feed-action-btn" 
+            aria-label="Comment on post"
+            onClick={toggleComments}
+          >
+            <FiMessageCircle />
+            <span>{post?.commentCount || 0}</span>
+          </button>
+          <button 
+            className="feed-action-btn" 
             aria-label="Share post"
             onClick={handleShare}
           >
             <FiSend />
-            <span>{post?.shareCount || 0}</span>
           </button>
         </div>
       </div>
     
       {showCommentSection && (
         <div className="feed-comment-section">
-          {currentUser?.avatar && (
-            <img 
-              src={currentUser.avatar} 
-              alt="Your avatar" 
-              className="comment-avatar" 
-            />
+          <div className="comment-input-container">
+            <div className="comment-user-avatar-container">
+              {currentUser?.avatar ? (
+                <img 
+                  src={currentUser.avatar} 
+                  alt={`${currentUser.name || 'Your'} avatar`} 
+                  className="comment-user-avatar" 
+                />
+              ) : (
+                <div className="comment-user-initials">
+                  {getInitials(currentUser?.name || 'U')}
+                </div>
+              )}
+            </div>
+            <form className="comment-input-wrapper" onSubmit={handleComment}>
+              <div className="comment-input-field">
+                <input 
+                  type="text" 
+                  placeholder={`Write a comment as ${currentUser?.name || 'Guest'}...`} 
+                  className="comment-input"
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  disabled={isCommenting}
+                />
+                {onComment && (
+                  <button 
+                    type="submit" 
+                    className="comment-submit-btn"
+                    disabled={!commentText.trim() || isCommenting}
+                  >
+                    {isCommenting ? (
+                      <div className="comment-loading-spinner"></div>
+                    ) : (
+                      'Post'
+                    )}
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showComments && (
+        <div className="comments-list">
+          {comments.length > 0 ? (
+            comments.map((comment) => (
+              <div key={comment._id} className="comment-item">
+                <div className="comment-avatar-container">
+                  {comment.userProfilePicture ? (
+                    <img 
+                      src={comment.userProfilePicture} 
+                      alt={`${comment.username}'s avatar`} 
+                      className="comment-user-avatar" 
+                    />
+                  ) : (
+                    <div className="comment-user-initials">
+                      {getInitials(comment.username)}
+                    </div>
+                  )}
+                </div>
+                <div className="comment-content">
+                  <div className="comment-header">
+                    <span className="comment-username">{comment.username}</span>
+                    <span className="comment-timestamp">
+                      {new Date(comment.createdAt).toLocaleString(undefined, {
+                        dateStyle: 'short',
+                        timeStyle: 'short',
+                      })}
+                    </span>
+                  </div>
+                  <div className="comment-text">{comment.content}</div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="no-comments">No comments yet. Be the first to comment!</div>
           )}
-          <form className="comment-input-wrapper" onSubmit={handleComment}>
-            <input 
-              type="text" 
-              placeholder="Write your comment..." 
-              className="comment-input"
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-            />
-            {onComment && (
-              <button 
-                type="submit" 
-                className="comment-submit-btn"
-                disabled={!commentText.trim()}
-              >
-                Post
-              </button>
-            )}
-          </form>
         </div>
       )}
     </div>

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FiUser, FiMail, FiCalendar, FiCreditCard, FiEdit3, FiSettings, FiSearch, FiFilter, FiTrendingUp, FiClock, FiMoreHorizontal, FiPlus, FiHeart } from 'react-icons/fi';
 import '../styles/Profile.css';
-import { getPostsAction, likePostAction } from '../redux/actions/postActions';
+import { getPostsAction, likePostAction, createCommentAction, deletePostAction } from '../redux/actions/postActions';
 import { emptyAllPosts } from '../redux/slices/postSlice';
 import FeedCard from '../components/FeedCard';
 
@@ -20,6 +20,16 @@ const ProfilePage = () => {
   const [filterType, setFilterType] = useState('all');
   const [sortBy, setSortBy] = useState('recent');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  
+  const currentUser = user.user ? {
+    avatar: user.user.profilePicture || 'https://i.pravatar.cc/48?u=currentUser',
+    name: user.user.name || user.user.username,
+    username: user.user.username
+  } : {
+    avatar: 'https://i.pravatar.cc/48?u=currentUser',
+    name: 'Guest',
+    username: 'guest'
+  };
   
   useEffect(() => {
     console.log("allPosts", allPosts);
@@ -352,10 +362,14 @@ const ProfilePage = () => {
                       <FeedCard 
                         key={post._id}
                         post={post} 
+                        currentUser={currentUser}
                         isLiked={likedPosts.includes(post._id)}
                         isLiking={likingPosts.includes(post._id)}
                         onLike={() => dispatch(likePostAction(post._id))}
-                        showCommentSection={false}
+                        onComment={(postId, content) => dispatch(createCommentAction(postId, content))}
+                        onDelete={(postId) => dispatch(deletePostAction(postId))}
+                        showCommentSection={true}
+                        isOwnPost={true}
                       /> 
                     )
                   ) : (

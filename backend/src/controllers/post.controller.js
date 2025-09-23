@@ -3,6 +3,7 @@ const userModel = require('../models/user.model');
 const generateContent = require('../services/ai.service')
 const { uploadImage, uploadImageFromUrl } = require('../services/imagekit.service')
 const likeModel = require('../models/like.model');
+const commentModel = require('../models/comment.model');
 const createPostController = async (req, res) => {
 
     let { user } = req;
@@ -185,4 +186,37 @@ const getPostByIdController = async (req, res) => {
         post: post
     });
 }
-module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController, getAllPostsWithoutAuthController, getPostByIdController};
+
+const deletePostController = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const { _id } = req.user;
+
+        // Find the post and check ownership
+        const post = await postModel.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        if (post.user.toString() !== _id.toString()) {
+            return res.status(403).json({ message: 'You can only delete your own posts' });
+        }
+
+        // Delete all related data
+        await Promise.all([
+            // Delete all likes for this post
+            likeModel.deleteMany({ post: postId }),
+            // Delete all comments for this post
+            commentModel.deleteMany({ post: postId }),
+            // Delete the post itself
+            postModel.findByIdAndDelete(postId)
+        ]);
+
+        res.status(200).json({ message: 'Post deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController, getAllPostsWithoutAuthController, getPostByIdController, deletePostController};
