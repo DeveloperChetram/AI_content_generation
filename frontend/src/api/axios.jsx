@@ -1,9 +1,8 @@
 import axios from "axios";
+import logger from "../utils/logger.js";
 
 const getBaseURL = () => {
-    
-  
-        return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3000';
+    return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3000';
 }
 
 
@@ -19,7 +18,7 @@ const instance = axios.create({
 // Request interceptor
 instance.interceptors.request.use(
     (config) => {
-        console.log(`Making ${config.method?.toUpperCase()} request to: ${config.baseURL}${config.url}`);
+        logger.log(`Making ${config.method?.toUpperCase()} request to: ${config.baseURL}${config.url}`);
         return config;
     },
     (error) => {
@@ -33,7 +32,7 @@ instance.interceptors.response.use(
         return response;
     },
     (error) => {
-        console.error('API Error:', error.response?.data || error.message);
+        logger.error('API Error:', error.response?.data || error.message);
         return Promise.reject(error);
     }
 );

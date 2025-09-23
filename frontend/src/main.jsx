@@ -2,13 +2,13 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import {store} from "./redux/store"
 import { Provider} from 'react-redux'
-import { BrowserRouter } from "react-router";
+import { HashRouter } from "react-router-dom";
 
 createRoot(document.getElementById('root')).render(
 <Provider store={store}>
-<BrowserRouter >
+<HashRouter >
     <App />
-</BrowserRouter>
+</HashRouter>
 
 </Provider>
 )
