@@ -24,7 +24,12 @@ const registerController = async (req, res) => {
        role,
      });
      const token = jwt.sign({id:user._id}, process.env.JWT_SECRET, {expiresIn: '1d'})
-     res.cookie('token',token)
+     res.cookie('token', token, {
+       httpOnly: true,
+       secure: process.env.NODE_ENV === 'production',
+       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+       maxAge: 24 * 60 * 60 * 1000 // 1 day
+     })
      res.status(201).json({
           message:"user registered successfully",
         user: {
@@ -67,7 +72,12 @@ const loginController = async (req,res)=>{
         })
     }
     const token = jwt.sign({id:user._id},process.env.JWT_SECRET, {expiresIn: '1d'})
-    res.cookie('token',token)
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
+    })
     res.status(200).json({
         message:"user logged in successfully",
         user: {
@@ -93,7 +103,11 @@ const userController = async (req,res)=>{
 }
 
 const logoutController = async (req, res)=>{
-  res.clearCookie("token")
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  })
   res.status(200).json({
     message:"user logged out"
   })
