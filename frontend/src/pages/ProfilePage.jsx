@@ -2,21 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { FiUser, FiMail, FiCalendar, FiCreditCard, FiEdit3, FiSettings, FiSearch, FiFilter, FiTrendingUp, FiClock, FiHeart, FiMessageCircle, FiSend, FiMoreHorizontal, FiPlus } from 'react-icons/fi';
+import { FiUser, FiMail, FiCalendar, FiCreditCard, FiEdit3, FiSettings, FiSearch, FiFilter, FiTrendingUp, FiClock, FiMoreHorizontal, FiPlus, FiHeart } from 'react-icons/fi';
 import '../styles/Profile.css';
 import { getPostsAction, likePostAction } from '../redux/actions/postActions';
 import { emptyAllPosts } from '../redux/slices/postSlice';
-import RichTextContent from '../components/RichTextContent';
-import {
-  AiOutlineBulb,
-  AiOutlineCode,
-  AiOutlineMessage,
-  AiOutlineThunderbolt,
-  AiOutlineBook,
-  AiOutlineCoffee,
-  AiOutlineStar,
-  AiOutlineRocket
-} from 'react-icons/ai';
+import FeedCard from '../components/FeedCard';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -25,45 +15,32 @@ const ProfilePage = () => {
   const allPosts = useSelector((state) => state.post.allPosts);
   const likedPosts = useSelector((state) => state.post.likedPosts);
   const likingPosts = useSelector((state) => state.post.likingPosts);
-  const [isRecentPostLoading, setisRecentPostLoading] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filterType, setFilterType] = useState('all')
-  const [sortBy, setSortBy] = useState('recent')
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
+  const [isRecentPostLoading, setisRecentPostLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState('all');
+  const [sortBy, setSortBy] = useState('recent');
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   
   useEffect(() => {
-    console.log("allPosts", allPosts)
-    console.log("user", user)
-  }, [allPosts])
+    console.log("allPosts", allPosts);
+    console.log("user", user);
+  }, [allPosts]);
 
   const fetchRecentPost = async () => {
-    setisRecentPostLoading(true)
-    const result = await dispatch(getPostsAction())
+    setisRecentPostLoading(true);
+    const result = await dispatch(getPostsAction());
     if (result.status === 200) {
-      {
-        // dispatch(addAlert({
-        //   type: "success",
-        //   message: "Recent posts fetched successfully"
-        // })  )
-        setisRecentPostLoading(false)
-
-      }
-      setisRecentPostLoading(false)
+      setisRecentPostLoading(false);
     }
-
-  }
+  };
   
   useEffect(() => {
-    fetchRecentPost()
-
-    // console.log("allPosts", allPosts)
+    fetchRecentPost();
     return () => {
-      dispatch(emptyAllPosts())
-      console.log("allPosts", allPosts)
-    }
-  }, [])
+      dispatch(emptyAllPosts());
+    };
+  }, []);
 
-  // Filter and sort posts
   const filteredAndSortedPosts = allPosts
     .filter(post => {
       const matchesSearch = searchQuery === '' || 
@@ -90,9 +67,7 @@ const ProfilePage = () => {
   return (
     <div className="profile-page">
       <div className="profile-page-container">
-        {/* Instagram-style Profile Header */}
         <div className="profile-page-header">
-          {/* Profile Avatar Section */}
           <div className="profile-avatar-section">
             <div className="profile-page-avatar">
               <img
@@ -102,9 +77,7 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Profile Info Section */}
           <div className="profile-info-section">
-            {/* Username and Edit Button Row */}
             <div className="profile-name-row">
               <h1 className="profile-page-name">{user?.user?.name}</h1>
               <button
@@ -123,7 +96,6 @@ const ProfilePage = () => {
               </button>
             </div>
 
-            {/* Stats Row */}
             <div className="profile-stats-row">
               <div className="stat-item">
                 <span className="stat-number">{user?.user?.posts?.length || allPosts?.length || 0}</span>
@@ -139,7 +111,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Bio Section */}
             <div className="profile-bio-section">
               <h2 className="profile-display-name">{user?.user?.name}</h2>
               <p className="profile-bio-text">{user?.user?.bio}</p>
@@ -159,43 +130,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Profile Stats */}
-        {/* <div className="profile-page-stats">
-          <div className="profile-stat-card">
-            <div className="stat-icon">
-              <FiCreditCard />
-            </div>
-            <div className="stat-content">
-              <h3>AI Text Credits</h3>
-              <p className="stat-number">{user?.user?.aiCredits || 0}</p>
-              <span className="stat-label">credits remaining</span>
-            </div>
-          </div>
 
-          <div className="profile-stat-card">
-            <div className="stat-icon">
-              <FiCreditCard />
-            </div>
-            <div className="stat-content">
-              <h3>AI Image Credits</h3>
-              <p className="stat-number">{user?.user?.aiImageCredits || 0}</p>
-              <span className="stat-label">credits remaining</span>
-            </div>
-          </div>
-
-          <div className="profile-stat-card">
-            <div className="stat-icon">
-              <FiUser />
-            </div>
-            <div className="stat-content">
-              <h3>Total Posts</h3>
-              <p className="stat-number">{user?.user?.posts?.length || 0}</p>
-              <span className="stat-label">posts created</span>
-            </div>
-          </div>
-        </div> */}
-
-        {/* Profile Details */}
         <div className="profile-page-details">
           <div className="detail-section">
             <h2>Account Information</h2>
@@ -226,7 +161,6 @@ const ProfilePage = () => {
             </div>
           </div>
           
-          {/* Posts Section with Search */}
           <div className="posts-section">
             <div className="posts-header">
               <h2>Your Posts</h2>
@@ -236,7 +170,6 @@ const ProfilePage = () => {
             </div>
             
             <div className="posts-content-container">
-              {/* Mobile Filter Dropdown */}
               <div className="mobile-filter-dropdown">
                 <button 
                   className={`mobile-filter-toggle ${isMobileFilterOpen ? 'active' : ''}`}
@@ -323,7 +256,6 @@ const ProfilePage = () => {
                 </div>
               </div>
 
-              {/* Search and Filter Sidebar */}
               <div className="search-sidebar">
                 <div className="search-container">
                   <div className="search-input-wrapper">
@@ -408,7 +340,6 @@ const ProfilePage = () => {
                 </div>
               </div>
 
-              {/* Posts List */}
               <div className="posts-main-content">
                 <div className="posts-list">
                   {isRecentPostLoading ? (
@@ -418,12 +349,13 @@ const ProfilePage = () => {
                     </div>
                   ) : filteredAndSortedPosts.length > 0 ? (
                     filteredAndSortedPosts.map((post) => 
-                      <RecentPosts 
+                      <FeedCard 
                         key={post._id}
                         post={post} 
                         isLiked={likedPosts.includes(post._id)}
                         isLiking={likingPosts.includes(post._id)}
                         onLike={() => dispatch(likePostAction(post._id))}
+                        showCommentSection={false}
                       /> 
                     )
                   ) : (
@@ -455,141 +387,3 @@ const ProfilePage = () => {
 
 export default ProfilePage;
 
-
-const RecentPosts = ({ post, isLiked, isLiking, onLike }) => {
-  const handleLike = () => {
-    if (!isLiking) {
-      onLike();
-    }
-  };
-  const getTagClass = (type) => {
-    const classMap = {
-      'Tips & Tricks': 'tag-tips',
-      'Coding meme': 'tag-coding',
-      'Hot quote': 'tag-quote',
-      'General hit': 'tag-general',
-      'Bold thoughts': 'tag-bold',
-      'AI prompts': 'tag-ai',
-      'Story set': 'tag-story',
-      'Vibe talk': 'tag-vibe',
-    };
-
-    return classMap[type] || 'tag-default';
-  };
-  const getTagIcon = (type) => {
-    const iconMap = {
-      'Tips & Tricks': AiOutlineBulb,
-      'Coding meme': AiOutlineCode,
-      'Hot quote': AiOutlineMessage,
-      'General hit': AiOutlineThunderbolt,
-      'Bold thoughts': AiOutlineRocket,
-      'AI prompts': AiOutlineStar,
-      'Story set': AiOutlineBook,
-      'Vibe talk': AiOutlineCoffee,
-    };
-
-    const IconComponent = iconMap[type] || AiOutlineStar;
-    return <IconComponent className="tag-icon" />;
-  };
-
-
-  const getCardClass = (type) => {
-    const classMap = {
-      'Tips & Tricks': 'card-tips',
-      'Coding meme': 'card-coding',
-      'Hot quote': 'card-quote',
-      'General hit': 'card-general',
-      'Bold thoughts': 'card-bold',
-      'AI prompts': 'card-ai',
-      'Story set': 'card-story',
-      'Vibe talk': 'card-vibe',
-    };
-
-    return classMap[type] || 'card-default';
-  };
-  return (
-    <>
-      <div className={`feed-card ${getCardClass(post.type)}`}>
-        {/* Card Header */}
-        <div className="feed-header">
-          {/* <img src={post.user.avatar} alt={`${post.user.name}'s avatar`} className="feed-avatar" /> */}
-          <div className="feed-user-info">
-            <h3 className="feed-username">{post.username}</h3>
-            <p className="feed-timestamp">
-              {post.createdAt
-                ? new Date(post.createdAt).toLocaleString(undefined, {
-                  dateStyle: 'medium',
-                  timeStyle: 'short',
-                })
-                : ''}
-            </p>
-          </div>
-          <span className={`feed-type-tag tag-base ${getTagClass(post.type)}`}>
-            {getTagIcon(post.type)}
-            {post.type}
-          </span>
-        </div>
-
-        {/* Card Content */}
-        <div className="feed-content">
-          <div className="feed-caption">
-            <RichTextContent content={post.postBody.content} />
-            {/* {post.hashtags.map((tag) => (
-          <a href="#" key={tag} className="feed-hashtag"> {tag}</a>
-        ))} */}
-          </div>
-          <div className="feed-image-container">
-            {post?.postBody?.image?.url ? <img src={post?.postBody?.image?.url} alt='Post content' className="feed-image" /> : <></>}
-
-          </div>
-        </div>
-
-         {/* Card Actions */}
-         <div className="feed-actions">
-           <div className="feed-action-group">
-             <button 
-               className="feed-action-btn" 
-               aria-label="Like post"
-               onClick={handleLike}
-               disabled={isLiking}
-             >
-               {isLiked ? (
-                 <FiHeart
-                   style={{
-                     color: 'var(--primary-btn-bg, #ff7600)',
-                     fill: 'var(--primary-btn-bg, #ff7600)',
-                     stroke: 'var(--primary-btn-bg, #ff7600)',
-                   }}
-                   className="feed-action-liked"
-                 />
-               ) : (
-                 <FiHeart />
-               )}
-               <span className="like-count">{post.likeCount || 0}</span>
-             </button>
-            <button className="feed-action-btn" aria-label="View comments">
-              <FiMessageCircle />
-              {/* <span>{post.comments}</span> */}
-            </button>
-            <button className="feed-action-btn" aria-label="Share post">
-              <FiSend />
-              {/* <span>{post.shares}</span> */}
-            </button>
-          </div>
-        </div>
-
-        {/* Comment Section */}
-        <div className="feed-comment-section">
-          {/* <img src={currentUser.avatar} alt="Your avatar" className="comment-avatar" /> */}
-          <div className="comment-input-wrapper">
-            <input type="text" placeholder="Write your comment" className="comment-input" />
-          </div>
-        </div>
-      </div>
-    </>
-
-
-
-
-  )
-}

@@ -10,6 +10,7 @@ import AuthRoutes from "./AuthRoutes";
 import PlaygroundUI from "../components/PlaygroundUI";
 import CoverImageUpload from "../components/CoverImageUpload";
 import Feed from "../pages/Feed";
+import SinglePost from "../components/SinglePost";
 
 const MainRoutes = () => {
   return (
@@ -25,6 +26,7 @@ const MainRoutes = () => {
         {/* <Route path="/dashboard" element={<Dashboard/>} /> */}
         <Route path="/create-cover-image" element={<AuthRoutes><CoverImageUpload/></AuthRoutes>} />
         <Route path="/feed" element={<Feed/>} /> 
+        <Route path="/post/:id" element={<SinglePost/>} />
         
       </Routes>
  

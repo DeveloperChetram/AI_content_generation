@@ -5,9 +5,9 @@ import { hideAlert, clearAlert } from '../redux/slices/alertSlice';
 import '../styles/DynamicIsland.css';
 
 const defaultMessages = [
-  "AI-powered writing.",
-  "Smart Work.",
-  "Its free!"
+  // "AI-powered writing.",
+  // "Smart Work.",
+  // "Its free!"
 ];
 
 const DynamicIsland = ({ className = '', isScrolled = false }) => {
@@ -19,7 +19,8 @@ const DynamicIsland = ({ className = '', isScrolled = false }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(280);
+  const [containerWidth, setContainerWidth] = useState(120); // Default width to fit only logo
+  const [isCollapsing, setIsCollapsing] = useState(false); // Track if we're collapsing for smooth transition
 
   // Check if we should show the island
   const shouldShowIsland = () => {
@@ -51,11 +52,11 @@ const DynamicIsland = ({ className = '', isScrolled = false }) => {
     // Calculate total width: logo width + margin + text width + padding
     const logoWidth = 120; // Approximate logo width
     const margin = 15; // margin-left of message-container
-    const padding = 30; // total horizontal padding (15px on each side)
+    const padding = 27; // total horizontal padding (15px left + 12px right)
     
     const totalWidth = logoWidth + margin + textWidth + padding;
     
-    // Clamp between min and max width
+    // Clamp between min and max width (280px minimum for alerts)
     const clampedWidth = Math.max(280, Math.min(400, totalWidth));
     
     return clampedWidth;
@@ -97,36 +98,45 @@ const DynamicIsland = ({ className = '', isScrolled = false }) => {
     // Handle alert messages
     if (alert.show && alert.content && alert.type && alert.type !== 'default') {
       setIsAnimating(false);
+      setIsCollapsing(false); // Not collapsing, expanding instantly
       setDisplayedMessage(alert.content);
       // Calculate width for alert message only
       const width = calculateTextWidth(alert.content);
+      
+      // Set width immediately - no delay for instant expansion
       setContainerWidth(width);
+      
       return; // Don't start default animation when showing alert
     }
 
     // Handle default messages only when no alert is active
     if (!alert.show || alert.type === 'default' || !alert.content) {
-      // Small delay to ensure smooth transition from alert to default
-      setTimeout(() => {
-        let currentMessageIndex = 0;
-        setDisplayedMessage(defaultMessages[currentMessageIndex]);
-        // Keep default width for default messages
-        setContainerWidth(280);
+      // Enable smooth transition for collapsing
+      setIsCollapsing(true);
+      
+      // Reset mobile expanded state
+      setIsMobileExpanded(false);
+      
+      // Reset to default width immediately for instant transition
+      setContainerWidth(120);
+      
+      // Set default message immediately - no delay
+      let currentMessageIndex = 0;
+      setDisplayedMessage(defaultMessages[currentMessageIndex]);
 
-        // Only start animation for navbar island (not floating island)
-        if (!className.includes('floating-island')) {
-          animationIntervalRef.current = setInterval(() => {
-            setIsAnimating(true);
-            setTimeout(() => {
-              currentMessageIndex = (currentMessageIndex + 1) % defaultMessages.length;
-              const newMessage = defaultMessages[currentMessageIndex];
-              setDisplayedMessage(newMessage);
-              // Don't change width for default message changes
-              setIsAnimating(false);
-            }, 500);
-          }, 3000);
-        }
-      }, 100);
+      // Only start animation for navbar island (not floating island)
+      if (!className.includes('floating-island')) {
+        animationIntervalRef.current = setInterval(() => {
+          setIsAnimating(true);
+          setTimeout(() => {
+            currentMessageIndex = (currentMessageIndex + 1) % defaultMessages.length;
+            const newMessage = defaultMessages[currentMessageIndex];
+            setDisplayedMessage(newMessage);
+            // Don't change width for default message changes
+            setIsAnimating(false);
+          }, 500);
+        }, 3000);
+      }
     }
 
     return () => {
@@ -142,23 +152,33 @@ const DynamicIsland = ({ className = '', isScrolled = false }) => {
 
   // Get the appropriate CSS class based on alert type
   const getVariantClass = () => {
-    // If there's an alert with a specific type, use that for styling
+    let classes = [];
+    
+    // Add alert-expanded class when there's an active alert
     if (alert.show && alert.type && alert.type !== 'default') {
-      return alert.type; // success, error, warning, info
+      classes.push('alert-expanded');
+      classes.push(alert.type); // success, error, warning, info
     }
     
-    // If type is 'default' or no alert, return empty string for normal styling
-    if (alert.show && alert.type === 'default') {
-      return '';
+    // Add mobile-expanded class when mobile is expanded
+    if (isMobileExpanded) {
+      classes.push('mobile-expanded');
     }
     
-    // Otherwise return empty string for normal styling
-    return '';
+    // Add smooth transition class when collapsing
+    if (isCollapsing) {
+      classes.push('smooth-transition');
+    }
+    
+    return classes.join(' ');
   };
 
   // Handle mobile click to expand/collapse
   const handleMobileClick = () => {
-    setIsMobileExpanded(!isMobileExpanded);
+    // Only allow expansion on mobile when there's an active alert
+    if (alert.show && alert.type && alert.type !== 'default') {
+      setIsMobileExpanded(!isMobileExpanded);
+    }
   };
 
   // Don't render anything if we shouldn't show the island
@@ -189,7 +209,8 @@ const DynamicIsland = ({ className = '', isScrolled = false }) => {
       >
         <div 
           className={`dynamic-island ${getVariantClass()} ${animate ? 'animate-on-load' : ''}`}
-          style={{ width: `${containerWidth}px` }}
+          style={{ '--island-width': `${containerWidth}px` }}
+          data-message={alert.show && alert.content ? alert.content : ''}
         >
           <Link to="/" className="nav-logo">wr<span className='logo-text'> AI </span>te.</Link>
           <div className="message-container">

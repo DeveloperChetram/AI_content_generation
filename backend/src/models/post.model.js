@@ -26,6 +26,7 @@ const postSchema = new mongoose.Schema({
         default:0
     },
     username: String,
+    userProfilePicture: String,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"

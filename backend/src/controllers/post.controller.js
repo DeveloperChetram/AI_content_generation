@@ -31,9 +31,6 @@ const createPostController = async (req, res) => {
     user = req.user;
 
 
-    // updatedUser = await userModel.findById(user._id);
-    // req.user = updatedUser;
-    // user = req.user;
 
     res.status(200).json({
         message: "post created successfully",
@@ -101,12 +98,6 @@ const uploadImageController = async (req, res) => {
 const savePostController = async (req, res) => {
     const {title, content, type, prompt, imagePrompt, imageUrl } = req.body;
     const { user } = req;
-    // const {file} = req.files
-  
-    // const savedPost = await postModel.findById(postId);
-    // if (!content || !userID || !type || !imageUrl ) {
-    //     return res.status(404).json({ message: "Post not found" });
-    // }
 
 
 
@@ -123,7 +114,8 @@ const savePostController = async (req, res) => {
            }
        },
        user: user._id,
-       username: user.name
+       username: user.name,
+       userProfilePicture: user.profilePicture
    });
    res.status(200).json({
     message: "Post saved successfully",
@@ -133,12 +125,10 @@ const savePostController = async (req, res) => {
     type: type,
     prompt: prompt,
     userName: user.name,
-    creditLeft: user.aiCredits
+    creditLeft: user.aiCredits,
+    userProfilePicture: user.profilePicture
    });
    
-//       await userModel.findByIdAndUpdate(user._id, {
-//        $push: { posts:  {_id:newPost._id, title:title,}  }
-//    });
 }
 const getAllPostsWithoutAuthController = async (req, res) => {
    try {
@@ -177,7 +167,6 @@ const getPostController = async (req, res) => {
 
 const getPostsByUserController = async (req, res) => {
     const { user } = req;
-    // console.log("user from getPostsByUserController", user)
     const posts = await postModel.find({user: user._id})
     console.log(user)
    
@@ -188,4 +177,12 @@ const getPostsByUserController = async (req, res) => {
         
     });
 }
-module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController, getAllPostsWithoutAuthController};
+const getPostByIdController = async (req, res) => {
+    const { id } = req.params;
+    const post = await postModel.findById(id);
+    res.status(200).json({
+        message: "Post fetched successfully",
+        post: post
+    });
+}
+module.exports = { createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController, getAllPostsWithoutAuthController, getPostByIdController};

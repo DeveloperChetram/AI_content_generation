@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { FiUser, FiSettings, FiLogOut, FiEdit3, FiMail, FiCalendar, FiCreditCard } from 'react-icons/fi';
+import { FiUser, FiSettings, FiLogOut, FiEdit3, FiMail, FiCalendar, FiCreditCard, FiX } from 'react-icons/fi';
 import { logoutUserAction } from '../redux/actions/userActions';
 import { addAlert } from '../redux/slices/alertSlice';
 import '../styles/Profile.css';
@@ -12,43 +12,62 @@ const Profile = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const profileRef = useRef(null);
   // console.log(user.user.createdAt);
-  // Close profile when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
+  // Temporarily disable outside click to test button functionality
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     // Check if the click is on a button or inside the profile card
+  //     if (profileRef.current && 
+  //         !profileRef.current.contains(event.target) &&
+  //         !event.target.closest('.profile-action-btn')) {
+  //       onClose();
+  //     }
+  //   };
+
+  //   if (isOpen) {
+  //     // Use a slight delay to ensure button clicks are processed first
+  //     const timeoutId = setTimeout(() => {
+  //       document.addEventListener('mousedown', handleClickOutside);
+  //     }, 50);
+      
+  //     return () => {
+  //       clearTimeout(timeoutId);
+  //       document.removeEventListener('mousedown', handleClickOutside);
+  //     };
+  //   }
+  // }, [isOpen, onClose]);
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Logout button clicked');
+    try {
+      const result = await dispatch(logoutUserAction());
+      if (result.status === 200) {
+        dispatch(addAlert({
+          type: 'success',
+          content: 'Logged out successfully',
+          duration: 3000
+        }));
+        navigate('/login');
         onClose();
       }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isOpen, onClose]);
-
-  const handleLogout = async () => {
-    const result = await dispatch(logoutUserAction());
-    if (result.status === 200) {
-      dispatch(addAlert({
-        type: 'success',
-        content: 'Logged out successfully',
-        duration: 3000
-      }));
-      navigate('/login');
-      onClose();
+    } catch (error) {
+      console.error('Logout error:', error);
     }
   };
 
-  const handleEditProfile = () => {
-    dispatch(addAlert({
-      type: 'info',
-      content: 'Edit profile functionality coming soon!',
-      duration: 3000
-    }));
+  const handleEditProfile = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Edit profile button clicked');
+    navigate('/profile/edit');
     onClose();
   };
 
-  const handleSettings = () => {
+  const handleSettings = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Settings button clicked');
     dispatch(addAlert({
       type: 'info',
       content: 'Settings functionality coming soon!',
@@ -57,7 +76,10 @@ const Profile = ({ isOpen, onClose }) => {
     onClose();
   };
 
-  const handleViewProfile = () => {
+  const handleViewProfile = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('View profile button clicked');
     navigate('/profile');
     onClose();
   };
@@ -69,6 +91,15 @@ const Profile = ({ isOpen, onClose }) => {
       ref={profileRef}
       className="profile-dropdown"
     >
+      {/* Close Button */}
+      <button 
+        className="profile-close-btn"
+        onClick={onClose}
+        aria-label="Close profile"
+      >
+        <FiX />
+      </button>
+      
       {/* Profile Header */}
       <div className="profile-header">
           <div className="profile-avatar">

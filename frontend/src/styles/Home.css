@@ -170,8 +170,11 @@
   }
   
   .mobile-profile-picture {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
   }
   
   .feed-icon,
@@ -238,10 +241,11 @@
 }
 
 .profile-picture {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  aspect-ratio: 1 / 1;
 }
 .btn-secondary {
   background-color: transparent;
@@ -354,10 +358,11 @@
 }
 
 .mobile-profile-picture {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  aspect-ratio: 1 / 1;
 }
 
 .mobile-profile-icon {

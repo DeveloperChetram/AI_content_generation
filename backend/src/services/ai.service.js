@@ -34,7 +34,6 @@ async function generateContent(title, contentType, prompt) {
       maxOutputTokens: 4096, 
     },
   });
-  // console.log(response.candidates[0].content)
   return response;
 }
 

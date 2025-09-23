@@ -1217,6 +1217,7 @@ div.default-content *,
 @media (max-width: 480px) {
   .playground-ui-container {
     padding: 1rem 0.5rem;
+    padding-top: 100px !important; /* Reduced top padding for mobile */
   }
   
   .playground-ui-content {
@@ -1227,25 +1228,90 @@ div.default-content *,
     padding: 1rem;
   }
   
+  /* Mobile AI Input Card Responsive Styles */
+  .pg-input-card {
+    gap: 0.75rem;
+    max-height: none; /* Remove height restriction on mobile */
+  }
+  
   .pg-input-controls {
-    gap: 0.4rem;
+    flex-direction: column; /* Stack vertically on mobile */
+    gap: 0.75rem;
+    align-items: stretch;
   }
   
   .pg-control-group {
-    gap: 0.4rem;
+    flex-direction: column; /* Stack inputs vertically */
+    gap: 0.75rem;
+    width: 100%;
   }
   
   .pg-dropdown-small {
-    flex: 0 0 100px;
-    max-width: 100px;
-    min-width: 80px;
+    flex: none; /* Remove flex constraints */
+    width: 100%;
+    max-width: none;
+    min-width: auto;
+  }
+  
+  .pg-input-expanded {
+    flex: none; /* Remove flex constraints */
+    width: 100%;
   }
   
   .pg-textarea {
-    min-height: 50px;
+    min-height: 80px; /* Increased height for better mobile UX */
     font-size: 0.9rem;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    padding: 0.75rem;
+  }
+  
+  .pg-submit-btn {
+    width: 100%; /* Full width on mobile */
+    height: 44px; /* Larger touch target */
+    border-radius: 12px; /* Less rounded for mobile */
+    font-size: 1.1rem;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .pg-submit-btn::before {
+    content: "Generate";
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  .pg-input {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+    min-height: 44px; /* Larger touch target */
+    border-radius: 12px; /* Consistent border radius */
+  }
+  
+  .pg-textarea {
+    min-height: 80px; /* Increased height for better mobile UX */
+    font-size: 0.9rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    padding: 0.75rem;
+    border-radius: 12px; /* Consistent border radius */
+    resize: vertical; /* Allow vertical resize on mobile */
+  }
+  
+  /* Mobile form improvements */
+  .pg-input:focus,
+  .pg-textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.2);
+  }
+  
+  /* Better mobile select styling */
+  select.pg-input {
+    background-position: right 0.75rem center;
+    padding-right: 2.5rem;
   }
   
   .pg-output-content p {
@@ -1267,25 +1333,149 @@ div.default-content *,
   .pg-output-toolbar {
     padding: 0.5rem;
     flex-wrap: wrap;
-    gap: 0.3rem;
+    gap: 0.25rem;
+    justify-content: center; /* Center toolbar buttons */
+    overflow-x: auto; /* Allow horizontal scroll if needed */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
   
   .pg-toolbar-btn {
-    padding: 0.4rem;
-    font-size: 1rem;
+    padding: 0.35rem;
+    font-size: 0.9rem;
+    min-width: 1.8rem;
+    min-height: 1.8rem;
+    flex-shrink: 0; /* Prevent buttons from shrinking */
   }
   
-  .tiptap-editor {
-    min-height: 250px;
-    padding: 0.75rem;
-    font-size: 0.9rem;
+  /* Stack toolbar buttons in rows on very small screens */
+  .pg-output-toolbar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(1.8rem, 1fr));
+    gap: 0.25rem;
+    max-width: 100%;
+  }
+  
+  /* Improve touch targets for mobile */
+  .pg-toolbar-btn {
+    touch-action: manipulation; /* Prevent double-tap zoom */
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+  }
+  
+  /* Better spacing for toolbar on mobile */
+  .pg-output-toolbar {
+    margin-bottom: 0.5rem;
   }
 }
 
-@media (min-width: 481px) and (max-width: 900px) {
+/* Very small screens - optimize toolbar further */
+@media (max-width: 360px) {
+  .pg-output-toolbar {
+    padding: 0.4rem;
+    gap: 0.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(1.6rem, 1fr));
+  }
+  
+  .pg-toolbar-btn {
+    padding: 0.3rem;
+    font-size: 0.85rem;
+    min-width: 1.6rem;
+    min-height: 1.6rem;
+  }
+}
+
+/* Tablet and Medium Screen Responsive Styles */
+@media (min-width: 481px) and (max-width: 768px) {
+  .playground-ui-container {
+    padding: 1.5rem 1rem;
+    padding-top: 120px !important;
+  }
+  
+  .playground-ui-content {
+    gap: 1.75rem;
+  }
+  
+  .glass-card {
+    padding: 1.25rem;
+  }
+  
+  /* Tablet AI Input Card Styles */
+  .pg-input-card {
+    gap: 1rem;
+  }
+  
+  .pg-input-controls {
+    flex-direction: row; /* Keep horizontal layout on tablet */
+    gap: 0.75rem;
+    align-items: center;
+  }
+  
+  .pg-control-group {
+    flex-direction: row; /* Keep horizontal layout */
+    gap: 0.75rem;
+    flex-grow: 1;
+  }
+  
   .pg-dropdown-small {
-    flex: 0 0 130px;
-    max-width: 130px;
+    flex: 0 0 140px;
+    max-width: 140px;
+    min-width: 120px;
+  }
+  
+  .pg-input-expanded {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .pg-textarea {
+    min-height: 70px;
+    font-size: 0.95rem;
+    padding: 0.75rem;
+  }
+  
+  .pg-submit-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .pg-input {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+    min-height: 44px;
+  }
+  
+  .pg-header h1 {
+    font-size: 1.4rem;
+  }
+  
+  /* Tablet Tiptap Editor Adjustments */
+  .pg-output-toolbar {
+    padding: 0.75rem;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  
+  .pg-toolbar-btn {
+    padding: 0.45rem;
+    font-size: 1rem;
+    min-width: 2.1rem;
+    min-height: 2.1rem;
+    flex-shrink: 0;
+  }
+  
+  .tiptap-editor {
+    min-height: 300px;
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 900px) {
+  .pg-dropdown-small {
+    flex: 0 0 150px;
+    max-width: 150px;
   }
 }
 

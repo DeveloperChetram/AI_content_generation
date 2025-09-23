@@ -16,6 +16,7 @@ const CoverImageUpload = () => {
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
   const [savedPost, setSavedPost] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -34,7 +35,7 @@ const CoverImageUpload = () => {
     try {
       const response = await axios.post('/api/generate-image', { 
         prompt,
-        aspectRatio: "16:9"
+        aspectRatio:"16:9"
       });
       dispatch(addAlert({
         type: 'success',
@@ -43,11 +44,9 @@ const CoverImageUpload = () => {
       }));
       console.log("response from handleGenerateImage", response);
       
-      // Set the image data and preview
       setImageData(response.data);
       setPreviewImage(response.data.image);
       
-      // Update Redux state with AI generated image data
       dispatch(setPostPayload({
         "title": postPayload.title,
         "type": postPayload.type,
@@ -56,7 +55,7 @@ const CoverImageUpload = () => {
           "prompt": postPayload.postBody.prompt,
           "image": {
             "prompt": response.data.prompt,
-            "url": "" // Will be set after ImageKit upload
+            "url": "" 
           }
         },
         "isPosted": false,
@@ -66,7 +65,7 @@ const CoverImageUpload = () => {
       console.error("Error generating image:", error);
       dispatch(addAlert({
         type: 'error',
-        content: 'Error generating image',
+        content: error.response.data.message || 'Error generating image',
         duration: 3000
       }));
     } finally {
@@ -85,7 +84,7 @@ const CoverImageUpload = () => {
         setIsUploading(false);
         dispatch(addAlert({
           type: 'success',
-          content: 'Image uploaded successfully',
+          content: 'Image selected successfully',
           duration: 3000
         }));
       };
@@ -99,14 +98,20 @@ const CoverImageUpload = () => {
   };
 
   const handleConfirmAndPost = async () => {
+    setIsPosting(true);
+    dispatch(addAlert({
+      type: 'info',
+      content: 'Posting please wait...',
+      duration: false
+    }));
+    
     try {
       let imageUrl = '';
 
-      // Only process image if one exists
       if (imageData && imageData.image) {
         dispatch(addAlert({
           type: 'info',
-          content: 'Uploading AI generated image to ImageKit...',
+          content: 'Uploading AI generated image',
           duration: false
         }));
 
@@ -118,14 +123,14 @@ const CoverImageUpload = () => {
         
         dispatch(addAlert({
           type: 'success',
-          content: 'AI image uploaded to ImageKit successfully',
+          content: 'AI image uploaded successfully',
           duration: 3000
         }));
       }
       else if (uploadedFileName && fileInputRef.current.files[0]) {
         dispatch(addAlert({
           type: 'info',
-          content: 'Uploading image to ImageKit...',
+          content: 'Uploading image',
           duration: false
         }));
 
@@ -142,25 +147,29 @@ const CoverImageUpload = () => {
         
         dispatch(addAlert({
           type: 'success',
-          content: 'Image uploaded to ImageKit successfully',
+          content: 'Image uploaded successfully',
           duration: 3000
         }));
       }
 
-      // Save post with or without image
+      dispatch(addAlert({
+        type: 'info',
+        content: 'Posting please wait...',
+        duration: false
+      }));
+
       const postResponse = await axios.post('/api/posts/save-post', {
         title: postPayload.title,
         type: postPayload.type,
         content: postPayload.postBody.content,
         prompt: postPayload.postBody.prompt,
         imagePrompt: postPayload.postBody.image.prompt || '',
-        imageUrl: imageUrl || '', // Allow empty image URL
+        imageUrl: imageUrl || '', 
         userID: postPayload.userID
       });
       
       console.log('Post saved successfully:', postResponse.data);
       
-      // Store the saved post data
       setSavedPost(postResponse.data);
       
       dispatch(addAlert({
@@ -169,7 +178,6 @@ const CoverImageUpload = () => {
         duration: 5000
       }));
       
-      // Navigate to posts page or dashboard after successful creation
       setTimeout(() => {
         navigate('/feed'); 
       }, 2000);
@@ -181,6 +189,8 @@ const CoverImageUpload = () => {
         content: 'Error saving post',
         duration: 3000
       }));
+    } finally {
+      setIsPosting(false);
     }
   };
 
@@ -301,8 +311,16 @@ const CoverImageUpload = () => {
               <button 
                 className="pg-save-btn"
                 onClick={handleConfirmAndPost}
+                disabled={isPosting}
               >
-                {previewImage ? 'Confirm and Post' : 'Post Without Image'}
+                {isPosting ? (
+                  <div className="posting-loading">
+                    <div className="posting-spinner"></div>
+                    <span>Posting please wait...</span>
+                  </div>
+                ) : (
+                  previewImage ? 'Confirm and Post' : 'Post Without Image'
+                )}
               </button>
             </div>
           </div>
