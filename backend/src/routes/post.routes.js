@@ -1,6 +1,6 @@
 const express = require('express');
 const postRouter = express.Router();
-const {createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController, getAllPostsWithoutAuthController, getPostByIdController} = require('../controllers/post.controller');
+const {createPostController, savePostController, uploadImageController, uploadImageControllerForLink, getPostController, getPostsByUserController, getAllPostsWithoutAuthController, getPostByIdController, deletePostController} = require('../controllers/post.controller');
 const authMddleware = require('../middlewares/auth.middleware');
 const { likePostController } = require('../controllers/like.controller');
 const multer = require('multer');
@@ -14,6 +14,7 @@ postRouter.get('/get-posts', authMddleware, getPostController);
 postRouter.get('/get-posts-by-user', authMddleware, getPostsByUserController);
 postRouter.post('/like-post', authMddleware, likePostController);
 postRouter.get('/get-post-by-id/:id', authMddleware, getPostByIdController);
+postRouter.delete('/delete-post/:postId', authMddleware, deletePostController);
 
 
 module.exports = postRouter;

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import '../styles/Feed.css';
 import Axios from '../api/axios';
 import { useSelector, useDispatch } from 'react-redux';
-import { getPostsAction, likePostAction } from '../redux/actions/postActions';
+import { getPostsAction, likePostAction, createCommentAction } from '../redux/actions/postActions';
 import { setAllPosts, setLikedPosts } from '../redux/slices/postSlice';
 import FeedCard from '../components/FeedCard';
 
@@ -53,8 +53,14 @@ import FeedCard from '../components/FeedCard';
   // Dummy data array for multiple posts. In a real app, this would come from an API.
 
 
-  const currentUser = {
+  const currentUser = user.user ? {
+    avatar: user.user.profilePicture || 'https://i.pravatar.cc/48?u=currentUser',
+    name: user.user.name || user.user.username,
+    username: user.user.username
+  } : {
     avatar: 'https://i.pravatar.cc/48?u=currentUser',
+    name: 'Guest',
+    username: 'guest'
   };
 
   return (
@@ -68,7 +74,8 @@ import FeedCard from '../components/FeedCard';
           isLiked={likedPosts.includes(post._id)}
           isLiking={likingPosts.includes(post._id)}
           onLike={() => dispatch(likePostAction(post._id))}
-          showCommentSection={false}
+          onComment={(postId, content) => dispatch(createCommentAction(postId, content))}
+          showCommentSection={true}
         />
       ))}
      

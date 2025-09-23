@@ -9,6 +9,7 @@ const authRouter = require('./routes/auth.routes')
 const userRouter = require('./routes/user.routes')
 const adminRouter = require('./routes/admin.routes')
 const postRouter = require('./routes/post.routes');
+const commentRouter = require('./routes/comment.routes');
 const generateImageRouter = require('./routes/createImage.routes');
 const verifyRouter = require('./routes/verify.route');
 
@@ -36,6 +37,7 @@ app.use('/api/user', userRouter)
 app.use('/api/admin/', adminRouter)
 
 app.use('/api/posts/', postRouter)
+app.use('/api/comments/', commentRouter)
 app.use('/api/generate-image', generateImageRouter)
 app.use('/api/verify', verifyRouter)
 
