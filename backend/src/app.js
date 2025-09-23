@@ -12,11 +12,8 @@ const verifyRouter = require('./routes/verify.route');
 const app = express();
 app.use(cors(
     {
-        origin:'http://localhost:5173',
+        origin:'https://wraite-ai.vercel.app/',
         credentials:true,
-        // allowedHeaders:['Content-Type','Authorization'],
-        // exposedHeaders:['Set-Cookie'],
-        // methods:['GET','POST','PUT','DELETE','OPTIONS'],
 
     }
 ))

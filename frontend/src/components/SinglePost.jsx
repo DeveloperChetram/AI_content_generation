@@ -7,7 +7,7 @@ import { likePostAction } from '../redux/actions/postActions';
 import { updatePostLikeCount, setLikedPosts } from '../redux/slices/postSlice';
 
 const SinglePost = ({ currentUser, onLike, onComment }) => {
-  const { id } = useParams(); // Get post ID from URL params
+  const { id } = useParams();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const likedPosts = useSelector((state) => state.post.likedPosts);
@@ -17,12 +17,10 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
   const [error, setError] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
 
-  // Get like status from Redux state and local state
   const isLikedFromRedux = likedPosts.includes(id);
   const isLiking = likingPosts.includes(id);
   const likeCount = post?.likeCount || 0;
 
-  // Update local like state when Redux state changes
   useEffect(() => {
     setIsLiked(isLikedFromRedux);
   }, [isLikedFromRedux]);
@@ -56,9 +54,7 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
       const response = await Axios.get('/api/posts/get-posts');
       if (response.status === 200) {
         const likedPostsIds = response.data.likedPosts || [];
-        // Update Redux state with liked posts
         dispatch(setLikedPosts(likedPostsIds));
-        // Check if current post is liked by user
         const isPostLiked = likedPostsIds.includes(id);
         setIsLiked(isPostLiked);
       }
@@ -74,15 +70,12 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
   const handleLike = async (postId) => {
     if (isLiking || !user.isAuthenticated) return;
     
-    // Optimistically update the like state
     const newLikeStatus = !isLiked;
     setIsLiked(newLikeStatus);
     
     try {
-      // Use Redux action to like/unlike the post
       const result = await dispatch(likePostAction(postId));
       
-      // If the API call was successful, update the local post state
       if (result && result.status === 200 && result.data && result.data.updatedPost) {
         const updatedLikeCount = result.data.updatedPost.likeCount;
         setPost(prevPost => ({
@@ -90,17 +83,14 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
           likeCount: updatedLikeCount
         }));
       } else {
-        // If the API call failed, revert the like state
         setIsLiked(!newLikeStatus);
       }
     } catch (error) {
       console.error('Error in handleLike:', error);
-      // Revert the like state on error
       setIsLiked(!newLikeStatus);
     }
   };
 
-  // Loading state
   if (loading) {
     return (
       <div className="single-post-container">
@@ -112,7 +102,6 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
     );
   }
 
-  // Error state
   if (error || !post) {
     return (
       <div className="single-post-container">
@@ -124,7 +113,6 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
     );
   }
 
-  // Success state - render the post
   return (
     <div className="single-post-container">
       <FeedCard

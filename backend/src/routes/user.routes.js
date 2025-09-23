@@ -7,7 +7,6 @@ const { getProfileController, updateProfileController, uploadProfilePictureContr
 
 const upload = multer({ storage: multer.memoryStorage() });
 userRouter.get("/profile", authMiddleware, getProfileController);
-// userRouter.post('upload-profile-picture', authMiddleware, upload.single('profilePicture'), uploadProfilePictureController);
 
 userRouter.patch("/update-user", authMiddleware,upload.single('profilePicture'), updateProfileController);
 

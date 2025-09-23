@@ -13,7 +13,7 @@ export const generatePostAction = (prompt, type, title) => async (dispatch)=> {
             }
         ))
         const result = await axios.post('/api/posts/create-post', { prompt, type, title })
-        console.log("result from generatePostAction", result)
+        console.log("result from generatePostAction", result);
         dispatch(setRecentPost(result.data))
         dispatch(addAlert(
             {
@@ -24,7 +24,7 @@ export const generatePostAction = (prompt, type, title) => async (dispatch)=> {
         ))
         return result;
     } catch (error) {
-        console.log( "error from generatePostAction", error)
+        console.log( "error from generatePostAction", error);
         dispatch(addAlert(
             {
                 type:"error",
@@ -39,12 +39,12 @@ export const generatePostAction = (prompt, type, title) => async (dispatch)=> {
 export const getPostsAction = () => async (dispatch)=> {
     try {
         const result = await axios.get('/api/posts/get-posts-by-user')
-        console.log("result from getPostsAction", result.data)
+        console.log("result from getPostsAction", result.data);
        await dispatch(setAllPosts(result.data.posts))
        return result
     } catch (error) {
         return error
-        console.log( "error from getPostsAction", error)
+        console.log( "error from getPostsAction", error);
     }
 }
 
@@ -55,15 +55,11 @@ export const likePostAction = (postId) => async (dispatch) => {
         const response = await axios.post('/api/posts/like-post', { postId });
         
         if (response.status === 200) {
-            // Toggle the like status in Redux
             dispatch(toggleLike(postId));
-            
-            // Update the like count in the specific post
             dispatch(updatePostLikeCount({
                 postId: postId,
                 likeCount: response.data.updatedPost.likeCount
             }));
-            
             console.log('Like action successful:', response.data);
             return response;
         }

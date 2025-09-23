@@ -15,45 +15,32 @@ const ProfilePage = () => {
   const allPosts = useSelector((state) => state.post.allPosts);
   const likedPosts = useSelector((state) => state.post.likedPosts);
   const likingPosts = useSelector((state) => state.post.likingPosts);
-  const [isRecentPostLoading, setisRecentPostLoading] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filterType, setFilterType] = useState('all')
-  const [sortBy, setSortBy] = useState('recent')
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
+  const [isRecentPostLoading, setisRecentPostLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState('all');
+  const [sortBy, setSortBy] = useState('recent');
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   
   useEffect(() => {
-    console.log("allPosts", allPosts)
-    console.log("user", user)
-  }, [allPosts])
+    console.log("allPosts", allPosts);
+    console.log("user", user);
+  }, [allPosts]);
 
   const fetchRecentPost = async () => {
-    setisRecentPostLoading(true)
-    const result = await dispatch(getPostsAction())
+    setisRecentPostLoading(true);
+    const result = await dispatch(getPostsAction());
     if (result.status === 200) {
-      {
-        // dispatch(addAlert({
-        //   type: "success",
-        //   message: "Recent posts fetched successfully"
-        // })  )
-        setisRecentPostLoading(false)
-
-      }
-      setisRecentPostLoading(false)
+      setisRecentPostLoading(false);
     }
-
-  }
+  };
   
   useEffect(() => {
-    fetchRecentPost()
-
-    // console.log("allPosts", allPosts)
+    fetchRecentPost();
     return () => {
-      dispatch(emptyAllPosts())
-      console.log("allPosts", allPosts)
-    }
-  }, [])
+      dispatch(emptyAllPosts());
+    };
+  }, []);
 
-  // Filter and sort posts
   const filteredAndSortedPosts = allPosts
     .filter(post => {
       const matchesSearch = searchQuery === '' || 
@@ -80,9 +67,7 @@ const ProfilePage = () => {
   return (
     <div className="profile-page">
       <div className="profile-page-container">
-        {/* Instagram-style Profile Header */}
         <div className="profile-page-header">
-          {/* Profile Avatar Section */}
           <div className="profile-avatar-section">
             <div className="profile-page-avatar">
               <img
@@ -92,9 +77,7 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Profile Info Section */}
           <div className="profile-info-section">
-            {/* Username and Edit Button Row */}
             <div className="profile-name-row">
               <h1 className="profile-page-name">{user?.user?.name}</h1>
               <button
@@ -113,7 +96,6 @@ const ProfilePage = () => {
               </button>
             </div>
 
-            {/* Stats Row */}
             <div className="profile-stats-row">
               <div className="stat-item">
                 <span className="stat-number">{user?.user?.posts?.length || allPosts?.length || 0}</span>
@@ -129,7 +111,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Bio Section */}
             <div className="profile-bio-section">
               <h2 className="profile-display-name">{user?.user?.name}</h2>
               <p className="profile-bio-text">{user?.user?.bio}</p>
@@ -149,43 +130,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Profile Stats */}
-        {/* <div className="profile-page-stats">
-          <div className="profile-stat-card">
-            <div className="stat-icon">
-              <FiCreditCard />
-            </div>
-            <div className="stat-content">
-              <h3>AI Text Credits</h3>
-              <p className="stat-number">{user?.user?.aiCredits || 0}</p>
-              <span className="stat-label">credits remaining</span>
-            </div>
-          </div>
 
-          <div className="profile-stat-card">
-            <div className="stat-icon">
-              <FiCreditCard />
-            </div>
-            <div className="stat-content">
-              <h3>AI Image Credits</h3>
-              <p className="stat-number">{user?.user?.aiImageCredits || 0}</p>
-              <span className="stat-label">credits remaining</span>
-            </div>
-          </div>
-
-          <div className="profile-stat-card">
-            <div className="stat-icon">
-              <FiUser />
-            </div>
-            <div className="stat-content">
-              <h3>Total Posts</h3>
-              <p className="stat-number">{user?.user?.posts?.length || 0}</p>
-              <span className="stat-label">posts created</span>
-            </div>
-          </div>
-        </div> */}
-
-        {/* Profile Details */}
         <div className="profile-page-details">
           <div className="detail-section">
             <h2>Account Information</h2>
@@ -216,7 +161,6 @@ const ProfilePage = () => {
             </div>
           </div>
           
-          {/* Posts Section with Search */}
           <div className="posts-section">
             <div className="posts-header">
               <h2>Your Posts</h2>
@@ -226,7 +170,6 @@ const ProfilePage = () => {
             </div>
             
             <div className="posts-content-container">
-              {/* Mobile Filter Dropdown */}
               <div className="mobile-filter-dropdown">
                 <button 
                   className={`mobile-filter-toggle ${isMobileFilterOpen ? 'active' : ''}`}
@@ -313,7 +256,6 @@ const ProfilePage = () => {
                 </div>
               </div>
 
-              {/* Search and Filter Sidebar */}
               <div className="search-sidebar">
                 <div className="search-container">
                   <div className="search-input-wrapper">
@@ -398,7 +340,6 @@ const ProfilePage = () => {
                 </div>
               </div>
 
-              {/* Posts List */}
               <div className="posts-main-content">
                 <div className="posts-list">
                   {isRecentPostLoading ? (

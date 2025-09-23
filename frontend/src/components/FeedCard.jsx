@@ -46,7 +46,6 @@ const FeedCard = ({
     const postUrl = `${window.location.origin}/post/${post._id}`;
     
     if (navigator.share) {
-      // Use native share API if available (mobile devices)
       try {
         await navigator.share({
           title: `Post by ${post.username || post.user?.name || 'Anonymous'}`,
@@ -54,24 +53,19 @@ const FeedCard = ({
           url: postUrl,
         });
       } catch (error) {
-        // User cancelled sharing or error occurred
         console.log('Share cancelled or failed:', error);
       }
     } else {
-      // Fallback: Copy to clipboard
       try {
         await navigator.clipboard.writeText(postUrl);
-        // You could add a toast notification here
         console.log('Post URL copied to clipboard:', postUrl);
       } catch (error) {
         console.error('Failed to copy to clipboard:', error);
-        // Fallback: Open in new window
         window.open(postUrl, '_blank');
       }
     }
   };
 
-  // Helper functions for styling
   const getTagClass = (type) => {
     const classMap = {
       'Tips & Tricks': 'tag-tips',
@@ -125,12 +119,9 @@ const FeedCard = ({
     
     const IconComponent = iconMap[type];
     
-    // For emoji types, return the emoji directly
     if (typeof IconComponent === 'string') {
       return IconComponent;
     }
-    
-    // For React components, return the component
     return IconComponent ? <IconComponent className="tag-icon" /> : <AiOutlineStar className="tag-icon" />;
   };
 
@@ -145,7 +136,6 @@ const FeedCard = ({
 
   return (
     <div className={`feed-card ${getCardClass(post?.type)} ${className}`} key={post._id}>
-      {/* Card Header */}
       <div className="feed-header">
         <div className="feed-user-info">
           {post?.user?.profilePicture ? (
@@ -177,7 +167,6 @@ const FeedCard = ({
         </span>
       </div>
     
-      {/* Card Content */}
       <div className="feed-content">
         <div className="feed-caption">
           <RichTextContent content={post?.postBody?.content || post?.content || ''} />
@@ -200,7 +189,6 @@ const FeedCard = ({
         </div>
       </div>
     
-      {/* Card Actions */}
       <div className="feed-actions">
         <div className="feed-action-group">
           <button 
@@ -223,10 +211,6 @@ const FeedCard = ({
             )}
             <span className="like-count">{post?.likeCount || 0}</span>
           </button>
-          {/* <button className="feed-action-btn" aria-label="View comments">
-            <FiMessageCircle />
-            <span>{post?.commentCount || 0}</span>
-          </button> */}
           <button 
             className="feed-action-btn" 
             aria-label="Share post"
@@ -238,7 +222,6 @@ const FeedCard = ({
         </div>
       </div>
     
-      {/* Comment Section - Only show if enabled */}
       {showCommentSection && (
         <div className="feed-comment-section">
           {currentUser?.avatar && (

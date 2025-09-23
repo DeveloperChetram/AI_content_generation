@@ -14,18 +14,6 @@ try {
     const profilePicture = req.file; // File object or undefined if no file uploaded
     console.log("profilePicture", profilePicture);
     const {username, email, password, bio} = req.body;
-// if(!token){
-//     return res.status(404).json({
-//         message:'unauthorized: token not found'
-//     })
-// }
-// const userId = jtw.verify(token, process.env.JWT_SECRET).id
-// if(!userId){
-//     return res.status(404).json({
-//         message:'unauthorized: user id not found'
-//     })
-
-// }
 const user = await userModel.findOne({_id:userId})
 if(!user){
     return res.status(404).json({
@@ -33,9 +21,7 @@ if(!user){
     })
 }
 
-let profilePictureUrl = user.profilePicture; // Keep existing profile picture
-
-// Handle file upload if a file is provided
+let profilePictureUrl = user.profilePicture;
 if(profilePicture){
     try {
         console.log("profilePicture", profilePicture);

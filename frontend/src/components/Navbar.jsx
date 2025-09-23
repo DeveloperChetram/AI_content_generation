@@ -12,7 +12,6 @@ import { FiUser, FiHome, FiPlus } from 'react-icons/fi';
 const Navbar = () => {
   const user = useSelector((state) => state.user);
   const isPlaygroundOpen = useSelector((state) => state.index.isPlaygroundOpen);
-  // console.log("user in navbar", user)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -22,7 +21,6 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Scroll detection with smooth transition
   useEffect(() => {
     let ticking = false;
     
@@ -30,7 +28,7 @@ const Navbar = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
           const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          setIsScrolled(scrollTop > 20); // Much lower threshold for navbar to disappear quickly
+          setIsScrolled(scrollTop > 20);
           ticking = false;
         });
         ticking = true;
@@ -47,7 +45,6 @@ const Navbar = () => {
 
   const toggleLoginSignup = () => {
     setShowLogin(!showLogin);
-    // Navigate to the appropriate page
     if (showLogin) {
       navigate('/register');
     } else {
@@ -59,12 +56,10 @@ const Navbar = () => {
 
   const logoutHandler = async () => {
     const result = await dispatch(logoutUserAction());
-    // console.log("result from logout handler", result)
-    // console.log("result.status", result?.status)
     if(result.status === 200){
       navigate('/login');
     }
-  }
+  };
 
   const dashboardHandler = () => {
     dispatch(addAlert(
@@ -108,8 +103,8 @@ const Navbar = () => {
     if (profileButtonRef.current) {
       const rect = profileButtonRef.current.getBoundingClientRect();
       setProfilePosition({
-        top: rect.bottom + 8, // Position just below the button with a small gap
-        right: window.innerWidth - rect.right, // Align with the right edge of the button
+        top: rect.bottom + 8,
+        right: window.innerWidth - rect.right,
       });
     }
     setIsProfileOpen(!isProfileOpen);
@@ -178,7 +173,6 @@ const Navbar = () => {
             )}
           </div>
 
-           {/* NEW: Inline container for mobile icons */}
            <div className="mobile-nav-inline">
              <NavLink to="/feed" className="mobile-feed-btn">
                <FiHome className="feed-icon" />
@@ -224,7 +218,6 @@ const Navbar = () => {
         </div>
       </header>
  
-       {/* Remove Redundant Profile Dropdown */}
      </>
    );
  };
