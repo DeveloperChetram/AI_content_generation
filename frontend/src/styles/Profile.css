@@ -242,19 +242,18 @@
 .profile-page {
   min-height: 100vh;
   background-color: var(--bg-color);
-  padding: 40px 20px;
+  padding: 0;
 }
 
 .profile-page-container {
   padding-top: 70px !important;
-  max-width: 900px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  width: 100%;
+  gap: 40px;
   box-sizing: border-box;
-  align-items: center;
+  align-items: stretch;
 }
 
 .profile-page-header,
@@ -262,20 +261,31 @@
 .posts-section {
   width: 100%;
   box-sizing: border-box;
+  padding: 0 20px;
 }
 
 /* Desktop Layouts */
 @media (min-width: 769px) {
   .profile-page-container {
-    max-width: none; /* Allow container to be full-width */
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    align-items: center;
   }
 
-  /* Set all main cards to 80% of screen width */
+  /* Profile and Account Information - match posts container width */
   .profile-page-header,
-  .details-section,
+  .details-section {
+    width: 100% !important; /* match posts container width */
+    max-width: 1200px !important; /* reasonable max width */
+    padding: 24px 40px !important; /* top/bottom padding + side padding */
+  }
+
+  /* Posts section keeps its full width */
   .posts-section {
-    width: 80vw;
-    max-width: 100%;
+    width: 100%;
+    max-width: 1200px;
+    padding: 24px 40px;
   }
 }
 
@@ -729,6 +739,8 @@
   padding: 24px;
   overflow-y: auto;
   max-height: 600px;
+  display: flex;
+  justify-content: center;
 }
 
 /* Custom Scrollbar */
@@ -911,6 +923,7 @@
 .posts-list {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 20px;
 }
 
@@ -1118,11 +1131,20 @@
 
 @media (max-width: 480px) {
   .profile-page {
-    padding: 12px;
+    padding: 0;
+  }
+  
+  .profile-page-container {
+    gap: 30px;
+  }
+  
+  .profile-page-header,
+  .details-section,
+  .posts-section {
+    padding: 20px 15px; /* top/bottom padding + side padding */
   }
   
   .profile-page-header {
-    padding: 20px;
     gap: 20px;
   }
   

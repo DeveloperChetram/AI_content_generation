@@ -144,6 +144,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  min-width: 0;
 }
 
 .feed-profile-icon {
@@ -171,6 +172,7 @@
 
 .feed-user-details {
   flex-grow: 1;
+  min-width: 0;
 }
 
 .feed-username {
@@ -178,12 +180,18 @@
   font-weight: 600;
   color: var(--text-color);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .feed-timestamp {
   font-size: 0.75rem;
   color: var(--text-color-secondary);
   margin: 2px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .feed-type-tag {
@@ -832,8 +840,68 @@
     margin: 0 0.5rem;
   }
   
+  .feed-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-xs);
+  }
+  
+  .feed-header-right {
+    flex-shrink: 0;
+    gap: var(--spacing-xs);
+  }
+  
+  .feed-user-info {
+    flex: 1;
+    min-width: 0;
+    gap: var(--spacing-sm);
+  }
+  
+  .feed-profile-icon,
+  .feed-profile-initials {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+  
+  .feed-user-details {
+    flex: 1;
+    min-width: 0;
+  }
+  
   .feed-username {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .feed-timestamp {
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .feed-type-tag {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    white-space: nowrap;
+  }
+  
+  .feed-menu-btn {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .feed-menu-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .feed-menu-dropdown {
+    min-width: 90px;
   }
   
   .feed-caption {
@@ -907,8 +975,25 @@
     gap: var(--spacing-sm);
   }
   
+  .feed-header {
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+  
+  .feed-header-right {
+    flex-shrink: 0;
+  }
+  
   .feed-username {
     font-size: 0.9rem;
+  }
+  
+  .feed-timestamp {
+    font-size: 0.8rem;
+  }
+  
+  .feed-type-tag {
+    font-size: 0.8rem;
   }
   
   .feed-caption {

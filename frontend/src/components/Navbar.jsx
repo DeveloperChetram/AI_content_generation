@@ -125,8 +125,9 @@ const Navbar = () => {
         <nav className="nav-section nav-center">
           <div className="nav-menu">
           <NavLink to="/feed">Feed</NavLink>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <NavLink to="/about">About</NavLink>
+            <NavLink to="/contact">Contact</NavLink>
+            {/* <NavLink to="/youtube">YouTube</NavLink> */}
           </div>
         </nav>
         <div className="nav-section nav-right">

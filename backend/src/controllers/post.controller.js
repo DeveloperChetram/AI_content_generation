@@ -99,9 +99,6 @@ const uploadImageController = async (req, res) => {
 const savePostController = async (req, res) => {
     const {title, content, type, prompt, imagePrompt, imageUrl } = req.body;
     const { user } = req;
-
-
-
  
     const newPost = await postModel.create({
        title: title,
@@ -133,7 +130,7 @@ const savePostController = async (req, res) => {
 }
 const getAllPostsWithoutAuthController = async (req, res) => {
    try {
-     const posts = await postModel.find({isPosted: true}).sort({createdAt: -1});
+     const posts = await postModel.find({isPosted: true}).populate('user', 'name username profilePicture').sort({createdAt: -1});
      res.status(200).json({
          message: "Posts fetched successfully",
          posts: posts
@@ -149,7 +146,7 @@ const getAllPostsWithoutAuthController = async (req, res) => {
 const getPostController = async (req, res) => {
     const { user } = req;
     try {
-    const posts = await postModel.find({isPosted: true}).sort({createdAt: -1});
+    const posts = await postModel.find({isPosted: true}).populate('user', 'name username profilePicture').sort({createdAt: -1});
     const LikedPosts = await likeModel.find({user: user._id})
     const likedPostsIds = LikedPosts.map(like => like.post)
     res.status(200).json({
@@ -168,7 +165,7 @@ const getPostController = async (req, res) => {
 
 const getPostsByUserController = async (req, res) => {
     const { user } = req;
-    const posts = await postModel.find({user: user._id})
+    const posts = await postModel.find({user: user._id}).populate('user', 'name username profilePicture')
     console.log(user)
    
     console.log("posts from getPostsByUserController", posts)
@@ -180,7 +177,7 @@ const getPostsByUserController = async (req, res) => {
 }
 const getPostByIdController = async (req, res) => {
     const { id } = req.params;
-    const post = await postModel.findById(id);
+    const post = await postModel.findById(id).populate('user', 'name username profilePicture');
     res.status(200).json({
         message: "Post fetched successfully",
         post: post
