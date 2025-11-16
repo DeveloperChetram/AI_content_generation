@@ -12,6 +12,9 @@ import CoverImageUpload from "../components/CoverImageUpload";
 import Feed from "../pages/Feed";
 import SinglePost from "../components/SinglePost";
 import NotFound from "../pages/NotFound";
+import About from "../pages/About";
+import Contact from "../pages/Contact";
+import Youtube from "../pages/Youtube";
 
 const MainRoutes = () => {
   return (
@@ -19,6 +22,9 @@ const MainRoutes = () => {
       <Route path="/login" element={<Login/>} />
       <Route path="/register" element={<Register/>} />
       <Route path="/" element={<Home/>} />
+      <Route path="/about" element={<About/>} />
+      <Route path="/contact" element={<Contact/>} />
+      <Route path="/youtube" element={<Youtube/>} />
       <Route path="/profile" element={<AuthRoutes><ProfilePage/></AuthRoutes>} />
       <Route path="/profile/edit" element={<AuthRoutes><EditProfilePage/></AuthRoutes>} />
       <Route path="/playground" element={<AuthRoutes><PlaygroundUI/></AuthRoutes>} />

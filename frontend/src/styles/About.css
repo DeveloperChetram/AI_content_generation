@@ -1,0 +1,58 @@
+@import './theme.css';
+
+.page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 120px var(--spacing-lg) var(--spacing-xl);
+}
+
+.about-hero {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.page-title {
+  font-family: var(--font-serif-display);
+  font-size: clamp(2.2rem, 6vw, 3rem);
+  margin: 0 0 var(--spacing-md);
+}
+
+.page-subtitle {
+  color: var(--text-color-secondary);
+  margin: 0;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.about-card {
+  background: var(--card-bg-color);
+  border: 1px solid var(--input-border-color);
+  border-radius: 12px;
+  padding: var(--spacing-lg);
+}
+
+.about-card h2 {
+  margin: 0 0 var(--spacing-md);
+  font-size: 1.25rem;
+}
+
+.about-footer-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-xl);
+}
+
+@media (max-width: 900px) {
+  .page-container {
+    padding: 100px var(--spacing-md) var(--spacing-xl);
+  }
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
