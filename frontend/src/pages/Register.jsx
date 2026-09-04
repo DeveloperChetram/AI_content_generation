@@ -21,8 +21,7 @@ const Register = () => {
     const result = await dispatch(registerUserAction(data));
     
     
-    // console.log("result.payload.success", result.payload.success)
-    if(result.status === 200){
+    if (result && (result.status === 200 || result.status === 201)) {
       navigate('/profile');
     }
     reset()

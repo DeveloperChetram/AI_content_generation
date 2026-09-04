@@ -164,24 +164,45 @@ const getPostController = async (req, res) => {
 }
 
 const getPostsByUserController = async (req, res) => {
-    const { user } = req;
-    const posts = await postModel.find({user: user._id}).populate('user', 'name username profilePicture')
-    console.log(user)
-   
-    console.log("posts from getPostsByUserController", posts)
-    res.status(200).json({
-        message: "Posts fetched successfully",
-        posts: posts,
-        
-    });
+    try {
+        const { user } = req;
+        const posts = await postModel.find({user: user._id}).populate('user', 'name username profilePicture').sort({createdAt: -1});
+        const LikedPosts = await likeModel.find({user: user._id});
+        const likedPostsIds = LikedPosts.map(like => like.post);
+        res.status(200).json({
+            message: "Posts fetched successfully",
+            posts: posts,
+            likedPosts: likedPostsIds
+        });
+    } catch (error) {
+        console.error("Error fetching user posts:", error);
+        res.status(500).json({
+            message: "Failed to fetch user posts",
+            error: error.message
+        });
+    }
 }
 const getPostByIdController = async (req, res) => {
-    const { id } = req.params;
-    const post = await postModel.findById(id).populate('user', 'name username profilePicture');
-    res.status(200).json({
-        message: "Post fetched successfully",
-        post: post
-    });
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ message: "Post ID is required" });
+        }
+        const post = await postModel.findById(id).populate('user', 'name username profilePicture');
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+        res.status(200).json({
+            message: "Post fetched successfully",
+            post: post
+        });
+    } catch (error) {
+        console.error("Error fetching post by ID:", error);
+        return res.status(404).json({
+            message: "Post not found or invalid ID",
+            error: error.message
+        });
+    }
 }
 
 const deletePostController = async (req, res) => {

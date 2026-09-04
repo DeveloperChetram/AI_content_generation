@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import FeedCard from './FeedCard';
 import Axios from '../api/axios';
-import { likePostAction } from '../redux/actions/postActions';
+import { likePostAction, createCommentAction, deletePostAction } from '../redux/actions/postActions';
 import { updatePostLikeCount, setLikedPosts } from '../redux/slices/postSlice';
 
-const SinglePost = ({ currentUser, onLike, onComment }) => {
+const SinglePost = ({ currentUser: propCurrentUser, onLike: propOnLike, onComment: propOnComment }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const likedPosts = useSelector((state) => state.post.likedPosts);
@@ -17,9 +18,18 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
   const [error, setError] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
 
+  const currentUser = propCurrentUser || (user.user ? {
+    avatar: user.user.profilePicture || 'https://i.pravatar.cc/48?u=currentUser',
+    name: user.user.name || user.user.username,
+    username: user.user.username
+  } : {
+    avatar: 'https://i.pravatar.cc/48?u=currentUser',
+    name: 'Guest',
+    username: 'guest'
+  });
+
   const isLikedFromRedux = likedPosts.includes(id);
   const isLiking = likingPosts.includes(id);
-  const likeCount = post?.likeCount || 0;
 
   useEffect(() => {
     setIsLiked(isLikedFromRedux);
@@ -38,10 +48,13 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
       if (response.status === 200) {
         const postData = response.data.post;
         setPost(postData);
+        setError(null);
+      } else {
+        setError('Post not found');
       }
     } catch (error) {
       console.error('Error fetching post:', error);
-      setError('Failed to load post');
+      setError(error?.response?.data?.message || 'The post you are looking for does not exist.');
     } finally {
       setLoading(false);
     }
@@ -67,11 +80,13 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
     fetchPost();
     fetchUserLikedPosts();
   }, [id, user.isAuthenticated]);
+
   const handleLike = async (postId) => {
+    if (propOnLike) {
+      return propOnLike(postId);
+    }
+
     if (isLiking || !user.isAuthenticated) return;
-    
-    const newLikeStatus = !isLiked;
-    setIsLiked(newLikeStatus);
     
     try {
       const result = await dispatch(likePostAction(postId));
@@ -82,14 +97,38 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
           ...prevPost,
           likeCount: updatedLikeCount
         }));
-      } else {
-        setIsLiked(!newLikeStatus);
       }
     } catch (error) {
       console.error('Error in handleLike:', error);
-      setIsLiked(!newLikeStatus);
     }
   };
+
+  const handleComment = async (postId, content) => {
+    if (propOnComment) {
+      return propOnComment(postId, content);
+    }
+
+    const res = await dispatch(createCommentAction(postId, content));
+    if (res && res.status === 201) {
+      if (res.data?.commentCount !== undefined) {
+        setPost(prev => prev ? ({ ...prev, commentCount: res.data.commentCount }) : prev);
+      }
+    }
+    return res;
+  };
+
+  const handleDelete = async (postId) => {
+    const res = await dispatch(deletePostAction(postId));
+    if (res && res.status === 200) {
+      navigate('/feed');
+    }
+  };
+
+  const isOwnPost = Boolean(
+    user.isAuthenticated && 
+    user.user?._id && 
+    (post?.user?._id === user.user._id || post?.user === user.user._id)
+  );
 
   if (loading) {
     return (
@@ -121,11 +160,13 @@ const SinglePost = ({ currentUser, onLike, onComment }) => {
         isLiked={isLiked}
         isLiking={isLiking}
         onLike={handleLike}
-        onComment={onComment}
+        onComment={handleComment}
+        onDelete={handleDelete}
         showCommentSection={true}
+        isOwnPost={isOwnPost}
       />
     </div>
   );
 };
 
-export default SinglePost
+export default SinglePost;

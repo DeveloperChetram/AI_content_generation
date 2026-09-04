@@ -41,6 +41,15 @@ const postSlice = createSlice({
         setLikedPosts: (state, action) => {
             state.likedPosts = action.payload;
         },
+        setPostLikedStatus: (state, action) => {
+            const { postId, isLiked } = action.payload;
+            const index = state.likedPosts.indexOf(postId);
+            if (isLiked && index === -1) {
+                state.likedPosts.push(postId);
+            } else if (!isLiked && index > -1) {
+                state.likedPosts.splice(index, 1);
+            }
+        },
         toggleLike: (state, action) => {
             const postId = action.payload;
             const index = state.likedPosts.indexOf(postId);
@@ -114,6 +123,7 @@ export const {
     setAllPosts, 
     emptyAllPosts, 
     setLikedPosts, 
+    setPostLikedStatus,
     toggleLike, 
     updatePostLikeCount, 
     setLikingPost,

@@ -16,12 +16,12 @@ const likePostController = async (req, res) => {
     const existingLike = await likeModel.findOne({ user: _id, post: post._id })
     if(existingLike){
         await likeModel.findByIdAndDelete(existingLike._id)
-      const updatedPost = await postModel.findByIdAndUpdate(postId, { $inc: { likeCount: -1 } }, { new: true });
-    return res.status(200).json({ message: 'Post unliked successfully', updatedPost })
+        const updatedPost = await postModel.findByIdAndUpdate(postId, { $inc: { likeCount: -1 } }, { new: true });
+        return res.status(200).json({ message: 'Post unliked successfully', isLiked: false, updatedPost })
     }
     const like = await likeModel.create({ user: _id, post: post._id })
     const updatedPost = await postModel.findByIdAndUpdate(postId, { $inc: { likeCount: 1 } }, { new: true });
-    res.status(200).json({ message: 'Post liked successfully', like, updatedPost })
+    res.status(200).json({ message: 'Post liked successfully', isLiked: true, like, updatedPost })
 }
 
 module.exports = { likePostController }

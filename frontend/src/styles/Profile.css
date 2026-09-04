@@ -246,46 +246,45 @@
 }
 
 .profile-page-container {
-  padding-top: 70px !important;
+  padding-top: 100px !important;
+  padding-bottom: 40px;
   width: 100%;
-  margin: 0;
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 32px;
   box-sizing: border-box;
   align-items: stretch;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .profile-page-header,
-.details-section,
+.profile-page-details,
+.detail-section,
 .posts-section {
   width: 100%;
   box-sizing: border-box;
-  padding: 0 20px;
 }
 
 /* Desktop Layouts */
 @media (min-width: 769px) {
   .profile-page-container {
     width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
   /* Profile and Account Information - match posts container width */
   .profile-page-header,
-  .details-section {
-    width: 100% !important; /* match posts container width */
-    max-width: 1200px !important; /* reasonable max width */
-    padding: 24px 40px !important; /* top/bottom padding + side padding */
-  }
-
-  /* Posts section keeps its full width */
+  .detail-section,
   .posts-section {
-    width: 100%;
-    max-width: 1200px;
-    padding: 24px 40px;
+    width: 100% !important;
+    max-width: 1200px !important;
+    padding: 32px 40px !important;
   }
 }
 
@@ -297,7 +296,7 @@
   background-color: var(--card-bg-color);
   border-radius: 16px;
   border: 1px solid var(--input-border-color);
-  margin-bottom: 32px;
+  margin-bottom: 0;
   max-width: 100%;
   box-sizing: border-box;
 }
@@ -575,15 +574,16 @@
   width: 100%;
   margin: 0 auto;
 }
-.detail-section{
+.detail-section {
   width: 100%;
   margin: 0 auto;
 }
-/* 80% of screen width on desktop, centered */
+
 @media (min-width: 769px) {
-  .details-section,
+  .detail-section,
   .posts-section {
-    width: 80vw;
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
   }
 }
@@ -1139,7 +1139,7 @@
   }
   
   .profile-page-header,
-  .details-section,
+  .detail-section,
   .posts-section {
     padding: 20px 15px; /* top/bottom padding + side padding */
   }

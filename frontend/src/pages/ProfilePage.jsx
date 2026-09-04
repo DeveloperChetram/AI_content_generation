@@ -131,10 +131,10 @@ const ProfilePage = () => {
                 </a>
               </div>
               <p className="profile-join-date">
-                Joined {new Date(user?.user?.createdAt).toLocaleDateString('en-US', { 
+                Joined {user?.user?.createdAt ? new Date(user.user.createdAt).toLocaleDateString('en-US', { 
                   month: 'long', 
                   year: 'numeric' 
-                })}
+                }) : 'Recently'}
               </p>
             </div>
           </div>
@@ -157,7 +157,7 @@ const ProfilePage = () => {
                 <FiCalendar className="detail-icon" />
                 <div className="detail-content">
                   <label>MEMBER SINCE</label>
-                  <p>{new Date(user?.user?.createdAt).toLocaleDateString()}</p>
+                  <p>{user?.user?.createdAt ? new Date(user.user.createdAt).toLocaleDateString() : 'Recently'}</p>
                 </div>
               </div>
 

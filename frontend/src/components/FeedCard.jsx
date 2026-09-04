@@ -11,6 +11,7 @@ import {
   AiOutlineRocket
 } from 'react-icons/ai';
 import RichTextContent from './RichTextContent';
+import Axios from '../api/axios';
 import '../styles/Feed.css';
 
 const FeedCard = ({ 
@@ -36,6 +37,17 @@ const FeedCard = ({
     await onLike(post._id);
   };
 
+  const loadComments = async () => {
+    try {
+      const response = await Axios.get(`/api/comments/get-comments/${post._id}`);
+      if (response.status === 200) {
+        setComments(response.data.comments || []);
+      }
+    } catch (error) {
+      console.error('Error loading comments:', error);
+    }
+  };
+
   const handleComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim() || !onComment) return;
@@ -45,25 +57,11 @@ const FeedCard = ({
       await onComment(post._id, commentText.trim());
       setCommentText('');
       // Refresh comments after adding a new one
-      if (showComments) {
-        await loadComments();
-      }
+      await loadComments();
     } catch (error) {
       console.error('Error commenting:', error);
     } finally {
       setIsCommenting(false);
-    }
-  };
-
-  const loadComments = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3000'}/api/comments/get-comments/${post._id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setComments(data.comments || []);
-      }
-    } catch (error) {
-      console.error('Error loading comments:', error);
     }
   };
 
@@ -302,7 +300,7 @@ const FeedCard = ({
             onClick={toggleComments}
           >
             <FiMessageCircle />
-            <span>{post?.commentCount || 0}</span>
+            <span>{typeof post?.commentCount === 'number' && !isNaN(post.commentCount) ? post.commentCount : comments.length}</span>
           </button>
           <button 
             className="feed-action-btn" 
@@ -365,21 +363,21 @@ const FeedCard = ({
             comments.map((comment) => (
               <div key={comment._id} className="comment-item">
                 <div className="comment-avatar-container">
-                  {comment.userProfilePicture ? (
+                  {(comment.userProfilePicture || comment.user?.profilePicture) ? (
                     <img 
-                      src={comment.userProfilePicture} 
-                      alt={`${comment.username}'s avatar`} 
+                      src={comment.userProfilePicture || comment.user?.profilePicture} 
+                      alt={`${comment.username || comment.user?.name || 'User'}'s avatar`} 
                       className="comment-user-avatar" 
                     />
                   ) : (
                     <div className="comment-user-initials">
-                      {getInitials(comment.username)}
+                      {getInitials(comment.username || comment.user?.name || 'User')}
                     </div>
                   )}
                 </div>
                 <div className="comment-content">
                   <div className="comment-header">
-                    <span className="comment-username">{comment.username}</span>
+                    <span className="comment-username">{comment.username || comment.user?.name || 'Anonymous'}</span>
                     <span className="comment-timestamp">
                       {new Date(comment.createdAt).toLocaleString(undefined, {
                         dateStyle: 'short',

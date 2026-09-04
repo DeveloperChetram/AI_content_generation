@@ -42,6 +42,7 @@ const registerController = async (req, res) => {
           posts: user.posts,
           bio: user.bio,
           profilePicture: user.profilePicture,
+          createdAt: user.createdAt,
         },
      })
  }  catch (error) {
@@ -90,7 +91,7 @@ const loginController = async (req,res)=>{
             posts: user.posts,
             bio: user.bio,
             profilePicture: user.profilePicture,
-
+            createdAt: user.createdAt,
         },
     });
 }

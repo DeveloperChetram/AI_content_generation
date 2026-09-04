@@ -13,7 +13,7 @@ postRouter.get('/get-all-posts', getAllPostsWithoutAuthController);
 postRouter.get('/get-posts', authMddleware, getPostController);
 postRouter.get('/get-posts-by-user', authMddleware, getPostsByUserController);
 postRouter.post('/like-post', authMddleware, likePostController);
-postRouter.get('/get-post-by-id/:id', authMddleware, getPostByIdController);
+postRouter.get('/get-post-by-id/:id', getPostByIdController);
 postRouter.delete('/delete-post/:postId', authMddleware, deletePostController);
 
 

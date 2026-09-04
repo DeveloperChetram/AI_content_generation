@@ -1,6 +1,6 @@
 import axios from "../../api/axios"
 import { addAlert } from "../slices/alertSlice"
-import { setRecentPost, setAllPosts, toggleLike, updatePostLikeCount, setLikingPost, setComments, addComment, updatePostCommentCount, setCommentingPost, removePost } from "../slices/postSlice"
+import { setRecentPost, setAllPosts, setLikedPosts, setPostLikedStatus, toggleLike, updatePostLikeCount, setLikingPost, setComments, addComment, updatePostCommentCount, setCommentingPost, removePost } from "../slices/postSlice"
 
 export const generatePostAction = (prompt, type, title) => async (dispatch)=> {
 
@@ -40,11 +40,14 @@ export const getPostsAction = () => async (dispatch)=> {
     try {
         const result = await axios.get('/api/posts/get-posts-by-user')
         console.log("result from getPostsAction", result.data);
-       await dispatch(setAllPosts(result.data.posts))
-       return result
+        await dispatch(setAllPosts(result.data.posts))
+        if (result.data.likedPosts) {
+            await dispatch(setLikedPosts(result.data.likedPosts))
+        }
+        return result
     } catch (error) {
+        console.log("error from getPostsAction", error);
         return error
-        console.log( "error from getPostsAction", error);
     }
 }
 
@@ -55,7 +58,11 @@ export const likePostAction = (postId) => async (dispatch) => {
         const response = await axios.post('/api/posts/like-post', { postId });
         
         if (response.status === 200) {
-            dispatch(toggleLike(postId));
+            if (response.data.isLiked !== undefined) {
+                dispatch(setPostLikedStatus({ postId, isLiked: response.data.isLiked }));
+            } else {
+                dispatch(toggleLike(postId));
+            }
             dispatch(updatePostLikeCount({
                 postId: postId,
                 likeCount: response.data.updatedPost.likeCount
@@ -106,10 +113,12 @@ export const createCommentAction = (postId, content) => async (dispatch) => {
         
         if (response.status === 201) {
             dispatch(addComment({ postId, comment: response.data.comment }));
-            dispatch(updatePostCommentCount({ 
-                postId: postId, 
-                commentCount: response.data.comment.post.commentCount + 1 
-            }));
+            if (response.data.commentCount !== undefined) {
+                dispatch(updatePostCommentCount({ 
+                    postId: postId, 
+                    commentCount: response.data.commentCount 
+                }));
+            }
             console.log('Comment created successfully:', response.data);
             dispatch(addAlert({
                 type: "success",

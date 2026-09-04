@@ -25,7 +25,7 @@ const createCommentController = async (req, res) => {
         }
 
         // Create comment
-        const comment = await commentModel.create({
+        let comment = await commentModel.create({
             user: _id,
             post: postId,
             content: content.trim(),
@@ -33,12 +33,15 @@ const createCommentController = async (req, res) => {
             userProfilePicture: user.profilePicture || ''
         })
 
+        comment = await comment.populate('user', 'name username profilePicture')
+
         // Update post comment count
-        await postModel.findByIdAndUpdate(postId, { $inc: { commentCount: 1 } }, { new: true })
+        const updatedPost = await postModel.findByIdAndUpdate(postId, { $inc: { commentCount: 1 } }, { new: true })
 
         res.status(201).json({ 
             message: 'Comment created successfully', 
-            comment 
+            comment,
+            commentCount: updatedPost ? updatedPost.commentCount : 1
         })
     } catch (error) {
         console.error('Error creating comment:', error)
